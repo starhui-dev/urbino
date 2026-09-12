@@ -35,10 +35,20 @@ func (c UsageCompleteness) Valid() bool {
 type UsageSource string
 
 const (
+	UsageSourceUnknown  UsageSource = "unknown"
 	UsageSourceProvider UsageSource = "provider"
 	UsageSourceEstimate UsageSource = "estimate"
 	UsageSourceGateway  UsageSource = "gateway"
 )
+
+func (s UsageSource) Valid() bool {
+	switch s {
+	case UsageSourceUnknown, UsageSourceProvider, UsageSourceEstimate, UsageSourceGateway:
+		return true
+	default:
+		return false
+	}
+}
 
 type Usage struct {
 	InputTotal    Count
@@ -55,6 +65,12 @@ type Usage struct {
 func (u Usage) Validate() error {
 	if !u.Completeness.Valid() {
 		return &Error{Code: ErrInvalidArgument, Message: "invalid usage completeness"}
+	}
+	if !u.Source.Valid() {
+		return &Error{Code: ErrInvalidArgument, Message: "invalid usage source"}
+	}
+	if (u.Source == UsageSourceEstimate) != u.IsEstimate {
+		return &Error{Code: ErrInvalidArgument, Message: "estimated usage must use estimate source"}
 	}
 	for _, c := range []Count{u.InputTotal, u.InputUncached, u.CacheRead, u.CacheWrite, u.OutputTotal, u.Reasoning} {
 		if c.Known && c.Value < 0 {

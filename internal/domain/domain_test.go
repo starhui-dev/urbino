@@ -72,8 +72,17 @@ func TestRequestTerminalCannotReopen(t *testing.T) {
 	}
 }
 
+func TestUnknownCapabilityAndScopeRejected(t *testing.T) {
+	if _, err := ParseCapability("future.capability"); err == nil {
+		t.Fatal("unknown capability accepted")
+	}
+	if _, err := ParseScope("tenant:admin"); err == nil {
+		t.Fatal("unknown scope accepted")
+	}
+}
+
 func TestUsageMissingIsNotZero(t *testing.T) {
-	u := Usage{Completeness: UsagePartial, InputTotal: UnknownCount(), OutputTotal: UnknownCount()}
+	u := Usage{Completeness: UsagePartial, Source: UsageSourceUnknown, InputTotal: UnknownCount(), OutputTotal: UnknownCount()}
 	if err := u.Validate(); err != nil {
 		t.Fatal(err)
 	}
@@ -82,6 +91,12 @@ func TestUsageMissingIsNotZero(t *testing.T) {
 	}
 	if _, err := KnownCount(-1); err == nil {
 		t.Fatal("negative count accepted")
+	}
+	if err := (Usage{Completeness: UsagePartial, Source: UsageSource("future")}).Validate(); err == nil {
+		t.Fatal("unknown usage source accepted")
+	}
+	if err := (Usage{Completeness: UsagePartial, Source: UsageSourceEstimate}).Validate(); err == nil {
+		t.Fatal("estimate source without estimate flag accepted")
 	}
 }
 

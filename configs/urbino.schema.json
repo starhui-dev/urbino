@@ -10,10 +10,10 @@
     "database": {"$ref": "#/$defs/connection"},
     "valkey": {"$ref": "#/$defs/connection"},
     "secrets": {"type":"object", "additionalProperties":false, "properties":{"kms_ref":{"type":"string"},"directory":{"type":"string"}}},
-    "transport": {"type":"object", "additionalProperties":false, "properties":{"provider_allowlist":{"type":"array","items":{"type":"string"}},"tls_verify":{"type":"boolean"},"proxy_url":{"type":"string"}}},
+    "transport": {"type":"object", "additionalProperties":false, "properties":{"provider_allowlist":{"type":"array","items":{"type":"string","minLength":1}} ,"tls_verify":{"type":"boolean"},"proxy_url":{"type":"string"}}},
     "security": {"type":"object", "additionalProperties":false, "properties":{"test_mode":{"type":"boolean"},"pprof":{"type":"boolean"},"admin_public":{"type":"boolean"}}},
     "limits": {"type":"object", "additionalProperties":false, "properties":{"max_body_bytes":{"type":"integer","minimum":0},"max_stream_bytes":{"type":"integer","minimum":0},"max_concurrency":{"type":"integer","minimum":0}}},
-    "billing": {"type":"object", "additionalProperties":false, "properties":{"mode":{"type":"string"},"currency":{"type":"string"}}},
+    "billing": {"type":"object", "additionalProperties":false, "properties":{"mode":{"enum":["disabled","prepaid"]},"currency":{"type":"string","pattern":"^[A-Z]{3}$"}}},
     "jobs": {"type":"object", "additionalProperties":false, "properties":{"enabled":{"type":"boolean"},"drain_timeout":{"type":"string"}}},
     "observability": {"type":"object", "additionalProperties":false, "properties":{"log_level":{"type":"string"},"service_name":{"type":"string"}}},
     "retention": {"type":"object", "additionalProperties":false, "properties":{"request_days":{"type":"integer","minimum":0},"usage_days":{"type":"integer","minimum":0}}}

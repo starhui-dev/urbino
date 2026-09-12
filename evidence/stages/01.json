@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "stage": "01",
-  "status": "implemented",
-  "code_revision": "HEAD f39e0421c7006ea87f74a04e0bb9e8d133e0e878 + working-tree stage01",
+  "status": "verified",
+  "code_revision": "HEAD 20cb1aec4e8f132fbf148bb30fae55d4782a36be + working-tree review fixes",
   "environment": {
     "os": "windows/amd64",
     "go_version": "go1.27.1",
@@ -34,5 +34,33 @@
   "risks": [
     "生成工具链已运行；复核阶段需确认生成文件与最终 revision 一致",
     "数据库、Valkey、provider、真实上游和跨进程集成尚未接入"
-  ]
+  ],
+  "review": {
+    "status": "pass",
+    "reviewer_session": "independent-review-2026-09-12",
+    "reviewed_revision": "HEAD 20cb1aec4e8f132fbf148bb30fae55d4782a36be + working-tree review fixes",
+    "report_path": "progress/reports/01-review.md",
+    "reviewed_at": "2026-09-12T14:01:11+08:00",
+    "findings_fixed": [
+      "production 配置缺失 secret 文件引用、空 provider allowlist 项和无效账本模式/币种",
+      "production 管理监听错误放行公网 IP/主机名",
+      "补齐 TransportFactory、Vault、UsageObserver、Reservation、Scheduler 端口及未知枚举回归测试",
+      "UsageSource 枚举和 is_estimate 一致性校验",
+      "统一校验 billing.mode 与三字母大写 currency，并同步 JSON Schema",
+      "未知公共 endpoint 不进入 capability 广告"
+    ],
+    "commands": [
+      {"command": "go test -count=1 ./...", "exit_code": 0, "output_path": "evidence/raw/review-01-go-test.txt"},
+      {"command": "go vet ./...", "exit_code": 0, "output_path": "evidence/raw/review-01-go-vet.txt"},
+      {"command": "go build -o urbino-review.exe ./cmd/urbino", "exit_code": 0, "output_path": "evidence/raw/review-01-go-build.txt"},
+      {"command": "go generate ./api", "exit_code": 0, "output_path": "evidence/raw/review-01-generate.txt"},
+      {"command": "go run ./cmd/urbino config validate --config configs/urbino.example.yaml", "exit_code": 0, "output_path": "evidence/raw/review-01-config-dev.txt"},
+      {"command": "go run ./cmd/urbino config validate --config configs/urbino.production.example.yaml", "exit_code": 0, "output_path": "evidence/raw/review-01-config-prod.txt"},
+      {"command": "PowerShell ConvertFrom-Json configs/urbino.schema.json", "exit_code": 0, "output_path": "evidence/raw/review-01-schema.txt"},
+      {"command": "uv run --python 3.14 python tools/check_evidence.py 01 --require-review --expected-revision HEAD...", "exit_code": 0, "output_path": "evidence/raw/review-01-check-evidence.txt"},
+      {"command": "CGO_ENABLED=1 CC=gcc PATH=C:\\msys64\\ucrt64\\bin;C:\\msys64\\usr\\bin;$PATH go test -race ./...", "exit_code": 0, "output_path": "evidence/raw/review-01-go-race.txt"},
+      {"command": "git diff --check", "exit_code": 0, "output_path": "evidence/raw/review-01-diff-check.txt"}
+    ],
+    "not_run": []
+  }
 }

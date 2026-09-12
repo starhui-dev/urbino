@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"os"
 	"path/filepath"
 	"strings"
@@ -195,6 +196,9 @@ func validate(c Config) error {
 	if c.Environment == "production" && (c.Database.URL != "" || c.Valkey.URL != "") {
 		return errors.New("production database and valkey URLs must use *_file references")
 	}
+	if c.Environment == "production" && (strings.TrimSpace(c.Database.URLFile) == "" || strings.TrimSpace(c.Valkey.URLFile) == "") {
+		return errors.New("production database.url_file and valkey.url_file are required")
+	}
 	if c.Limits.MaxBodyBytes < 0 || c.Limits.MaxStreamBytes < 0 || c.Limits.MaxConcurrency < 0 {
 		return errors.New("limits must not be negative")
 	}
@@ -204,18 +208,57 @@ func validate(c Config) error {
 			return errors.New("jobs.drain_timeout must be a duration between 1ns and 1h")
 		}
 	}
-	if c.Transport.ProviderAllowlist == nil && c.Environment == "production" {
-		return errors.New("provider_allowlist must be non-empty in production")
+	if c.Billing.Mode != "disabled" && c.Billing.Mode != "prepaid" {
+		return errors.New("billing.mode must be disabled or prepaid")
 	}
-	if c.Environment == "production" && len(c.Transport.ProviderAllowlist) == 0 {
-		return errors.New("provider_allowlist must be non-empty in production")
+	if c.Billing.Currency != "" && !isCurrencyCode(c.Billing.Currency) {
+		return errors.New("billing.currency must be a three-letter uppercase code")
+	}
+	if c.Billing.Mode == "prepaid" && !isCurrencyCode(c.Billing.Currency) {
+		return errors.New("prepaid billing requires a three-letter uppercase currency")
+	}
+	if c.Environment == "production" {
+		if len(c.Transport.ProviderAllowlist) == 0 {
+			return errors.New("provider_allowlist must be non-empty in production")
+		}
+		for _, provider := range c.Transport.ProviderAllowlist {
+			if strings.TrimSpace(provider) == "" {
+				return errors.New("provider_allowlist must not contain empty values")
+			}
+		}
+		if c.Billing.Mode != "prepaid" || !isCurrencyCode(c.Billing.Currency) {
+			return errors.New("production billing requires prepaid mode and currency")
+		}
 	}
 	return nil
 }
 
+func isCurrencyCode(value string) bool {
+	if len(value) != 3 {
+		return false
+	}
+	for _, c := range value {
+		if c < 'A' || c > 'Z' {
+			return false
+		}
+	}
+	return true
+}
+
 func isPublicListen(addr string) bool {
 	addr = strings.TrimSpace(addr)
-	return strings.HasPrefix(addr, ":") || strings.HasPrefix(addr, "0.0.0.0:") || strings.HasPrefix(addr, "[::]:") || addr == "0.0.0.0" || addr == "::"
+	if addr == "" {
+		return false
+	}
+	host, _, err := net.SplitHostPort(addr)
+	if err != nil {
+		// Production management listeners use an explicit loopback IP. Treat
+		// malformed addresses and host names conservatively as public.
+		return true
+	}
+	host = strings.Trim(host, "[]")
+	ip := net.ParseIP(host)
+	return ip == nil || !ip.IsLoopback()
 }
 
 var allowedEnv = map[string]bool{"URBINO_CONFIG": true, "URBINO_HEALTH_ADDR": true}

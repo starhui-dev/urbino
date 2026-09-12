@@ -18,6 +18,13 @@ func TestCapabilityAuthAndDisabledAreDistinct(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestUnknownEndpointIsNotAdvertised(t *testing.T) {
+	if _, ok := CapabilityForEndpoint("POST", "/v1/not-declared"); ok {
+		t.Fatal("undeclared endpoint advertised")
+	}
+}
+
 func TestFieldPolicyUnknownAndBoundedSize(t *testing.T) {
 	p, _ := FindEndpointPolicy("POST", "/v1/chat/completions")
 	if _, err := ValidateObjectFields([]byte(`{"model":"m","made_up":1}`), p); !errors.Is(err, ErrUnknownField) {

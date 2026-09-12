@@ -1,0 +1,1 @@
+configuration valid: configs/urbino.example.yaml

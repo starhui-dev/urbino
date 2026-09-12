@@ -1,0 +1,8 @@
+ok  	github.com/starhui-dev/urbino/api	0.336s
+ok  	github.com/starhui-dev/urbino/cmd/urbino	0.909s
+ok  	github.com/starhui-dev/urbino/internal/clock	0.385s
+ok  	github.com/starhui-dev/urbino/internal/config	0.393s
+ok  	github.com/starhui-dev/urbino/internal/domain	0.382s
+ok  	github.com/starhui-dev/urbino/internal/protocol	0.602s
+?   	github.com/starhui-dev/urbino/internal/provider	[no test files]
+ok  	github.com/starhui-dev/urbino/internal/securitylog	0.446s
