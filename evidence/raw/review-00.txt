@@ -1,0 +1,14 @@
+阶段 00 独立复核（2026-09-12，Windows amd64）
+代码 revision：HEAD 14ee4c3a0fa851457af62586302a2de6866f6478 + working-tree 修复
+
+命令：C:\Users\zhenxin\AppData\Local\mise\installs\go\1.27.1\bin\go.exe test -count=1 ./...
+结果：exit 0；cmd/urbino、internal/clock、internal/securitylog 全部通过，无跳过。
+命令：C:\Users\zhenxin\AppData\Local\mise\installs\go\1.27.1\bin\go.exe vet ./...
+结果：exit 0。
+命令：C:\Users\zhenxin\AppData\Local\mise\installs\go\1.27.1\bin\go.exe build -o urbino.exe ./cmd/urbino
+结果：exit 0。
+命令：C:\Users\zhenxin\AppData\Local\mise\installs\go\1.27.1\bin\go.exe list -m all
+结果：exit 0；仅 github.com/starhui-dev/urbino 与 github.com/go-chi/chi/v5 v5.3.2，无 CPA/S2A。
+命令：urbino serve --health-addr 127.0.0.1:0 + GET /healthz
+结果：绑定回环随机端口，HTTP 200，返回 service=Urbino、status=ok；随后停止进程。
+工具状态：PATH 中 go/make/docker/python shim 或工具不可用；使用已安装 Go 1.27.1 绝对路径完成 Go 检查，make/docker/python 检查记为未运行。

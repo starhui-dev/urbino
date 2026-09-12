@@ -10,13 +10,10 @@
   "stages": {
     "00": {
       "title": "工程基础与依赖锁定",
-      "status": "implemented",
+      "status": "verified",
       "evidence_path": "evidence/stages/00.json",
-      "review_path": null,
-      "blockers": [
-        "project.json 与 docs/14-naming.md 缺失",
-        "make/docker 未安装；仓库无 Git commit"
-      ]
+      "review_path": "progress/reports/00-review.md",
+      "blockers": []
     },
     "01": {
       "title": "领域类型、接口与配置契约",

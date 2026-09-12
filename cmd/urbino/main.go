@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -64,21 +65,36 @@ func serve(args []string, stdout, stderr io.Writer) error {
 	}
 
 	logger := securitylog.New(slog.New(slog.NewJSONHandler(stderr, &slog.HandlerOptions{Level: slog.LevelInfo})))
-	server := &http.Server{Addr: *healthAddr, Handler: healthRouter(), ReadHeaderTimeout: 5 * time.Second}
+	listener, err := net.Listen("tcp", *healthAddr)
+	if err != nil {
+		return fmt.Errorf("health listener: %w", err)
+	}
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	return serveHealth(ctx, listener, stdout, logger)
+}
+
+func serveHealth(ctx context.Context, listener net.Listener, stdout io.Writer, logger securitylog.Logger) error {
+	server := &http.Server{Handler: healthRouter(), ReadHeaderTimeout: 5 * time.Second}
+	serveErrors := make(chan error, 1)
 	go func() {
-		logger.Event("serve_started", *healthAddr)
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logger.Error("serve_failed", err)
-		}
+		serveErrors <- server.Serve(listener)
 	}()
 
-	_, _ = fmt.Fprintf(stdout, "%s serving internal health on %s\n", serviceName, *healthAddr)
-	signals := make(chan os.Signal, 1)
-	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
-	<-signals
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	return server.Shutdown(ctx)
+	logger.Event("serve_started", listener.Addr().String())
+	_, _ = fmt.Fprintf(stdout, "%s serving internal health on %s\n", serviceName, listener.Addr())
+	select {
+	case err := <-serveErrors:
+		if err == http.ErrServerClosed {
+			return nil
+		}
+		logger.Error("serve_failed", err)
+		return fmt.Errorf("health server: %w", err)
+	case <-ctx.Done():
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		return server.Shutdown(shutdownCtx)
+	}
 }
 
 func healthRouter() http.Handler {

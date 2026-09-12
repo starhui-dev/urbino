@@ -1,0 +1,4 @@
+命令：go test -race -count=1 ./cmd/urbino
+第一次结果：go: -race requires cgo; enable cgo by setting CGO_ENABLED=1
+第二次结果（CGO_ENABLED=1）：cgo: C compiler "gcc" not found；exit 1
+结论：环境缺少 race 所需 C 编译器；阶段 00 专属必需检查不包含 race，未将其记为通过。

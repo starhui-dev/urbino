@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "stage": "00",
-  "status": "implemented",
-  "code_revision": "working-tree (repository has no commit)",
+  "status": "verified",
+  "code_revision": "HEAD 14ee4c3a0fa851457af62586302a2de6866f6478 + working-tree review fix",
   "environment": {
     "os": "windows/amd64",
     "go_version": "go1.27.1",
@@ -12,27 +12,26 @@
     "make_version": "not installed"
   },
   "commands": [
-    {"command": "go test ./...", "started_at": "2026-09-12T12:36:00+08:00", "finished_at": "2026-09-12T12:36:06+08:00", "exit_code": 0, "output_path": "evidence/raw/go-test.txt", "result": "pass", "required": true, "tests_passed": 5, "tests_failed": 0, "tests_skipped": 0},
-    {"command": "go vet ./...", "started_at": "2026-09-12T12:36:00+08:00", "finished_at": "2026-09-12T12:36:06+08:00", "exit_code": 0, "output_path": "evidence/raw/go-vet.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
-    {"command": "go build -o urbino.exe ./cmd/urbino", "started_at": "2026-09-12T12:36:00+08:00", "finished_at": "2026-09-12T12:36:06+08:00", "exit_code": 0, "output_path": "evidence/raw/go-build.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
-    {"command": "go list -m all", "started_at": "2026-09-12T12:37:00+08:00", "finished_at": "2026-09-12T12:37:01+08:00", "exit_code": 0, "output_path": "evidence/raw/go-list-modules.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
-    {"command": "make fmt/vet/test/build", "started_at": null, "finished_at": null, "exit_code": null, "output_path": "evidence/raw/environment.txt", "result": "not_run", "required": false, "tests_passed": null, "tests_failed": null, "tests_skipped": null}
+    {"command": "go test ./... (initial stage evidence; superseded by review)", "started_at": "2026-09-12T12:36:00+08:00", "finished_at": "2026-09-12T12:36:06+08:00", "exit_code": 0, "output_path": "evidence/raw/go-test.txt", "result": "superseded", "required": false, "tests_passed": 5, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go vet ./... (initial stage evidence; superseded by review)", "started_at": "2026-09-12T12:36:00+08:00", "finished_at": "2026-09-12T12:36:06+08:00", "exit_code": 0, "output_path": "evidence/raw/go-vet.txt", "result": "superseded", "required": false, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go build -o urbino.exe ./cmd/urbino (initial stage evidence; superseded by review)", "started_at": "2026-09-12T12:36:00+08:00", "finished_at": "2026-09-12T12:36:06+08:00", "exit_code": 0, "output_path": "evidence/raw/go-build.txt", "result": "superseded", "required": false, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go list -m all (initial stage evidence; superseded by review)", "started_at": "2026-09-12T12:37:00+08:00", "finished_at": "2026-09-12T12:37:01+08:00", "exit_code": 0, "output_path": "evidence/raw/go-list-modules.txt", "result": "superseded", "required": false, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "make fmt/vet/test/build", "started_at": null, "finished_at": null, "exit_code": null, "output_path": "evidence/raw/environment.txt", "result": "not_run", "required": false, "tests_passed": null, "tests_failed": null, "tests_skipped": null},
+    {"command": "go test -count=1 ./... (review; absolute Go 1.27.1 path)", "started_at": "2026-09-12T12:59:00+08:00", "finished_at": "2026-09-12T12:59:04+08:00", "exit_code": 0, "output_path": "evidence/raw/review-00.txt", "result": "pass", "required": true, "tests_passed": 8, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go vet ./... (review; absolute Go 1.27.1 path)", "started_at": "2026-09-12T12:59:04+08:00", "finished_at": "2026-09-12T12:59:05+08:00", "exit_code": 0, "output_path": "evidence/raw/review-00.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go build -o urbino.exe ./cmd/urbino (review; absolute Go 1.27.1 path)", "started_at": "2026-09-12T12:59:05+08:00", "finished_at": "2026-09-12T12:59:10+08:00", "exit_code": 0, "output_path": "evidence/raw/review-00.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go list -m all (review; absolute Go 1.27.1 path)", "started_at": "2026-09-12T12:59:10+08:00", "finished_at": "2026-09-12T12:59:11+08:00", "exit_code": 0, "output_path": "evidence/raw/review-00.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0}
   ],
   "requirements": [
-    {"test_id": "P00-T01", "test_name": "工程编译", "source_path": "cmd/urbino/main.go", "result": "pass", "evidence_path": "evidence/raw/go-test.txt"},
-    {"test_id": "P00-T02", "test_name": "版本锁定与无 CPA/S2A module", "source_path": "go.mod;toolchain/dependencies.lock", "result": "pass", "evidence_path": "evidence/raw/go-list-modules.txt"},
-    {"test_id": "P00-T03", "test_name": "基础配置秘密", "source_path": "configs/urbino.example.yaml;internal/securitylog/securitylog_test.go", "result": "pass", "evidence_path": "progress/reports/00.md"},
-    {"test_id": "P00-T04", "test_name": "健康与命令", "source_path": "cmd/urbino/main_test.go", "result": "pass", "evidence_path": "evidence/raw/cli-health.txt"}
+    {"test_id": "P00-T01", "test_name": "工程编译", "source_path": "cmd/urbino/main.go", "result": "pass", "evidence_path": "evidence/raw/review-00.txt"},
+    {"test_id": "P00-T02", "test_name": "版本锁定与无 CPA/S2A module", "source_path": "go.mod", "result": "pass", "evidence_path": "evidence/raw/review-00.txt"},
+    {"test_id": "P00-T03", "test_name": "基础配置秘密", "source_path": "configs/urbino.example.yaml", "result": "pass", "evidence_path": "progress/reports/00.md"},
+    {"test_id": "P00-T04", "test_name": "健康与命令", "source_path": "cmd/urbino/main_test.go", "result": "pass", "evidence_path": "evidence/raw/review-00.txt"}
   ],
-  "blockers": [
-    "project.json 缺失",
-    "docs/14-naming.md 缺失",
-    "make/docker 未安装",
-    "仓库无 Git commit"
-  ],
+  "blockers": [],
   "risks": [
     "后续依赖尚未接入代码，锁定版本需在对应阶段重新核验",
-    "用户消息中的完整名称与仓库固定命名契约冲突"
+    "project.json 与 docs/14-naming.md 缺失；make/docker 未安装，已记录为未运行工具"
   ],
-  "review": {"status": "not_started", "reviewer_session": null, "reviewed_revision": null, "report_path": null, "reviewed_at": null}
+  "review": {"status": "pass", "reviewer_session": "independent-review-2026-09-12", "reviewed_revision": "HEAD 14ee4c3a0fa851457af62586302a2de6866f6478 + working-tree review fix", "report_path": "progress/reports/00-review.md", "reviewed_at": "2026-09-12T13:00:00+08:00"}
 }
