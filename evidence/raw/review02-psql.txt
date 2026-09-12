@@ -1,0 +1,1 @@
+psql: command not found (integration environment unavailable)

@@ -151,12 +151,13 @@ func (q *Queries) GetRequest(ctx context.Context, arg GetRequestParams) (GetRequ
 }
 
 const insertUsageEvent = `-- name: InsertUsageEvent :one
-INSERT INTO urbino.usage_events (id, request_id, attempt_id, source, event_key, completeness, input_total, output_total, is_estimate)
-VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id, event_key, completeness
+INSERT INTO urbino.usage_events (id, tenant_id, request_id, attempt_id, source, event_key, completeness, input_total, output_total, is_estimate)
+VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id, event_key, completeness
 `
 
 type InsertUsageEventParams struct {
 	ID           pgtype.UUID `json:"id"`
+	TenantID     pgtype.UUID `json:"tenant_id"`
 	RequestID    pgtype.UUID `json:"request_id"`
 	AttemptID    pgtype.UUID `json:"attempt_id"`
 	Source       string      `json:"source"`
@@ -176,6 +177,7 @@ type InsertUsageEventRow struct {
 func (q *Queries) InsertUsageEvent(ctx context.Context, arg InsertUsageEventParams) (InsertUsageEventRow, error) {
 	row := q.db.QueryRow(ctx, insertUsageEvent,
 		arg.ID,
+		arg.TenantID,
 		arg.RequestID,
 		arg.AttemptID,
 		arg.Source,

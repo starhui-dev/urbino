@@ -1,0 +1,2 @@
+未运行：本机未安装 Docker/PostgreSQL，且未提供经授权的 URBINO_TEST_DATABASE_URL 隔离 DSN。
+集成测试代码已通过 go test -tags integration -run '^$' ./tests/pgtest 编译检查。

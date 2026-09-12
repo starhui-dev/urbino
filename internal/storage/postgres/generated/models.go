@@ -44,6 +44,7 @@ type UrbinoBillingAccount struct {
 
 type UrbinoJournalEntry struct {
 	ID            pgtype.UUID `json:"id"`
+	TenantID      pgtype.UUID `json:"tenant_id"`
 	TransactionID pgtype.UUID `json:"transaction_id"`
 	AccountRef    string      `json:"account_ref"`
 	AmountMicros  int64       `json:"amount_micros"`
@@ -52,6 +53,7 @@ type UrbinoJournalEntry struct {
 
 type UrbinoJournalTransaction struct {
 	ID          pgtype.UUID        `json:"id"`
+	TenantID    pgtype.UUID        `json:"tenant_id"`
 	BusinessKey string             `json:"business_key"`
 	Currency    string             `json:"currency"`
 	CreatedAt   pgtype.Timestamptz `json:"created_at"`
@@ -127,13 +129,14 @@ type UrbinoSchemaVersion struct {
 }
 
 type UrbinoSettlement struct {
-	TenantID      pgtype.UUID        `json:"tenant_id"`
-	RequestID     pgtype.UUID        `json:"request_id"`
-	PriceSnapshot []byte             `json:"price_snapshot"`
-	UsageEventID  pgtype.UUID        `json:"usage_event_id"`
-	AmountMicros  int64              `json:"amount_micros"`
-	Status        string             `json:"status"`
-	CreatedAt     pgtype.Timestamptz `json:"created_at"`
+	TenantID       pgtype.UUID        `json:"tenant_id"`
+	RequestID      pgtype.UUID        `json:"request_id"`
+	PriceVersionID pgtype.UUID        `json:"price_version_id"`
+	PriceSnapshot  []byte             `json:"price_snapshot"`
+	UsageEventID   pgtype.UUID        `json:"usage_event_id"`
+	AmountMicros   int64              `json:"amount_micros"`
+	Status         string             `json:"status"`
+	CreatedAt      pgtype.Timestamptz `json:"created_at"`
 }
 
 type UrbinoTenant struct {

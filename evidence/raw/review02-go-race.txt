@@ -1,0 +1,15 @@
+# runtime/cgo
+cgo: C compiler "gcc" not found: exec: "gcc": executable file not found in %PATH%
+FAIL	github.com/starhui-dev/urbino/api [build failed]
+FAIL	github.com/starhui-dev/urbino/cmd/urbino [build failed]
+FAIL	github.com/starhui-dev/urbino/internal/clock [build failed]
+FAIL	github.com/starhui-dev/urbino/internal/config [build failed]
+FAIL	github.com/starhui-dev/urbino/internal/domain [build failed]
+FAIL	github.com/starhui-dev/urbino/internal/protocol [build failed]
+?   	github.com/starhui-dev/urbino/internal/provider	[no test files]
+FAIL	github.com/starhui-dev/urbino/internal/securitylog [build failed]
+FAIL	github.com/starhui-dev/urbino/internal/storage/postgres [build failed]
+?   	github.com/starhui-dev/urbino/internal/storage/postgres/generated	[no test files]
+FAIL	github.com/starhui-dev/urbino/migrations [build failed]
+FAIL	github.com/starhui-dev/urbino/tests/pgtest [build failed]
+FAIL

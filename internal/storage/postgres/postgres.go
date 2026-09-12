@@ -155,7 +155,7 @@ func Migrate(ctx context.Context, dsn string) error {
 	}
 	db := stdlib.OpenDB(*c.ConnConfig)
 	defer db.Close()
-	locker, err := lock.NewPostgresSessionLocker(lock.WithLockTimeout(1, 60))
+	locker, err := lock.NewPostgresSessionLocker(lock.WithLockTimeout(1, 5))
 	if err != nil {
 		return errors.New("migration lock setup failed")
 	}
@@ -187,6 +187,9 @@ func RunTx(ctx context.Context, pool interface {
 			if !retryable(err) || attempt == maxAttempts {
 				return errors.New("database transaction failed")
 			}
+			if err := retryBackoff(ctx, attempt); err != nil {
+				return err
+			}
 			continue
 		}
 		err = fn(tx)
@@ -207,10 +210,25 @@ func RunTx(ctx context.Context, pool interface {
 		if !retryable(err) || attempt == maxAttempts {
 			return errors.New("database transaction failed")
 		}
-		time.Sleep(time.Duration(10+rand.Intn(20)) * time.Millisecond)
+		if err := retryBackoff(ctx, attempt); err != nil {
+			return err
+		}
 	}
 	return errors.New("database transaction failed")
 }
+
+func retryBackoff(ctx context.Context, attempt int) error {
+	d := time.Duration(10+rand.Intn(20)) * time.Millisecond * time.Duration(attempt)
+	t := time.NewTimer(d)
+	defer t.Stop()
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-t.C:
+		return nil
+	}
+}
+
 func retryable(err error) bool {
 	var pe *pgconn.PgError
 	return errors.As(err, &pe) && (pe.Code == "40001" || pe.Code == "40P01")

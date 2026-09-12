@@ -2,7 +2,7 @@
   "schema_version": 1,
   "stage": "02",
   "status": "blocked",
-  "code_revision": "HEAD 9908482cc312994fd810c1d757c95c9522aa471f + working-tree stage02",
+  "code_revision": "ce3c5a5 + working-tree stage02 review fixes",
   "environment": {
     "os": "windows/amd64",
     "go_version": "go1.27.1",
@@ -20,7 +20,9 @@
     {"command":"go test -race ./... (CGO_ENABLED=1, CC=gcc)","started_at":"2026-09-12T15:21:08+08:00","finished_at":"2026-09-12T15:21:25+08:00","exit_code":0,"output_path":"evidence/raw/stage02-go-race.txt","result":"pass","required":true,"tests_failed":0,"tests_skipped":0},
     {"command":"git diff --check","started_at":"2026-09-12T15:21:25+08:00","finished_at":"2026-09-12T15:21:25+08:00","exit_code":0,"output_path":"evidence/raw/stage02-diff-check.txt","result":"pass","required":true,"tests_failed":0,"tests_skipped":0},
     {"command":"docker --version","started_at":"2026-09-12T15:21:25+08:00","finished_at":"2026-09-12T15:21:25+08:00","exit_code":1,"output_path":"evidence/raw/stage02-docker.txt","result":"not_run","required":false,"tests_failed":null,"tests_skipped":null},
-    {"command":"PostgreSQL integration suite","started_at":"2026-09-12T15:21:25+08:00","finished_at":"2026-09-12T15:21:25+08:00","exit_code":null,"output_path":"evidence/raw/stage02-integration-not-run.txt","result":"not_run","required":false,"tests_failed":null,"tests_skipped":null}
+    {"command":"PostgreSQL integration suite","started_at":"2026-09-12T15:21:25+08:00","finished_at":"2026-09-12T15:21:25+08:00","exit_code":null,"output_path":"evidence/raw/review02-integration-not-run.txt","result":"not_run","required":false,"tests_failed":null,"tests_skipped":null},
+    {"command":"go test -tags integration -run '^$' ./tests/pgtest","started_at":"2026-09-12T15:35:00+08:00","finished_at":"2026-09-12T15:35:01+08:00","exit_code":0,"output_path":"evidence/raw/review02-integration-compile.txt","result":"pass","required":true,"tests_failed":0,"tests_skipped":0},
+    {"command":"CGO_ENABLED=1 CC=gcc go test -race ./...","started_at":"2026-09-12T15:40:00+08:00","finished_at":"2026-09-12T15:40:02+08:00","exit_code":1,"output_path":"evidence/raw/review02-go-race.txt","result":"failed","required":true,"tests_failed":1,"tests_skipped":0}
   ],
   "requirements": [
     {"test_id":"P02-T01","test_name":"migration static tenant FK guard; runtime integration not run","source_path":"migrations/migration_test.go","result":"not_run","evidence_path":"evidence/raw/stage02-integration-not-run.txt"},
@@ -33,5 +35,5 @@
   ],
   "blockers": ["未安装 Docker/PostgreSQL，且无经授权隔离测试 DSN；P02-T01 至 P02-T06 真实集成门禁未运行"],
   "risks": ["sqlc 生成仓储已生成，但数据库 schema 需在真实 PostgreSQL 上执行验证"],
-  "review": {"status":"not_started","reviewer_session":null,"reviewed_revision":null,"report_path":null,"reviewed_at":null}
+  "review": {"status":"blocked","reviewer_session":"same-session-independent-review","reviewed_revision":"ce3c5a5 + working-tree stage02 review fixes","report_path":"progress/reports/02-review.md","reviewed_at":"2026-09-12T15:36:00+08:00"}
 }
