@@ -27,7 +27,7 @@
       "status": "blocked",
       "evidence_path": "evidence/stages/02.json",
       "review_path": "progress/reports/02-review.md",
-      "blockers": ["未安装 Docker/PostgreSQL，真实集成门禁尚未运行"]
+      "blockers": ["未安装 Docker/PostgreSQL，且无经授权 URBINO_TEST_DATABASE_URL 隔离 DSN；P02-T01 至 P02-T06 真实集成门禁仍未运行"]
     },
     "03": {
       "title": "租户、用户、API Key 与管理鉴权",

@@ -1,0 +1,2 @@
+ok  	github.com/starhui-dev/urbino/tests/pgtest	0.160s [no tests to run]
+command_exit_code=0

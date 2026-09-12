@@ -1,0 +1,14 @@
+--- FAIL: TestPostgresFreshRepeatAndConcurrentMigrate (0.00s)
+    integration_test.go:185: URBINO_TEST_DATABASE_URL 未提供；集成门禁不能静默跳过
+--- FAIL: TestPostgresTenantScopeAndUniqueness (0.00s)
+    integration_test.go:215: URBINO_TEST_DATABASE_URL 未提供；集成门禁不能静默跳过
+--- FAIL: TestPostgresLedgerAndRuntimeRoleGuards (0.00s)
+    integration_test.go:271: URBINO_TEST_DATABASE_URL 未提供；集成门禁不能静默跳过
+--- FAIL: TestPostgresRunTxCancellationRollback (0.00s)
+    integration_test.go:301: URBINO_TEST_DATABASE_URL 未提供；集成门禁不能静默跳过
+--- FAIL: TestPostgresSchemaCompatibilityRejectsIncompatibleVersion (0.00s)
+    integration_test.go:334: URBINO_TEST_DATABASE_URL 未提供；集成门禁不能静默跳过
+FAIL
+FAIL	github.com/starhui-dev/urbino/tests/pgtest	0.133s
+FAIL
+command_exit_code=1

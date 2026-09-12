@@ -1,0 +1,4 @@
+docker : command not found
+psql : command not found
+PostgreSQL service: not found
+integration: NOT_RUN; no authorized test DSN has been supplied

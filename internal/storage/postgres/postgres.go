@@ -19,7 +19,7 @@ import (
 	"github.com/starhui-dev/urbino/migrations"
 )
 
-const ExpectedSchemaVersion int64 = 1
+const ExpectedSchemaVersion int64 = 2
 
 type PoolOptions struct {
 	MaxConns         int32
@@ -192,14 +192,23 @@ func RunTx(ctx context.Context, pool interface {
 			}
 			continue
 		}
-		err = fn(tx)
+		var panicValue any
+		func() {
+			defer func() {
+				panicValue = recover()
+			}()
+			err = fn(tx)
+		}()
+		if panicValue != nil {
+			_ = rollbackTx(ctx, tx)
+			panic(panicValue)
+		}
 		if err == nil {
 			err = tx.Commit(ctx)
 		} else {
-			// A cancelled request context must not prevent the rollback itself.
-			rollbackCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
-			_ = tx.Rollback(rollbackCtx)
-			cancel()
+			if rollbackErr := rollbackTx(ctx, tx); rollbackErr != nil {
+				return errors.New("database transaction rollback failed")
+			}
 		}
 		if err == nil {
 			return nil
@@ -215,6 +224,13 @@ func RunTx(ctx context.Context, pool interface {
 		}
 	}
 	return errors.New("database transaction failed")
+}
+
+func rollbackTx(ctx context.Context, tx pgx.Tx) error {
+	// A cancelled request context must not prevent the rollback itself.
+	rollbackCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
+	defer cancel()
+	return tx.Rollback(rollbackCtx)
 }
 
 func retryBackoff(ctx context.Context, attempt int) error {

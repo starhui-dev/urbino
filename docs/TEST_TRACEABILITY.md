@@ -22,10 +22,10 @@
 
 | test_id | 实际测试/检查 | 证据 |
 |---|---|---|
-| P02-T01 | `tests/pgtest.TestPostgresIntegrationInvariants` 跨租户 FK；本机无 PostgreSQL 未运行 | `tests/pgtest/integration_test.go`、`evidence/raw/review02-integration-not-run.txt` |
-| P02-T02 | migration 静态测试检查 request/attempt/settlement 业务键唯一约束；真实数据库冲突断言未运行 | `migrations/migration_test.go`、`evidence/raw/stage02-integration-not-run.txt` |
-| P02-T03 | goose session advisory lock 已接入 `internal/storage/postgres.Migrate`；并行 migrator 未运行 | `internal/storage/postgres/postgres.go`、`evidence/raw/stage02-integration-not-run.txt` |
-| P02-T04 | migration 对 `urbino_runtime` 使用最小授权且账本触发器不可变；角色权限实测未运行 | `migrations/001_initial.sql`、`evidence/raw/stage02-integration-not-run.txt` |
-| P02-T05 | `tests/pgtest.TestPostgresRunTxRollbackOnCallbackError` 验证回滚；本机无 PostgreSQL 未运行 | `tests/pgtest/integration_test.go`、`evidence/raw/review02-integration-not-run.txt` |
-| P02-T06 | `CheckSchema` 对版本不兼容返回稳定错误且启动不迁移；真实 schema 升级未运行 | `internal/storage/postgres/postgres_test.go`、`evidence/raw/stage02-integration-not-run.txt` |
+| P02-T01 | `tests/pgtest.TestPostgresTenantScopeAndUniqueness` 跨租户 FK；本机无 PostgreSQL 未运行 | `tests/pgtest/integration_test.go`、`evidence/raw/review02-integration-not-run.txt` |
+| P02-T02 | `tests/pgtest.TestPostgresTenantScopeAndUniqueness` 检查 request/attempt/settlement 业务键唯一约束；真实数据库冲突断言未运行 | `tests/pgtest/integration_test.go`、`evidence/raw/stage02-integration-not-run.txt` |
+| P02-T03 | `tests/pgtest.TestPostgresFreshRepeatAndConcurrentMigrate` 验证 goose session advisory lock、并行首次及重复迁移；本机无 PostgreSQL 未运行 | `tests/pgtest/integration_test.go`、`evidence/raw/stage02-integration-not-run.txt` |
+| P02-T04 | `tests/pgtest.TestPostgresLedgerAndRuntimeRoleGuards` 验证 runtime 无 DDL、账本/价格不可变；角色权限实测未运行 | `tests/pgtest/integration_test.go`、`evidence/raw/stage02-integration-not-run.txt` |
+| P02-T05 | `tests/pgtest.TestPostgresRunTxCancellationRollback` 验证取消后的回滚；本机无 PostgreSQL 未运行 | `tests/pgtest/integration_test.go`、`evidence/raw/review02-integration-not-run.txt` |
+| P02-T06 | `tests/pgtest.TestPostgresSchemaCompatibilityRejectsIncompatibleVersion` 与 `CheckSchema` 单测验证不兼容版本拒绝；真实 schema 升级未运行 | `tests/pgtest/integration_test.go`、`internal/storage/postgres/postgres_test.go`、`evidence/raw/stage02-integration-not-run.txt` |
 | P02-T07 | `TestRedactDSN`、`tests/pgtest.TestValidateDSNRejectsUnsafeTargetsAndRedacts` 验证 DSN/driver 错误不回显秘密 | `internal/storage/postgres/postgres_test.go`、`tests/pgtest/dsn_test.go`、`evidence/raw/review02-go-test.txt` |

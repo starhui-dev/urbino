@@ -29,6 +29,25 @@ func TestInitialMigrationContainsTenantAndLedgerGuards(t *testing.T) {
 			t.Fatalf("migration missing invariant %q", want)
 		}
 	}
+	guard, err := FS.ReadFile("002_stage02_guards.sql")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{
+		"tenants_id_currency_key UNIQUE (id,currency)",
+		"billing_accounts_tenant_currency_fkey",
+		"journal_transactions_tenant_currency_fkey",
+		"ALTER COLUMN published_at DROP NOT NULL",
+		"ALTER COLUMN immutable SET DEFAULT false",
+		"BEFORE INSERT OR UPDATE OR DELETE ON urbino.price_items",
+		"OLD.published_at IS NOT NULL OR OLD.immutable",
+		"ORDER BY id FOR UPDATE",
+		"UPDATE urbino.schema_version SET version = 2",
+	} {
+		if !strings.Contains(string(guard), want) {
+			t.Fatalf("stage02 guard migration missing invariant %q", want)
+		}
+	}
 	if strings.Contains(s, "GRANT SELECT,INSERT,UPDATE ON ALL TABLES") {
 		t.Fatal("runtime role received broad update grant")
 	}

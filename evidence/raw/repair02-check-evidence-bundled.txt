@@ -1,0 +1,15 @@
+ERROR: �׶β���implemented/verified
+ERROR: �Դ���blocker
+ERROR: command[9]δʵ��ͨ��
+ERROR: command[9]����ʧ�ܻ�����
+ERROR: command[11]ȱ�ǿ�����ļ�
+ERROR: command[12]ȱ�ǿ�����ļ�
+ERROR: command[14]ȱ�ǿ�����ļ�
+ERROR: command[15]δʵ��ͨ��
+ERROR: command[15]����ʧ�ܻ�����
+ERROR: P02-T01û��ʵ��ͨ���Ĳ���
+ERROR: P02-T02û��ʵ��ͨ���Ĳ���
+ERROR: P02-T03û��ʵ��ͨ���Ĳ���
+ERROR: P02-T04û��ʵ��ͨ���Ĳ���
+ERROR: P02-T05û��ʵ��ͨ���Ĳ���
+ERROR: P02-T06û��ʵ��ͨ���Ĳ���

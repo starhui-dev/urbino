@@ -1,0 +1,2 @@
+ok  	github.com/starhui-dev/urbino/tests/pgtest	(cached) [no tests to run]
+command_exit_code=0

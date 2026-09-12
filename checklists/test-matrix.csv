@@ -9,11 +9,11 @@ P01-T03,01,P1,OpenAPI生成,验证通过且重复生成无diff；OpenAPI info.ti
 P01-T04,01,P0,未知配置,生产未知字段和测试开关拒绝；urbino.yaml与URBINO_环境变量契约一致,unit,true,,,not_started
 P01-T05,01,P0,JSON歧义,重复键、过深JSON、冲突字段拒绝,unit,true,,,not_started
 P01-T06,01,P1,能力契约,未支持功能返回稳定错误不是假成功,contract,true,,,not_started
-P02-T01,02,P0,租户复合外键,跨tenant引用数据库直接拒绝,integration,true,TestPostgresIntegrationInvariants,evidence/raw/review02-integration-not-run.txt,blocked
-P02-T02,02,P0,唯一性,request/attempt/settlement业务键唯一,integration,true,TestPostgresIntegrationInvariants,evidence/raw/review02-integration-not-run.txt,blocked
+P02-T01,02,P0,租户复合外键,跨tenant引用数据库直接拒绝,integration,true,TestPostgresTenantScopeAndUniqueness,evidence/raw/review02-integration-not-run.txt,blocked
+P02-T02,02,P0,唯一性,request/attempt/settlement业务键唯一,integration,true,TestPostgresTenantScopeAndUniqueness,evidence/raw/review02-integration-not-run.txt,blocked
 P02-T03,02,P1,并行迁移,两个migrator不竞态执行同迁移,integration,true,postgres.Migrate（集成并发场景）,evidence/raw/review02-integration-not-run.txt,blocked
 P02-T04,02,P0,运行角色权限,应用无DDL/任意账本修改权限,integration,true,运行角色权限集成断言,evidence/raw/review02-integration-not-run.txt,blocked
-P02-T05,02,P1,事务取消,timeout/cancel完整回滚且连接归池,integration,true,TestPostgresRunTxRollbackOnCallbackError,evidence/raw/review02-integration-not-run.txt,blocked
+P02-T05,02,P1,事务取消,timeout/cancel完整回滚且连接归池,integration,true,TestPostgresRunTxCancellationRollback,evidence/raw/review02-integration-not-run.txt,blocked
 P02-T06,02,P1,schema兼容,不兼容版本启动拒绝且不自动有损迁移,integration,true,postgres.CheckSchema 集成断言,evidence/raw/review02-integration-not-run.txt,blocked
 P02-T07,02,P0,错误脱敏,DSN/driver错误不泄漏秘密,unit,true,TestRedactDSN; TestValidateDSNRejectsUnsafeTargetsAndRedacts,evidence/raw/review02-go-test.txt,pass
 P03-T01,03,P0,public访问admin,public key对admin在任何listener均失败,e2e,true,,,not_started

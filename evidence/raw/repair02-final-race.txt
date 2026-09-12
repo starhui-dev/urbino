@@ -1,0 +1,2 @@
+go: -race requires cgo; enable cgo by setting CGO_ENABLED=1
+command_exit_code=2
