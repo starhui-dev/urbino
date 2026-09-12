@@ -1,0 +1,17 @@
+# Urbino 阶段 00 依赖锁定（核对日期 2026-09-12）
+go 1.27.1
+module github.com/starhui-dev/urbino
+
+github.com/go-chi/chi/v5 v5.3.2
+github.com/jackc/pgx/v5 v5.11.0
+sqlc v1.31.1
+github.com/pressly/goose/v3 v3.28.0
+github.com/valkey-io/valkey-go v1.0.77
+riverqueue.com/river v0.47.0
+github.com/oapi-codegen/oapi-codegen/v2 v2.8.0
+github.com/prometheus/client_golang v1.24.1
+go.opentelemetry.io/otel v1.47.0
+
+# 参考仓库仅作为安全设计资料，不是 Go 依赖：
+CPA CLIProxyAPI main 5b2785617d1e7de84a9f4dee599d275a4ccd8999
+Sub2API main 4726bdd08b6201d426a80529b79be123a4008d20

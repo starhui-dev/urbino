@@ -1,0 +1,6 @@
+command: go list -m all
+exit_code: 0
+output:
+github.com/starhui-dev/urbino
+github.com/go-chi/chi/v5 v5.3.2
+CPA/S2A module match: none

@@ -1,0 +1,6 @@
+command: go test ./...
+exit_code: 0
+output:
+ok   github.com/starhui-dev/urbino/cmd/urbino 0.738s
+ok   github.com/starhui-dev/urbino/internal/clock (cached)
+ok   github.com/starhui-dev/urbino/internal/securitylog 0.332s

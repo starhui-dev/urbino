@@ -1,0 +1,11 @@
+.git
+.github
+.env
+.env.*
+*.secret
+*.pem
+*.key
+urbino.yaml
+evidence/raw
+urbino
+urbino.exe

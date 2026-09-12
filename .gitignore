@@ -1,0 +1,17 @@
+# Go build outputs
+/urbino
+/urbino.exe
+/bin/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.secret
+*.pem
+*.key
+urbino.yaml
+
+# Test and tooling output
+coverage.out
+.DS_Store

@@ -1,0 +1,12 @@
+date: 2026-09-12
+os: Windows amd64
+go: go1.27.1 windows/amd64
+git_revision: no commit exists; working tree only
+origin: https://github.com/starhui-dev/urbino.git
+make: not found (NOT_RUN)
+docker: not found (NOT_RUN)
+python: WindowsApps placeholder was present but executable script check was not treated as pass
+missing_inputs: project.json, docs/14-naming.md
+reference_commits:
+CPA CLIProxyAPI: 5b2785617d1e7de84a9f4dee599d275a4ccd8999
+Sub2API: 4726bdd08b6201d426a80529b79be123a4008d20

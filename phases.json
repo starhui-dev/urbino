@@ -1,0 +1,293 @@
+{
+  "schema_version": 1,
+  "pack_version": "1.1",
+  "phases": [
+    {
+      "id": "00",
+      "title": "工程基础与依赖锁定",
+      "prompt": "prompts/00-foundation.md",
+      "depends_on": [],
+      "required_docs": [
+        "docs/00-scope.md",
+        "docs/01-architecture.md",
+        "docs/11-testing.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "01",
+      "title": "领域类型、接口与配置契约",
+      "prompt": "prompts/01-contracts.md",
+      "depends_on": [
+        "00"
+      ],
+      "required_docs": [
+        "docs/00-scope.md",
+        "docs/01-architecture.md",
+        "docs/02-data-model.md",
+        "docs/06-auth-admin.md",
+        "docs/08-protocols.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "02",
+      "title": "数据库、迁移与查询边界",
+      "prompt": "prompts/02-persistence.md",
+      "depends_on": [
+        "01"
+      ],
+      "required_docs": [
+        "docs/02-data-model.md",
+        "docs/09-metering-ledger.md",
+        "docs/11-testing.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "03",
+      "title": "租户、用户、API Key 与管理鉴权",
+      "prompt": "prompts/03-identity.md",
+      "depends_on": [
+        "02"
+      ],
+      "required_docs": [
+        "docs/02-data-model.md",
+        "docs/03-security.md",
+        "docs/04-credentials-oauth.md",
+        "docs/06-auth-admin.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "04",
+      "title": "上游凭据加密与轮换",
+      "prompt": "prompts/04-vault.md",
+      "depends_on": [
+        "03"
+      ],
+      "required_docs": [
+        "docs/02-data-model.md",
+        "docs/03-security.md",
+        "docs/04-credentials-oauth.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "05",
+      "title": "安全 Transport、代理和 SSRF 防护",
+      "prompt": "prompts/05-egress.md",
+      "depends_on": [
+        "04"
+      ],
+      "required_docs": [
+        "docs/03-security.md",
+        "docs/05-transport-egress.md",
+        "docs/13-threat-scenarios.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "06",
+      "title": "原生协议解析与流式传输基础",
+      "prompt": "prompts/06-streaming.md",
+      "depends_on": [
+        "05"
+      ],
+      "required_docs": [
+        "docs/05-transport-egress.md",
+        "docs/08-protocols.md",
+        "docs/11-testing.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "07",
+      "title": "OpenAI API Key 适配",
+      "prompt": "prompts/07-openai.md",
+      "depends_on": [
+        "06"
+      ],
+      "required_docs": [
+        "docs/04-credentials-oauth.md",
+        "docs/05-transport-egress.md",
+        "docs/08-protocols.md",
+        "docs/09-metering-ledger.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "08",
+      "title": "Anthropic 与 Gemini 原生适配",
+      "prompt": "prompts/08-native-providers.md",
+      "depends_on": [
+        "07"
+      ],
+      "required_docs": [
+        "docs/05-transport-egress.md",
+        "docs/08-protocols.md",
+        "docs/09-metering-ledger.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "09",
+      "title": "授权 OAuth 框架与刷新安全",
+      "prompt": "prompts/09-oauth.md",
+      "depends_on": [
+        "08"
+      ],
+      "required_docs": [
+        "docs/03-security.md",
+        "docs/04-credentials-oauth.md",
+        "docs/07-routing-quotas.md",
+        "docs/13-threat-scenarios.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "10",
+      "title": "路由、配额、租约与有限重试",
+      "prompt": "prompts/10-scheduling.md",
+      "depends_on": [
+        "09"
+      ],
+      "required_docs": [
+        "docs/01-architecture.md",
+        "docs/07-routing-quotas.md",
+        "docs/13-threat-scenarios.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "11",
+      "title": "计量、预留与账本结算",
+      "prompt": "prompts/11-accounting.md",
+      "depends_on": [
+        "10"
+      ],
+      "required_docs": [
+        "docs/02-data-model.md",
+        "docs/09-metering-ledger.md",
+        "docs/13-threat-scenarios.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "12",
+      "title": "完整请求链路与端到端服务",
+      "prompt": "prompts/12-orchestration.md",
+      "depends_on": [
+        "11"
+      ],
+      "required_docs": [
+        "docs/01-architecture.md",
+        "docs/06-auth-admin.md",
+        "docs/07-routing-quotas.md",
+        "docs/08-protocols.md",
+        "docs/09-metering-ledger.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "13",
+      "title": "完整管理 API 与 CLI",
+      "prompt": "prompts/13-management-cli.md",
+      "depends_on": [
+        "12"
+      ],
+      "required_docs": [
+        "docs/06-auth-admin.md",
+        "docs/09-metering-ledger.md",
+        "docs/10-config-operations.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "14",
+      "title": "后台任务、指标与审计运维",
+      "prompt": "prompts/14-operations.md",
+      "depends_on": [
+        "13"
+      ],
+      "required_docs": [
+        "docs/02-data-model.md",
+        "docs/10-config-operations.md",
+        "docs/11-testing.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "15",
+      "title": "安全审查与回归完整化",
+      "prompt": "prompts/15-security-regression.md",
+      "depends_on": [
+        "14"
+      ],
+      "required_docs": [
+        "docs/03-security.md",
+        "docs/11-testing.md",
+        "docs/13-threat-scenarios.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "16",
+      "title": "故障、多实例与性能验证",
+      "prompt": "prompts/16-resilience-performance.md",
+      "depends_on": [
+        "15"
+      ],
+      "required_docs": [
+        "docs/07-routing-quotas.md",
+        "docs/09-metering-ledger.md",
+        "docs/12-deployment-release.md",
+        "docs/13-threat-scenarios.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "17",
+      "title": "容器、配置、备份还原与发布供应链",
+      "prompt": "prompts/17-deployment.md",
+      "depends_on": [
+        "16"
+      ],
+      "required_docs": [
+        "docs/10-config-operations.md",
+        "docs/12-deployment-release.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "18",
+      "title": "授权核对、真实上游与灰度演练",
+      "prompt": "prompts/18-live-canary.md",
+      "depends_on": [
+        "17"
+      ],
+      "required_docs": [
+        "docs/00-scope.md",
+        "docs/08-protocols.md",
+        "docs/09-metering-ledger.md",
+        "docs/12-deployment-release.md"
+      ],
+      "review_required": true
+    },
+    {
+      "id": "19",
+      "title": "独立终审与上线门禁",
+      "prompt": "prompts/19-release-audit.md",
+      "depends_on": [
+        "18"
+      ],
+      "required_docs": [
+        "docs/03-security.md",
+        "docs/11-testing.md",
+        "docs/12-deployment-release.md"
+      ],
+      "review_required": true
+    }
+  ],
+  "project_name": "Urbino"
+}

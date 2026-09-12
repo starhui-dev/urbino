@@ -1,0 +1,6 @@
+commands: urbino.exe version; urbino.exe unknown; urbino.exe serve --health-addr 127.0.0.1:19091; GET /healthz; GET /v1/models
+results:
+version: Urbino dev (unknown), exit_code 0
+unknown: unknown command, exit_code 1
+health: HTTP 200 {"service":"Urbino","status":"ok"}
+models: HTTP 404

@@ -1,0 +1,187 @@
+{
+  "verified_on": "2026-09-12",
+  "verification_scope": "网页/文档与选定源码阅读；未完成全仓库安全审计或实机测试",
+  "repository_revision_status": "main 页面已读；未获得可固定的 commit SHA，第00阶段须核对并锁定，不能虚构",
+  "sources": [
+    {
+      "id": "R01",
+      "title": "CPA 官方仓库",
+      "url": "https://github.com/router-for-me/CLIProxyAPI",
+      "scope": "项目边界与文档入口；未作全面审计"
+    },
+    {
+      "id": "R02",
+      "title": "CPA 配置样例",
+      "url": "https://github.com/router-for-me/CLIProxyAPI/blob/main/config.example.yaml",
+      "scope": "管理访问、重试/冷却配置；不复制 fingerprint/cloaking 实现"
+    },
+    {
+      "id": "R03",
+      "title": "CPA auth conductor",
+      "url": "https://github.com/router-for-me/CLIProxyAPI/blob/main/sdk/cliproxy/auth/conductor.go",
+      "scope": "调度组件接口参考；不嵌入 SDK"
+    },
+    {
+      "id": "R04",
+      "title": "CPA LICENSE",
+      "url": "https://github.com/router-for-me/CLIProxyAPI/blob/main/LICENSE",
+      "scope": "编制时根文件为 MIT；具体复用另行审查"
+    },
+    {
+      "id": "R05",
+      "title": "Sub2API 官方仓库",
+      "url": "https://github.com/Wei-Shaw/sub2api",
+      "scope": "项目及官方自述入口；不将 README 当安全认证"
+    },
+    {
+      "id": "R06",
+      "title": "Sub2API Edge Security",
+      "url": "https://github.com/Wei-Shaw/sub2api/blob/main/deploy/EDGE_SECURITY.md",
+      "scope": "入口、可信代理、SSE 与反代边界"
+    },
+    {
+      "id": "R07",
+      "title": "Sub2API Token Refresh",
+      "url": "https://github.com/Wei-Shaw/sub2api/blob/main/backend/internal/service/token_refresh_service.go",
+      "scope": "刷新协调、失效与版本保护的参考"
+    },
+    {
+      "id": "R08",
+      "title": "Sub2API Concurrency",
+      "url": "https://github.com/Wei-Shaw/sub2api/blob/main/backend/internal/service/concurrency_service.go",
+      "scope": "并发租约与取消；不继承 fail-open 默认"
+    },
+    {
+      "id": "R09",
+      "title": "Sub2API Account Scheduler",
+      "url": "https://github.com/Wei-Shaw/sub2api/blob/main/backend/internal/service/openai_account_scheduler.go",
+      "scope": "强资源归属、软亲和与能力过滤参考"
+    },
+    {
+      "id": "R10",
+      "title": "Sub2API LICENSE",
+      "url": "https://github.com/Wei-Shaw/sub2api/blob/main/LICENSE",
+      "scope": "编制时根文件为 LGPL v3，非复制许可结论"
+    },
+    {
+      "id": "R11",
+      "title": "OAuth 2.0 Security BCP",
+      "url": "https://www.rfc-editor.org/rfc/rfc9700.html",
+      "scope": "PKCE、token 限权、刷新轮换和重放风险"
+    },
+    {
+      "id": "R12",
+      "title": "OWASP SSRF Prevention",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html",
+      "scope": "URL、域名/IP、DNS 与重定向边界"
+    },
+    {
+      "id": "R13",
+      "title": "Anthropic Legal and Compliance",
+      "url": "https://code.claude.com/docs/en/legal-and-compliance",
+      "scope": "第三方集成和消费订阅凭据限制，启用前重核"
+    },
+    {
+      "id": "R14",
+      "title": "OpenAI Services Agreement",
+      "url": "https://openai.com/policies/services-agreement/",
+      "scope": "账户/凭据/使用限制；不是对所有经营模式的授权"
+    },
+    {
+      "id": "R15",
+      "title": "OpenAI Rate Limits",
+      "url": "https://developers.openai.com/api/docs/guides/rate-limits",
+      "scope": "限流及配额处理依据"
+    },
+    {
+      "id": "R16",
+      "title": "OpenAI Streaming Responses",
+      "url": "https://developers.openai.com/api/docs/guides/streaming-responses",
+      "scope": "SSE 和响应事件协议"
+    },
+    {
+      "id": "R17",
+      "title": "Anthropic Streaming",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/streaming",
+      "scope": "原生事件、终止与用量语义"
+    },
+    {
+      "id": "R18",
+      "title": "Gemini Tokens",
+      "url": "https://ai.google.dev/gemini-api/docs/tokens",
+      "scope": "countTokens 与 usageMetadata"
+    },
+    {
+      "id": "R19",
+      "title": "Codex AGENTS.md 官方指南",
+      "url": "https://developers.openai.com/codex/guides/agents-md",
+      "scope": "仓库指令机制；指南当前可重定向到官方 Learn 页面"
+    },
+    {
+      "id": "R20",
+      "title": "Go Releases",
+      "url": "https://go.dev/dl/",
+      "scope": "编制时核对 Go 1.27.1；实施时固定补丁版本"
+    },
+    {
+      "id": "R21",
+      "title": "Go net/http",
+      "url": "https://pkg.go.dev/net/http",
+      "scope": "Transport、context、连接与响应控制"
+    },
+    {
+      "id": "R22",
+      "title": "Go crypto/cipher",
+      "url": "https://pkg.go.dev/crypto/cipher",
+      "scope": "标准 AEAD 接口"
+    },
+    {
+      "id": "R23",
+      "title": "chi",
+      "url": "https://github.com/go-chi/chi",
+      "scope": "标准 net/http 路由"
+    },
+    {
+      "id": "R24",
+      "title": "sqlc + pgx",
+      "url": "https://docs.sqlc.dev/en/v1.31.1/guides/using-go-and-pgx.html",
+      "scope": "类型化 SQL 与 pgx 集成"
+    },
+    {
+      "id": "R25",
+      "title": "goose",
+      "url": "https://github.com/pressly/goose",
+      "scope": "迁移工具"
+    },
+    {
+      "id": "R26",
+      "title": "PostgreSQL Versioning",
+      "url": "https://www.postgresql.org/support/versioning/",
+      "scope": "18 系列支持状态与补丁原则"
+    },
+    {
+      "id": "R27",
+      "title": "Valkey Security",
+      "url": "https://valkey.io/topics/security/",
+      "scope": "网络隔离与认证"
+    },
+    {
+      "id": "R28",
+      "title": "valkey-go",
+      "url": "https://github.com/valkey-io/valkey-go",
+      "scope": "Go 客户端"
+    },
+    {
+      "id": "R29",
+      "title": "River Transactional Enqueue",
+      "url": "https://riverqueue.com/docs/transactional-enqueueing",
+      "scope": "PG 事务入队"
+    },
+    {
+      "id": "R30",
+      "title": "oapi-codegen",
+      "url": "https://github.com/oapi-codegen/oapi-codegen",
+      "scope": "OpenAPI 类型和客户端/服务端生成"
+    }
+  ]
+}
