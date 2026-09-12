@@ -5,7 +5,7 @@
   "binary_name": "urbino",
   "config_filename": "urbino.yaml",
   "env_prefix": "URBINO_",
-  "current_phase": "00",
+  "current_phase": "01",
   "release_decision": "NOT_ASSESSED",
   "stages": {
     "00": {
@@ -17,9 +17,9 @@
     },
     "01": {
       "title": "领域类型、接口与配置契约",
-      "status": "not_started",
-      "evidence_path": null,
-      "review_path": null,
+      "status": "implemented",
+      "evidence_path": "evidence/stages/01.json",
+      "review_path": "progress/reports/01-review.md",
       "blockers": []
     },
     "02": {

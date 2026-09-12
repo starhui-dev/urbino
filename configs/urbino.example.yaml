@@ -1,2 +1,19 @@
-# Urbino 最小本地配置；生产密钥必须通过受控秘密来源提供。
-health_addr: 127.0.0.1:9091
+# Urbino 开发配置；真实密钥不写入文件。
+environment: development
+server:
+  internal:
+    listen: 127.0.0.1:9091
+    enabled: true
+transport:
+  tls_verify: true
+security:
+  test_mode: false
+limits:
+  max_body_bytes: 1048576
+  max_stream_bytes: 8388608
+  max_concurrency: 32
+billing:
+  mode: disabled
+observability:
+  service_name: urbino
+  log_level: info

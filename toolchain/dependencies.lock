@@ -9,6 +9,8 @@ github.com/pressly/goose/v3 v3.28.0
 github.com/valkey-io/valkey-go v1.0.77
 riverqueue.com/river v0.47.0
 github.com/oapi-codegen/oapi-codegen/v2 v2.8.0
+github.com/oapi-codegen/runtime v1.7.0
+gopkg.in/yaml.v3 v3.0.1
 github.com/prometheus/client_golang v1.24.1
 go.opentelemetry.io/otel v1.47.0
 

@@ -6,6 +6,8 @@
 |---|---|---|---|
 | Go | 1.27.1 | 编译工具链 | 官方发行版，见 references/SOURCES.md R20 |
 | github.com/go-chi/chi/v5 | v5.3.2 | net/http 路由 | MIT；官方仓库/模块可解析 |
+| gopkg.in/yaml.v3 | v3.0.1 | 严格配置 YAML 解码 | MIT；阶段 01 已接入并锁定 |
+| github.com/oapi-codegen/runtime | v1.7.0 | oapi-codegen 生成管理契约类型的运行时格式 | Apache-2.0；阶段 01 已接入并锁定 |
 | github.com/jackc/pgx/v5 | v5.11.0 | PostgreSQL 驱动（后续阶段） | MIT；官方模块可解析 |
 | sqlc | v1.31.1 | SQL 代码生成（后续阶段） | MIT；官方文档 R24 |
 | github.com/pressly/goose/v3 | v3.28.0 | 迁移（后续阶段） | BSD-3-Clause；官方仓库可解析 |

@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	urbinoConfig "github.com/starhui-dev/urbino/internal/config"
 	"github.com/starhui-dev/urbino/internal/securitylog"
 )
 
@@ -44,6 +45,8 @@ func run(args []string, stdout, stderr io.Writer) error {
 		return err
 	case "serve":
 		return serve(args[1:], stdout, stderr)
+	case "config":
+		return configCommand(args[1:], stdout, stderr)
 	case "help", "-h", "--help":
 		printUsage(stdout)
 		return nil
@@ -56,12 +59,23 @@ func run(args []string, stdout, stderr io.Writer) error {
 func serve(args []string, stdout, stderr io.Writer) error {
 	flags := flag.NewFlagSet("serve", flag.ContinueOnError)
 	flags.SetOutput(stderr)
-	healthAddr := flags.String("health-addr", envOrDefault("URBINO_HEALTH_ADDR", "127.0.0.1:9091"), "internal health listener address")
+	configPath := flags.String("config", "", "configuration file")
+	healthAddr := flags.String("health-addr", envOrDefault("URBINO_HEALTH_ADDR", ""), "internal health listener address")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
 	if flags.NArg() != 0 {
 		return fmt.Errorf("serve: unexpected arguments: %s", strings.Join(flags.Args(), " "))
+	}
+	cfg, err := loadRuntimeConfig(*configPath)
+	if err != nil {
+		return err
+	}
+	if *healthAddr == "" {
+		*healthAddr = cfg.Server.Internal.Listen
+	}
+	if *healthAddr == "" {
+		*healthAddr = "127.0.0.1:9091"
 	}
 
 	logger := securitylog.New(slog.New(slog.NewJSONHandler(stderr, &slog.HandlerOptions{Level: slog.LevelInfo})))
@@ -72,6 +86,58 @@ func serve(args []string, stdout, stderr io.Writer) error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	return serveHealth(ctx, listener, stdout, logger)
+}
+
+func configCommand(args []string, stdout, stderr io.Writer) error {
+	if len(args) == 0 || args[0] != "validate" {
+		return fmt.Errorf("config: expected validate")
+	}
+	flags := flag.NewFlagSet("config validate", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	path := flags.String("config", "", "configuration file")
+	if err := flags.Parse(args[1:]); err != nil {
+		return err
+	}
+	if flags.NArg() != 0 {
+		return fmt.Errorf("config validate: unexpected arguments: %s", strings.Join(flags.Args(), " "))
+	}
+	resolved, explicit, err := urbinoConfig.ResolvePath(*path, os.Environ(), currentDir())
+	if err != nil {
+		return err
+	}
+	if _, err := os.Stat(resolved); err != nil {
+		if explicit {
+			return fmt.Errorf("config %q: %w", resolved, err)
+		}
+		return fmt.Errorf("config %q is missing", resolved)
+	}
+	if _, err := urbinoConfig.LoadPath(resolved, explicit); err != nil {
+		return err
+	}
+	_, err = fmt.Fprintf(stdout, "configuration valid: %s\n", resolved)
+	return err
+}
+
+func loadRuntimeConfig(flagPath string) (urbinoConfig.Config, error) {
+	path, explicit, err := urbinoConfig.ResolvePath(flagPath, os.Environ(), currentDir())
+	if err != nil {
+		return urbinoConfig.Config{}, err
+	}
+	if _, statErr := os.Stat(path); statErr != nil {
+		if explicit {
+			return urbinoConfig.Config{}, fmt.Errorf("config %q: %w", path, statErr)
+		}
+		return urbinoConfig.Default(), nil
+	}
+	return urbinoConfig.LoadPath(path, explicit)
+}
+
+func currentDir() string {
+	d, err := os.Getwd()
+	if err != nil {
+		return "."
+	}
+	return d
 }
 
 func serveHealth(ctx context.Context, listener net.Listener, stdout io.Writer, logger securitylog.Logger) error {
@@ -115,5 +181,5 @@ func envOrDefault(name, fallback string) string {
 
 func printUsage(w io.Writer) {
 	fmt.Fprintln(w, "Urbino - backend AI gateway")
-	fmt.Fprintln(w, "用法: urbino <version|serve|help>")
+	fmt.Fprintln(w, "用法: urbino <version|serve|config validate|help>")
 }

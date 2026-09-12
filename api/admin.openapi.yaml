@@ -1,0 +1,259 @@
+openapi: 3.0.3
+info:
+  title: Urbino
+  description: Urbino 管理 API；管理身份与公共推理身份严格分离。
+  version: 0.1.0
+servers:
+  - url: /admin/v1
+security:
+  - AdminBearer: []
+paths:
+  /capabilities:
+    get:
+      operationId: listCapabilities
+      responses:
+        '200':
+          description: 已启用且允许展示的能力
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [capabilities]
+                properties:
+                  capabilities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CapabilityDescriptor'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /tenants:
+    get:
+      operationId: listTenants
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200': { $ref: '#/components/responses/TenantList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      operationId: createTenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateTenantRequest' }
+      responses:
+        '201':
+          description: 已创建
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tenant' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /tenants/{tenantId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantID'
+    get:
+      operationId: getTenant
+      responses:
+        '200':
+          description: 租户
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tenant' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      operationId: updateTenant
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateTenantRequest' }
+      responses:
+        '200':
+          description: 已更新
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tenant' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+  /models:
+    get:
+      operationId: listModels
+      responses:
+        '200':
+          description: 已授权模型目录
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [models]
+                properties:
+                  models:
+                    type: array
+                    items: { $ref: '#/components/schemas/ModelDescriptor' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /audit-events:
+    get:
+      operationId: listAuditEvents
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+        - in: query
+          name: from
+          schema: { type: string, format: date-time }
+        - in: query
+          name: to
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: 作用域内审计事件
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [events]
+                properties:
+                  events:
+                    type: array
+                    items: { $ref: '#/components/schemas/AuditEvent' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+components:
+  securitySchemes:
+    AdminBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: admin-token
+  parameters:
+    TenantID:
+      in: path
+      name: tenantId
+      required: true
+      schema: { type: string, format: uuid }
+    Limit:
+      in: query
+      name: limit
+      schema: { type: integer, minimum: 1, maximum: 100, default: 50 }
+    Cursor:
+      in: query
+      name: cursor
+      schema: { type: string, maxLength: 2048 }
+    IfMatch:
+      in: header
+      name: If-Match
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 128 }
+    IdempotencyKey:
+      in: header
+      name: Idempotency-Key
+      required: true
+      schema: { type: string, minLength: 16, maxLength: 255 }
+  schemas:
+    Error:
+      type: object
+      additionalProperties: false
+      required: [code, message, request_id, retryable]
+      properties:
+        code:
+          type: string
+          enum: [unauthorized, permission_denied, resource_not_found, version_conflict, unsupported_capability, quota_exceeded, upstream_unavailable, upstream_result_unknown, billing_unavailable, credential_requires_reauth, invalid_request]
+        message: { type: string, maxLength: 512 }
+        request_id: { type: string, format: uuid }
+        retryable: { type: boolean }
+        details:
+          type: object
+          additionalProperties: { type: string, maxLength: 256 }
+    Tenant:
+      type: object
+      additionalProperties: false
+      required: [id, name, status, currency, policy_version, version]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string, minLength: 1, maxLength: 200 }
+        status: { type: string, enum: [active, disabled, archived] }
+        currency: { type: string, pattern: '^[A-Z]{3}$' }
+        policy_version: { type: integer, minimum: 1, format: int64 }
+        version: { type: integer, minimum: 1, format: int64 }
+    CreateTenantRequest:
+      type: object
+      additionalProperties: false
+      required: [name, currency]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 200 }
+        currency: { type: string, pattern: '^[A-Z]{3}$' }
+    UpdateTenantRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name: { type: string, minLength: 1, maxLength: 200 }
+        status: { type: string, enum: [active, disabled, archived] }
+    ModelDescriptor:
+      type: object
+      additionalProperties: false
+      required: [public_name, protocol, capabilities, enabled]
+      properties:
+        public_name: { type: string, minLength: 1, maxLength: 200 }
+        protocol: { type: string, enum: [openai_chat, openai_responses, openai_embeddings, anthropic_messages, gemini_generate_content] }
+        capabilities:
+          type: array
+          items: { type: string, maxLength: 100 }
+          uniqueItems: true
+        enabled: { type: boolean }
+    CapabilityDescriptor:
+      type: object
+      additionalProperties: false
+      required: [name, version, status, protocols]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 100 }
+        version: { type: string, minLength: 1, maxLength: 32 }
+        status: { type: string, enum: [disabled, enabled, requires_authorization, unsupported] }
+        protocols:
+          type: array
+          items: { type: string, maxLength: 100 }
+    AuditEvent:
+      type: object
+      additionalProperties: false
+      required: [id, action, target, result, occurred_at]
+      properties:
+        id: { type: string, format: uuid }
+        action: { type: string, minLength: 1, maxLength: 100 }
+        target: { type: string, minLength: 1, maxLength: 200 }
+        result: { type: string, enum: [success, rejected, failed] }
+        occurred_at: { type: string, format: date-time }
+        metadata:
+          type: object
+          additionalProperties: { type: string, maxLength: 256 }
+  responses:
+    BadRequest:
+      description: 请求无效
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Unauthorized:
+      description: 未认证
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    NotFound:
+      description: 资源不存在
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Conflict:
+      description: 冲突
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    PreconditionFailed:
+      description: 版本条件不满足
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    TenantList:
+      description: 租户列表
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [items]
+            properties:
+              items: { type: array, items: { $ref: '#/components/schemas/Tenant' } }
+              next_cursor: { type: string }

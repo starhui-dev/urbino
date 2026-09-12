@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "stage": "01",
+  "status": "implemented",
+  "code_revision": "HEAD f39e0421c7006ea87f74a04e0bb9e8d133e0e878 + working-tree stage01",
+  "environment": {
+    "os": "windows/amd64",
+    "go_version": "go1.27.1",
+    "postgres_version": null,
+    "valkey_version": null,
+    "docker_version": "not installed",
+    "make_version": "not installed"
+  },
+  "commands": [
+    {"command": "go test -count=1 ./...", "started_at": "2026-09-12T13:35:00+08:00", "finished_at": "2026-09-12T13:35:06+08:00", "exit_code": 0, "output_path": "evidence/raw/stage01-go-test.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go vet ./...", "started_at": "2026-09-12T13:35:06+08:00", "finished_at": "2026-09-12T13:35:08+08:00", "exit_code": 0, "output_path": "evidence/raw/stage01-go-vet.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go build -o urbino.exe ./cmd/urbino", "started_at": "2026-09-12T13:35:08+08:00", "finished_at": "2026-09-12T13:35:09+08:00", "exit_code": 0, "output_path": "evidence/raw/stage01-go-build.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go generate ./api (oapi-codegen v2.8.0)", "started_at": "2026-09-12T13:42:00+08:00", "finished_at": "2026-09-12T13:42:01+08:00", "exit_code": 0, "output_path": "evidence/raw/stage01-generate.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go list -m all", "started_at": "2026-09-12T13:35:09+08:00", "finished_at": "2026-09-12T13:35:10+08:00", "exit_code": 0, "output_path": "evidence/raw/stage01-go-list-modules.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go run ./cmd/urbino config validate --config configs/urbino.example.yaml", "started_at": "2026-09-12T13:35:10+08:00", "finished_at": "2026-09-12T13:35:12+08:00", "exit_code": 0, "output_path": "evidence/raw/stage01-config-dev.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "go run ./cmd/urbino config validate --config configs/urbino.production.example.yaml", "started_at": "2026-09-12T13:35:12+08:00", "finished_at": "2026-09-12T13:35:14+08:00", "exit_code": 0, "output_path": "evidence/raw/stage01-config-prod.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "PowerShell ConvertFrom-Json configs/urbino.schema.json", "started_at": "2026-09-12T13:35:14+08:00", "finished_at": "2026-09-12T13:35:14+08:00", "exit_code": 0, "output_path": "evidence/raw/stage01-schema.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0},
+    {"command": "git diff --check", "started_at": "2026-09-12T13:35:14+08:00", "finished_at": "2026-09-12T13:35:14+08:00", "exit_code": 0, "output_path": "evidence/raw/stage01-diff-check.txt", "result": "pass", "required": true, "tests_passed": null, "tests_failed": 0, "tests_skipped": 0}
+  ],
+  "requirements": [
+    {"test_id": "P01-T01", "test_name": "TestMoneyBoundaries", "source_path": "internal/domain/domain_test.go", "result": "pass", "evidence_path": "evidence/raw/stage01-go-test.txt"},
+    {"test_id": "P01-T02", "test_name": "TestRequestTerminalCannotReopen", "source_path": "internal/domain/domain_test.go", "result": "pass", "evidence_path": "evidence/raw/stage01-go-test.txt"},
+    {"test_id": "P01-T03", "test_name": "TestAdminOpenAPISourceContract", "source_path": "api/admin_openapi_test.go", "result": "pass", "evidence_path": "evidence/raw/stage01-go-test.txt"},
+    {"test_id": "P01-T04", "test_name": "TestStrictYAML/TestProductionGuards/TestEnvironmentContract", "source_path": "internal/config/config_test.go", "result": "pass", "evidence_path": "evidence/raw/stage01-go-test.txt"},
+    {"test_id": "P01-T05", "test_name": "TestDecodeStrictBoundsAndTrailing/TestDecodeStrictRejectsDuplicateEscapedKey", "source_path": "internal/protocol/json_test.go", "result": "pass", "evidence_path": "evidence/raw/stage01-go-test.txt"},
+    {"test_id": "P01-T06", "test_name": "TestCapabilityAuthAndDisabledAreDistinct/TestFieldPolicyUnknownAndBoundedSize", "source_path": "internal/protocol/policy_test.go", "result": "pass", "evidence_path": "evidence/raw/stage01-go-test.txt"}
+  ],
+  "blockers": [],
+  "risks": [
+    "生成工具链已运行；复核阶段需确认生成文件与最终 revision 一致",
+    "数据库、Valkey、provider、真实上游和跨进程集成尚未接入"
+  ]
+}

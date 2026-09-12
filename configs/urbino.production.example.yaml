@@ -1,0 +1,18 @@
+# 生产模板：秘密只能使用受控文件/KMS 引用。
+environment: production
+server:
+  public: {listen: 127.0.0.1:8080, enabled: true}
+  admin: {listen: 127.0.0.1:9090, enabled: true}
+  internal: {listen: 127.0.0.1:9091, enabled: true}
+database: {url_file: /run/secrets/urbino_database_url}
+valkey: {url_file: /run/secrets/urbino_valkey_url}
+secrets: {kms_ref: kms://urbino/production}
+transport:
+  provider_allowlist: [openai]
+  tls_verify: true
+security: {test_mode: false, admin_public: false, pprof: false}
+limits: {max_body_bytes: 1048576, max_stream_bytes: 8388608, max_concurrency: 128}
+billing: {mode: prepaid, currency: USD}
+jobs: {enabled: true, drain_timeout: 60s}
+observability: {service_name: urbino, log_level: info}
+retention: {request_days: 30, usage_days: 180}
