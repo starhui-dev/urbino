@@ -1,0 +1,5 @@
+Write-Error:
+Line |
+   2 |  & { $d=Get-Command docker -ErrorAction SilentlyContinue; if ($null -e …
+     |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | docker unavailable

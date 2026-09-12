@@ -1,6 +1,6 @@
 # 阶段 02 独立复核
 
-复核 revision：`171b569 + working-tree stage02 repair`。
+复核 revision：`2f5a9254a23037251b77cb244dbc2200fbdb0fa4`。
 
 ## 复核结果
 
@@ -27,3 +27,11 @@
 - `project.json` 与 `docs/14-naming.md` 不存在；命名继续依据 `AGENTS.md` 与 `docs/00-scope.md`。
 
 结论：保持 `blocked`，不进入阶段 03；取得隔离 PostgreSQL 后运行 `go test -tags integration ./tests/pgtest` 并补齐证据，再进行下一次独立复核。
+
+## 本次复核（2026-09-12 17:27 +08:00）
+
+- 重新运行 `go test -count=1 ./...`、`go vet ./...`、`go build -o %TEMP%\\urbino-stage02-current.exe ./cmd/urbino`、`go test -tags integration -run '^$' ./tests/pgtest` 与 `git diff --check`，均通过；原始输出见 `evidence/raw/repair02-current-*`。
+- 运行 `go test -tags integration ./tests/pgtest`（未设置 `URBINO_TEST_DATABASE_URL`）按设计对 5 个集成用例明确失败，未静默跳过；输出见 `evidence/raw/repair02-current-integration-no-dsn.txt`。
+- `docker` 与 `psql` 命令均不可用；没有发现可运行 PostgreSQL，因此 P02-T01 至 P02-T06 仍无真实运行时证据。
+- 当前环境 `go test -race ./...` 因 CGO 未启用退出码 2；未将其记为通过。`tools/check_evidence.py 02` 按设计因阶段为 blocked、存在 blocker 及 P02-T01 至 P02-T06 未运行而退出码 1。
+- 复查 `internal/storage/postgres`、`migrations` 与 `tests/pgtest` 未发现可在当前环境修复的实现或测试回归；保持阶段状态 `blocked`。

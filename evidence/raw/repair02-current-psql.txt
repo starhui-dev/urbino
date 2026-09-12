@@ -1,0 +1,5 @@
+Write-Error:
+Line |
+   2 |  & { $p=Get-Command psql -ErrorAction SilentlyContinue; if ($null -eq  …
+     |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | psql unavailable
