@@ -1,0 +1,12 @@
+ok  	github.com/starhui-dev/urbino/api	(cached)
+ok  	github.com/starhui-dev/urbino/cmd/urbino	2.488s
+ok  	github.com/starhui-dev/urbino/internal/clock	(cached)
+ok  	github.com/starhui-dev/urbino/internal/config	(cached)
+ok  	github.com/starhui-dev/urbino/internal/domain	(cached)
+ok  	github.com/starhui-dev/urbino/internal/protocol	(cached)
+?   	github.com/starhui-dev/urbino/internal/provider	[no test files]
+ok  	github.com/starhui-dev/urbino/internal/securitylog	(cached)
+ok  	github.com/starhui-dev/urbino/internal/storage/postgres	1.490s
+?   	github.com/starhui-dev/urbino/internal/storage/postgres/generated	[no test files]
+ok  	github.com/starhui-dev/urbino/migrations	1.264s
+ok  	github.com/starhui-dev/urbino/tests/pgtest	(cached)

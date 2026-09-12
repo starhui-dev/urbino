@@ -5,7 +5,7 @@
   "binary_name": "urbino",
   "config_filename": "urbino.yaml",
   "env_prefix": "URBINO_",
-  "current_phase": "01",
+  "current_phase": "02",
   "release_decision": "NOT_ASSESSED",
   "stages": {
     "00": {
@@ -24,10 +24,10 @@
     },
     "02": {
       "title": "数据库、迁移与查询边界",
-      "status": "not_started",
-      "evidence_path": null,
-      "review_path": null,
-      "blockers": []
+      "status": "blocked",
+      "evidence_path": "evidence/stages/02.json",
+      "review_path": "progress/reports/02-review.md",
+      "blockers": ["未安装 Docker/PostgreSQL，真实集成门禁尚未运行"]
     },
     "03": {
       "title": "租户、用户、API Key 与管理鉴权",

@@ -1,0 +1,1 @@
+阶段 02 PostgreSQL 集成门禁未运行：本机未安装 docker、psql，且没有经授权的 URBINO 测试数据库 DSN。依据 docs/11-testing.md，不将缺失环境记为通过，也不连接任何非明确测试数据库。

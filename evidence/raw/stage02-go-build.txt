@@ -1,0 +1,2 @@
+go build -o %TEMP%\urbino-stage02.exe ./cmd/urbino exit=0
+go build exit=0

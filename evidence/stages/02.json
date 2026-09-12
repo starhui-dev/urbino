@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "stage": "02",
+  "status": "blocked",
+  "code_revision": "HEAD 9908482cc312994fd810c1d757c95c9522aa471f + working-tree stage02",
+  "environment": {
+    "os": "windows/amd64",
+    "go_version": "go1.27.1",
+    "postgres_version": "not installed",
+    "valkey_version": null,
+    "docker_version": "not installed",
+    "sqlc_version": "v1.31.1",
+    "make_version": "not installed"
+  },
+  "commands": [
+    {"command":"go test -count=1 ./...","started_at":"2026-09-12T15:21:00+08:00","finished_at":"2026-09-12T15:21:05+08:00","exit_code":0,"output_path":"evidence/raw/stage02-go-test.txt","result":"pass","required":true,"tests_failed":0,"tests_skipped":0},
+    {"command":"go vet ./...","started_at":"2026-09-12T15:21:05+08:00","finished_at":"2026-09-12T15:21:06+08:00","exit_code":0,"output_path":"evidence/raw/stage02-go-vet.txt","result":"pass","required":true,"tests_failed":0,"tests_skipped":0},
+    {"command":"go build -o %TEMP%\\urbino-stage02.exe ./cmd/urbino","started_at":"2026-09-12T15:21:06+08:00","finished_at":"2026-09-12T15:21:07+08:00","exit_code":0,"output_path":"evidence/raw/stage02-go-build.txt","result":"pass","required":true,"tests_failed":0,"tests_skipped":0},
+    {"command":"sqlc v1.31.1 generate","started_at":"2026-09-12T15:21:07+08:00","finished_at":"2026-09-12T15:21:08+08:00","exit_code":0,"output_path":"evidence/raw/stage02-sqlc-generate.txt","result":"pass","required":true,"tests_failed":0,"tests_skipped":0},
+    {"command":"go test -race ./... (CGO_ENABLED=1, CC=gcc)","started_at":"2026-09-12T15:21:08+08:00","finished_at":"2026-09-12T15:21:25+08:00","exit_code":0,"output_path":"evidence/raw/stage02-go-race.txt","result":"pass","required":true,"tests_failed":0,"tests_skipped":0},
+    {"command":"git diff --check","started_at":"2026-09-12T15:21:25+08:00","finished_at":"2026-09-12T15:21:25+08:00","exit_code":0,"output_path":"evidence/raw/stage02-diff-check.txt","result":"pass","required":true,"tests_failed":0,"tests_skipped":0},
+    {"command":"docker --version","started_at":"2026-09-12T15:21:25+08:00","finished_at":"2026-09-12T15:21:25+08:00","exit_code":1,"output_path":"evidence/raw/stage02-docker.txt","result":"not_run","required":false,"tests_failed":null,"tests_skipped":null},
+    {"command":"PostgreSQL integration suite","started_at":"2026-09-12T15:21:25+08:00","finished_at":"2026-09-12T15:21:25+08:00","exit_code":null,"output_path":"evidence/raw/stage02-integration-not-run.txt","result":"not_run","required":false,"tests_failed":null,"tests_skipped":null}
+  ],
+  "requirements": [
+    {"test_id":"P02-T01","test_name":"migration static tenant FK guard; runtime integration not run","source_path":"migrations/migration_test.go","result":"not_run","evidence_path":"evidence/raw/stage02-integration-not-run.txt"},
+    {"test_id":"P02-T02","test_name":"migration static uniqueness guard; runtime integration not run","source_path":"migrations/migration_test.go","result":"not_run","evidence_path":"evidence/raw/stage02-integration-not-run.txt"},
+    {"test_id":"P02-T03","test_name":"goose advisory lock wiring; concurrent integration not run","source_path":"internal/storage/postgres/postgres.go","result":"not_run","evidence_path":"evidence/raw/stage02-integration-not-run.txt"},
+    {"test_id":"P02-T04","test_name":"runtime grants and immutable ledger SQL; role integration not run","source_path":"migrations/001_initial.sql","result":"not_run","evidence_path":"evidence/raw/stage02-integration-not-run.txt"},
+    {"test_id":"P02-T05","test_name":"RunTx implementation; cancellation integration not run","source_path":"internal/storage/postgres/postgres.go","result":"not_run","evidence_path":"evidence/raw/stage02-integration-not-run.txt"},
+    {"test_id":"P02-T06","test_name":"CheckSchema unit path; upgrade integration not run","source_path":"internal/storage/postgres/postgres_test.go","result":"not_run","evidence_path":"evidence/raw/stage02-integration-not-run.txt"},
+    {"test_id":"P02-T07","test_name":"TestRedactDSN/TestValidateDSNRejectsUnsafeTargetsAndRedacts","source_path":"internal/storage/postgres/postgres_test.go","result":"pass","evidence_path":"evidence/raw/stage02-go-test.txt"}
+  ],
+  "blockers": ["未安装 Docker/PostgreSQL，且无经授权隔离测试 DSN；P02-T01 至 P02-T06 真实集成门禁未运行"],
+  "risks": ["sqlc 生成仓储已生成，但数据库 schema 需在真实 PostgreSQL 上执行验证"],
+  "review": {"status":"not_started","reviewer_session":null,"reviewed_revision":null,"report_path":null,"reviewed_at":null}
+}

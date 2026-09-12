@@ -1,0 +1,12 @@
+ok  	github.com/starhui-dev/urbino/api	0.447s
+ok  	github.com/starhui-dev/urbino/cmd/urbino	0.229s
+ok  	github.com/starhui-dev/urbino/internal/clock	0.452s
+ok  	github.com/starhui-dev/urbino/internal/config	0.472s
+ok  	github.com/starhui-dev/urbino/internal/domain	0.457s
+ok  	github.com/starhui-dev/urbino/internal/protocol	0.732s
+?   	github.com/starhui-dev/urbino/internal/provider	[no test files]
+ok  	github.com/starhui-dev/urbino/internal/securitylog	0.533s
+ok  	github.com/starhui-dev/urbino/internal/storage/postgres	0.741s
+?   	github.com/starhui-dev/urbino/internal/storage/postgres/generated	[no test files]
+ok  	github.com/starhui-dev/urbino/migrations	0.330s
+ok  	github.com/starhui-dev/urbino/tests/pgtest	0.338s

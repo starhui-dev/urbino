@@ -18,6 +18,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	urbinoConfig "github.com/starhui-dev/urbino/internal/config"
 	"github.com/starhui-dev/urbino/internal/securitylog"
+	"github.com/starhui-dev/urbino/internal/storage/postgres"
 )
 
 var (
@@ -47,6 +48,8 @@ func run(args []string, stdout, stderr io.Writer) error {
 		return serve(args[1:], stdout, stderr)
 	case "config":
 		return configCommand(args[1:], stdout, stderr)
+	case "migrate":
+		return migrateCommand(args[1:], stdout, stderr)
 	case "help", "-h", "--help":
 		printUsage(stdout)
 		return nil
@@ -70,6 +73,19 @@ func serve(args []string, stdout, stderr io.Writer) error {
 	cfg, err := loadRuntimeConfig(*configPath)
 	if err != nil {
 		return err
+	}
+	dsn, err := databaseURL(cfg.Database)
+	if err != nil {
+		return err
+	}
+	if dsn != "" {
+		checkCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		pool, openErr := postgres.Open(checkCtx, dsn)
+		cancel()
+		if openErr != nil {
+			return openErr
+		}
+		defer pool.Close()
 	}
 	if *healthAddr == "" {
 		*healthAddr = cfg.Server.Internal.Listen
@@ -181,5 +197,5 @@ func envOrDefault(name, fallback string) string {
 
 func printUsage(w io.Writer) {
 	fmt.Fprintln(w, "Urbino - backend AI gateway")
-	fmt.Fprintln(w, "用法: urbino <version|serve|config validate|help>")
+	fmt.Fprintln(w, "用法: urbino <version|serve|migrate|config validate|help>")
 }

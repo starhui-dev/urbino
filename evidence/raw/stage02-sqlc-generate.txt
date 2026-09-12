@@ -1,0 +1,1 @@
+sqlc v1.31.1 generate exit=0
