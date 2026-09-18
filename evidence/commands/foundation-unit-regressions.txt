@@ -1,0 +1,94 @@
+=== RUN   TestHealthHandlerServesOnlyGetHealthz
+=== RUN   TestHealthHandlerServesOnlyGetHealthz/GET_/healthz
+=== RUN   TestHealthHandlerServesOnlyGetHealthz/other_methods_on_/healthz_are_rejected
+=== RUN   TestHealthHandlerServesOnlyGetHealthz/no_public,_admin_or_model_route_exists
+--- PASS: TestHealthHandlerServesOnlyGetHealthz (0.00s)
+    --- PASS: TestHealthHandlerServesOnlyGetHealthz/GET_/healthz (0.00s)
+    --- PASS: TestHealthHandlerServesOnlyGetHealthz/other_methods_on_/healthz_are_rejected (0.00s)
+    --- PASS: TestHealthHandlerServesOnlyGetHealthz/no_public,_admin_or_model_route_exists (0.00s)
+=== RUN   TestNewHealthServerValidatesAddress
+--- PASS: TestNewHealthServerValidatesAddress (0.00s)
+=== RUN   TestHealthServerServesAndStopsWithContext
+--- PASS: TestHealthServerServesAndStopsWithContext (0.00s)
+=== RUN   TestServeBeforeCancelledContext
+--- PASS: TestServeBeforeCancelledContext (0.00s)
+=== RUN   TestHealthServerReportsBindFailure
+--- PASS: TestHealthServerReportsBindFailure (0.00s)
+PASS
+ok  	example.com/urbino/internal/httpapi	0.014s
+=== RUN   TestResolvePathPrecedence
+=== RUN   TestResolvePathPrecedence/flag_beats_env_and_default
+=== RUN   TestResolvePathPrecedence/env_beats_default
+=== RUN   TestResolvePathPrecedence/default_is_urbino.yaml_in_the_working_directory
+=== RUN   TestResolvePathPrecedence/blank_flag_and_env_fall_through
+--- PASS: TestResolvePathPrecedence (0.00s)
+    --- PASS: TestResolvePathPrecedence/flag_beats_env_and_default (0.00s)
+    --- PASS: TestResolvePathPrecedence/env_beats_default (0.00s)
+    --- PASS: TestResolvePathPrecedence/default_is_urbino.yaml_in_the_working_directory (0.00s)
+    --- PASS: TestResolvePathPrecedence/blank_flag_and_env_fall_through (0.00s)
+=== RUN   TestResolvePathMissingFileIsAnError
+=== RUN   TestResolvePathMissingFileIsAnError/explicit_missing_file_does_not_fall_back
+=== RUN   TestResolvePathMissingFileIsAnError/env_missing_file_does_not_fall_back
+=== RUN   TestResolvePathMissingFileIsAnError/missing_default_file
+=== RUN   TestResolvePathMissingFileIsAnError/directory_is_not_a_configuration_file
+--- PASS: TestResolvePathMissingFileIsAnError (0.00s)
+    --- PASS: TestResolvePathMissingFileIsAnError/explicit_missing_file_does_not_fall_back (0.00s)
+    --- PASS: TestResolvePathMissingFileIsAnError/env_missing_file_does_not_fall_back (0.00s)
+    --- PASS: TestResolvePathMissingFileIsAnError/missing_default_file (0.00s)
+    --- PASS: TestResolvePathMissingFileIsAnError/directory_is_not_a_configuration_file (0.00s)
+=== RUN   TestLoadDecodesHealthAddr
+--- PASS: TestLoadDecodesHealthAddr (0.00s)
+=== RUN   TestLoadSupportsEmptyFile
+--- PASS: TestLoadSupportsEmptyFile (0.00s)
+=== RUN   TestLoadRejectsInvalidConfiguration
+=== RUN   TestLoadRejectsInvalidConfiguration/unknown_field
+=== RUN   TestLoadRejectsInvalidConfiguration/multiple_documents
+=== RUN   TestLoadRejectsInvalidConfiguration/malformed_yaml
+=== RUN   TestLoadRejectsInvalidConfiguration/missing_file
+--- PASS: TestLoadRejectsInvalidConfiguration (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfiguration/unknown_field (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfiguration/multiple_documents (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfiguration/malformed_yaml (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfiguration/missing_file (0.00s)
+=== RUN   TestResolveHealthAddrPrecedence
+=== RUN   TestResolveHealthAddrPrecedence/default
+=== RUN   TestResolveHealthAddrPrecedence/config
+=== RUN   TestResolveHealthAddrPrecedence/env_beats_config
+=== RUN   TestResolveHealthAddrPrecedence/blank_env_falls_back_to_config
+--- PASS: TestResolveHealthAddrPrecedence (0.00s)
+    --- PASS: TestResolveHealthAddrPrecedence/default (0.00s)
+    --- PASS: TestResolveHealthAddrPrecedence/config (0.00s)
+    --- PASS: TestResolveHealthAddrPrecedence/env_beats_config (0.00s)
+    --- PASS: TestResolveHealthAddrPrecedence/blank_env_falls_back_to_config (0.00s)
+PASS
+ok  	example.com/urbino/internal/config	0.012s
+=== RUN   TestVersionCommand
+--- PASS: TestVersionCommand (0.00s)
+=== RUN   TestVersionRejectsArguments
+--- PASS: TestVersionRejectsArguments (0.00s)
+=== RUN   TestUnknownCommandFails
+--- PASS: TestUnknownCommandFails (0.00s)
+=== RUN   TestUnknownCommandWithHelpFails
+--- PASS: TestUnknownCommandWithHelpFails (0.00s)
+=== RUN   TestNoCommandPrintsUsageOnStderr
+--- PASS: TestNoCommandPrintsUsageOnStderr (0.00s)
+=== RUN   TestHelpFlagSucceeds
+--- PASS: TestHelpFlagSucceeds (0.00s)
+=== RUN   TestUnknownFlagFails
+--- PASS: TestUnknownFlagFails (0.00s)
+=== RUN   TestServeWithoutConfigFails
+--- PASS: TestServeWithoutConfigFails (0.00s)
+=== RUN   TestServeMissingExplicitConfigDoesNotFallBack
+--- PASS: TestServeMissingExplicitConfigDoesNotFallBack (0.00s)
+=== RUN   TestServeConfigSelectionAndInvalidAddress
+--- PASS: TestServeConfigSelectionAndInvalidAddress (0.00s)
+=== RUN   TestServeRejectsUnknownConfigField
+--- PASS: TestServeRejectsUnknownConfigField (0.00s)
+=== RUN   TestServeReportsBindFailure
+--- PASS: TestServeReportsBindFailure (0.00s)
+=== RUN   TestServeHealthListenerEndToEnd
+--- PASS: TestServeHealthListenerEndToEnd (0.01s)
+=== RUN   TestServeHealthAddrEnvironmentOverride
+--- PASS: TestServeHealthAddrEnvironmentOverride (0.00s)
+PASS
+ok  	example.com/urbino/internal/cli	0.034s

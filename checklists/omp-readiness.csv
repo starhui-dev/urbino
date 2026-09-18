@@ -1,0 +1,25 @@
+check_id,category,scenario,expected_result,required,status,evidence_path
+OMP-01,discovery,CLI 版本,记录本机实际 omp 版本和帮助；不猜升级结果,true,pass,evidence/omp/omp-version.txt
+OMP-02,discovery,项目根目录,确认当前仓库、.omp 完整且没有路径误配,true,pass,evidence/omp/git-status.txt
+OMP-03,discovery,10 个 slash 模板,实际加载且无同名优先级覆盖,true,pass,evidence/omp/discovery-routing.md
+OMP-04,discovery,5 个项目 Agent,实际加载 name/description/tools/output；不使用旧定义,true,pass,evidence/omp/discovery-routing.md
+OMP-05,discovery,工作流 skill,实际发现并能按需读取，不覆盖系统指令,true,pass,evidence/omp/discovery-routing.md
+OMP-06,routing,真实模型清单,只用已配置可用 selector，不把偏好文字当 ID,true,pass,evidence/omp/models.json
+OMP-07,routing,主会话,主会话 Sol 路由及模型保持不变,true,pass,evidence/omp/explicit-sol-route.json
+OMP-08,routing,低成本角色,scout/implementer/tester 实际解析至已选低成本路由,true,pass,evidence/omp/discovery-routing.md
+OMP-09,routing,审查角色,reviewer/security 使用已验证 Sol，独立上下文,true,pass,evidence/omp/explicit-sol-route.json
+OMP-10,routing,开发上游,所有开发模型只用已有自定义中转，无新登录/订阅,true,pass,evidence/omp/configuration-preserved.md
+OMP-11,routing,实际调用证据,task/session 元数据而非模型自报身份,true,pass,evidence/omp/discovery-routing.md
+OMP-12,schema,动态 task schema,按实际 single/batch schema，禁止虚构字段,true,pass,evidence/omp/schema-permissions.md
+OMP-13,permissions,只读角色,scout/reviewer/security 没有写/命令执行能力,true,pass,evidence/omp/schema-permissions.md
+OMP-14,permissions,受限写入,worker 任务有唯一写入范围和停止条件,true,pass,evidence/omp/smoke-implementer.md
+OMP-15,permissions,递归与隐藏调用,不再派生 task，不隐式 prewalk/advisor 调用,true,pass,evidence/omp/schema-permissions.md
+OMP-16,concurrency,有界并行,初始最多 2、策略上限 4，同文件不并行写,true,pass,evidence/omp/schema-permissions.md
+OMP-17,concurrency,隔离副作用,验证 worktree/自动 commit 副作用；未授权不触发,true,pass,evidence/omp/configuration-preserved.md
+OMP-18,smoke,只读 smoke,scout 返回正确 project/config/env，并留证据,true,pass,evidence/omp/smoke-scout.md
+OMP-19,smoke,实现和测试 smoke,真实实现/测试代码、本地输出和失败语义,true,pass,evidence/omp/smoke-tester.md
+OMP-20,smoke,审查 smoke,新上下文只读审查实际文件与日志,true,pass,evidence/omp/smoke-reviewer.md
+OMP-21,smoke,任务终态,全部任务终态或受控终止；不遗留写任务,true,pass,evidence/omp/configuration-preserved.md
+OMP-22,preservation,配置保全,不覆盖全局配置/认证/compaction，日志无秘密,true,pass,evidence/omp/configuration-preserved.md
+OMP-23,preservation,已有进度,迁移前后实际进度、证据、已执行测试保留,true,pass,evidence/omp/configuration-preserved.md
+OMP-24,gate,证据与门禁,runtime 检查器通过且主 Agent核验真实日志；未知不放行,true,pass,evidence/omp/runtime.json

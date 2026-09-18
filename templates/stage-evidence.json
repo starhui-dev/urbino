@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "stage": "00",
+  "status": "not_started",
+  "code_revision": null,
+  "environment": {
+    "os": null,
+    "go_version": null,
+    "postgres_version": null,
+    "valkey_version": null,
+    "docker_version": null
+  },
+  "commands": [
+    {
+      "command": null,
+      "started_at": null,
+      "finished_at": null,
+      "exit_code": null,
+      "output_path": null,
+      "result": "not_run",
+      "required": true,
+      "tests_passed": null,
+      "tests_failed": null,
+      "tests_skipped": null
+    }
+  ],
+  "requirements": [
+    {
+      "test_id": null,
+      "test_name": null,
+      "source_path": null,
+      "result": "not_run",
+      "evidence_path": null
+    }
+  ],
+  "blockers": [],
+  "risks": [],
+  "review": {
+    "status": "not_started",
+    "reviewer_session": null,
+    "reviewed_revision": null,
+    "report_path": null,
+    "reviewed_at": null,
+    "reviewer_model": null,
+    "independent_context": null,
+    "security_review_path": null
+  },
+  "development": {
+    "harness": "oh-my-pi",
+    "orchestrator_session": null,
+    "orchestrator_model": null,
+    "runtime_report_path": null,
+    "task_report_paths": [],
+    "all_tasks_terminal": null
+  }
+}

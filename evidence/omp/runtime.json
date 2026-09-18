@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "harness": "oh-my-pi",
+  "status": "pass",
+  "checked_at": "2026-09-18T06:42:00+00:00",
+  "omp_version": "omp/18.2.5",
+  "configuration_fingerprint": "f7c60b55736fec666130cc5807f4bd039446c08365bf379c97a0dd13f5edef19",
+  "configuration_fingerprint_includes_secrets": false,
+  "custom_gateway_only": true,
+  "main_session_unchanged": true,
+  "parent_model_selector": "Hui AI (OpenAI)/gpt-5.6-sol:xhigh",
+  "roles": {
+    "urbino-scout": {
+      "requested_selector": "Hui AI (GLM)/glm-5.3-flash:max",
+      "resolved_selector": "Hui AI (GLM)/glm-5.3-flash:max",
+      "evidence_path": "evidence/omp/discovery-routing.md"
+    },
+    "urbino-implementer": {
+      "requested_selector": "Hui AI (DeepSeek)/deepseek-v4-flash:max",
+      "resolved_selector": "Hui AI (DeepSeek)/deepseek-v4-flash:max",
+      "evidence_path": "evidence/omp/discovery-routing.md"
+    },
+    "urbino-tester": {
+      "requested_selector": "Hui AI (GLM)/glm-5.3-flash:max",
+      "resolved_selector": "Hui AI (GLM)/glm-5.3-flash:max",
+      "evidence_path": "evidence/omp/discovery-routing.md"
+    },
+    "urbino-reviewer": {
+      "requested_selector": "Hui AI (OpenAI)/gpt-5.6-sol:xhigh",
+      "resolved_selector": "Hui AI (OpenAI)/gpt-5.6-sol:xhigh",
+      "evidence_path": "evidence/omp/discovery-routing.md"
+    },
+    "urbino-security": {
+      "requested_selector": "Hui AI (OpenAI)/gpt-5.6-sol:xhigh",
+      "resolved_selector": "Hui AI (OpenAI)/gpt-5.6-sol:xhigh",
+      "evidence_path": "evidence/omp/discovery-routing.md"
+    }
+  },
+  "checks": {
+    "cli_version": {"result": "pass", "evidence_path": "evidence/omp/omp-version.txt"},
+    "prompt_discovery": {"result": "pass", "evidence_path": "evidence/omp/discovery-routing.md"},
+    "agent_discovery": {"result": "pass", "evidence_path": "evidence/omp/discovery-routing.md"},
+    "skill_discovery": {"result": "pass", "evidence_path": "evidence/omp/discovery-routing.md"},
+    "task_schema": {"result": "pass", "evidence_path": "evidence/omp/schema-permissions.md"},
+    "role_resolution": {"result": "pass", "evidence_path": "evidence/omp/discovery-routing.md"},
+    "readonly_scout": {"result": "pass", "evidence_path": "evidence/omp/smoke-scout.md"},
+    "write_and_test": {"result": "pass", "evidence_path": "evidence/omp/smoke-tester.md"},
+    "independent_review": {"result": "pass", "evidence_path": "evidence/omp/smoke-reviewer.md"},
+    "all_tasks_terminal": {"result": "pass", "evidence_path": "evidence/omp/configuration-preserved.md"},
+    "configuration_preserved": {"result": "pass", "evidence_path": "evidence/omp/configuration-preserved.md"}
+  },
+  "blockers": []
+}

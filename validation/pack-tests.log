@@ -1,0 +1,52 @@
+$ /opt/pyvenv/bin/python -m unittest discover -s tools -p test_*.py -v
+test_cli_refuses_report_overwrite (test_omp.MigrationTests.test_cli_refuses_report_overwrite) ... ok
+test_cli_wont_write_report_into_target (test_omp.MigrationTests.test_cli_wont_write_report_into_target) ... ok
+test_identical_file_identified (test_omp.MigrationTests.test_identical_file_identified) ... ok
+test_missing_target_rejected (test_omp.MigrationTests.test_missing_target_rejected) ... ok
+test_same_and_nested_paths_rejected (test_omp.MigrationTests.test_same_and_nested_paths_rejected) ... ok
+test_sensitive_content_not_read (test_omp.MigrationTests.test_sensitive_content_not_read) ... ok
+test_symbolic_link_target_blocked (test_omp.MigrationTests.test_symbolic_link_target_blocked) ... ok
+test_target_unchanged_and_existing_state_preserved (test_omp.MigrationTests.test_target_unchanged_and_existing_state_preserved) ... ok
+test_all_new_runtime_checks_not_run (test_omp.OmpStructureTests.test_all_new_runtime_checks_not_run) ... ok
+test_duplicate_frontmatter_fails (test_omp.OmpStructureTests.test_duplicate_frontmatter_fails) ... ok
+test_full_structure (test_omp.OmpStructureTests.test_full_structure) ... ok
+test_invalid_agent_tools_caught (test_omp.OmpStructureTests.test_invalid_agent_tools_caught) ... ok
+test_missing_command_target_caught (test_omp.OmpStructureTests.test_missing_command_target_caught) ... ok
+test_native_counts (test_omp.OmpStructureTests.test_native_counts) ... ok
+test_no_chinese_product_name (test_omp.OmpStructureTests.test_no_chinese_product_name) ... ok
+test_no_native_writing_in_reviewer (test_omp.OmpStructureTests.test_no_native_writing_in_reviewer) ... ok
+test_policy_preserves_existing_global_settings (test_omp.OmpStructureTests.test_policy_preserves_existing_global_settings) ... ok
+test_role_model_binding_can_be_filled_after_setup (test_omp.OmpStructureTests.test_role_model_binding_can_be_filled_after_setup) ... ok
+test_unclosed_frontmatter_fails (test_omp.OmpStructureTests.test_unclosed_frontmatter_fails) ... ok
+test_wrong_product_suffix_caught (test_omp.OmpStructureTests.test_wrong_product_suffix_caught) ... ok
+test_blocker_rejected (test_omp.RuntimeEvidenceTests.test_blocker_rejected) ... ok
+test_digest_mismatch_rejected (test_omp.RuntimeEvidenceTests.test_digest_mismatch_rejected) ... ok
+test_empty_template_rejected (test_omp.RuntimeEvidenceTests.test_empty_template_rejected) ... ok
+test_main_model_changed_rejected (test_omp.RuntimeEvidenceTests.test_main_model_changed_rejected) ... ok
+test_non_evidence_spec_file_rejected (test_omp.RuntimeEvidenceTests.test_non_evidence_spec_file_rejected) ... ok
+test_non_object_rejected (test_omp.RuntimeEvidenceTests.test_non_object_rejected) ... ok
+test_pass_with_not_run_check_rejected (test_omp.RuntimeEvidenceTests.test_pass_with_not_run_check_rejected) ... ok
+test_pass_without_evidence_rejected (test_omp.RuntimeEvidenceTests.test_pass_without_evidence_rejected) ... ok
+test_path_escape_rejected (test_omp.RuntimeEvidenceTests.test_path_escape_rejected) ... ok
+test_review_wrong_model_rejected (test_omp.RuntimeEvidenceTests.test_review_wrong_model_rejected) ... ok
+test_stale_configuration_rejected (test_omp.RuntimeEvidenceTests.test_stale_configuration_rejected) ... ok
+test_synthetic_fixture_accepts_format_not_authenticity (test_omp.RuntimeEvidenceTests.test_synthetic_fixture_accepts_format_not_authenticity) ... ok
+test_timezone_required (test_omp.RuntimeEvidenceTests.test_timezone_required) ... ok
+test_worker_silent_main_fallback_rejected (test_omp.RuntimeEvidenceTests.test_worker_silent_main_fallback_rejected) ... ok
+test_compose_and_refuse_overwrite (test_tools.ToolTests.test_compose_and_refuse_overwrite) ... ok
+test_every_phase_declares_identity (test_tools.ToolTests.test_every_phase_declares_identity) ... ok
+test_invalid_phase (test_tools.ToolTests.test_invalid_phase) ... ok
+test_pack_structure (test_tools.ToolTests.test_pack_structure) ... ok
+test_phase_list (test_tools.ToolTests.test_phase_list) ... ok
+test_project_identity (test_tools.ToolTests.test_project_identity) ... ok
+test_reject_missing_identity_contract (test_tools.ToolTests.test_reject_missing_identity_contract) ... ok
+test_reject_stale_command_reference (test_tools.ToolTests.test_reject_stale_command_reference) ... ok
+test_reject_stale_project_state (test_tools.ToolTests.test_reject_stale_project_state) ... ok
+test_reject_wrong_environment_prefix (test_tools.ToolTests.test_reject_wrong_environment_prefix) ... ok
+test_review_requires_current_revision (test_tools.ToolTests.test_review_requires_current_revision) ... ok
+test_template_is_not_pass (test_tools.ToolTests.test_template_is_not_pass) ... ok
+
+----------------------------------------------------------------------
+Ran 46 tests in 5.543s
+
+OK

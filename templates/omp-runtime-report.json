@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "harness": "oh-my-pi",
+  "status": "not_run",
+  "checked_at": null,
+  "omp_version": null,
+  "configuration_fingerprint": null,
+  "configuration_fingerprint_includes_secrets": false,
+  "custom_gateway_only": null,
+  "main_session_unchanged": null,
+  "parent_model_selector": null,
+  "roles": {
+    "urbino-scout": {
+      "requested_selector": null,
+      "resolved_selector": null,
+      "evidence_path": null
+    },
+    "urbino-implementer": {
+      "requested_selector": null,
+      "resolved_selector": null,
+      "evidence_path": null
+    },
+    "urbino-tester": {
+      "requested_selector": null,
+      "resolved_selector": null,
+      "evidence_path": null
+    },
+    "urbino-reviewer": {
+      "requested_selector": null,
+      "resolved_selector": null,
+      "evidence_path": null
+    },
+    "urbino-security": {
+      "requested_selector": null,
+      "resolved_selector": null,
+      "evidence_path": null
+    }
+  },
+  "checks": {
+    "cli_version": {
+      "result": "not_run",
+      "evidence_path": null
+    },
+    "prompt_discovery": {
+      "result": "not_run",
+      "evidence_path": null
+    },
+    "agent_discovery": {
+      "result": "not_run",
+      "evidence_path": null
+    },
+    "skill_discovery": {
+      "result": "not_run",
+      "evidence_path": null
+    },
+    "task_schema": {
+      "result": "not_run",
+      "evidence_path": null
+    },
+    "role_resolution": {
+      "result": "not_run",
+      "evidence_path": null
+    },
+    "readonly_scout": {
+      "result": "not_run",
+      "evidence_path": null
+    },
+    "write_and_test": {
+      "result": "not_run",
+      "evidence_path": null
+    },
+    "independent_review": {
+      "result": "not_run",
+      "evidence_path": null
+    },
+    "all_tasks_terminal": {
+      "result": "not_run",
+      "evidence_path": null
+    },
+    "configuration_preserved": {
+      "result": "not_run",
+      "evidence_path": null
+    }
+  },
+  "blockers": []
+}

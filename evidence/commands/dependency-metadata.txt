@@ -1,0 +1,14 @@
+依赖 LICENSE 实读（模块源码目录由 go list -m -json / go mod download 实际返回；摘要保留许可证开头）：
+
+github.com/go-chi/chi/v5@v5.3.2: LICENSE line 3 = MIT License
+ github.com/jackc/pgx/v5@v5.11.0: LICENSE line 3 = MIT License
+github.com/pressly/goose/v3@v3.28.0: LICENSE line 1 = MIT License
+github.com/valkey-io/valkey-go@v1.0.78: LICENSE line 1 = Apache License, Version 2.0
+github.com/riverqueue/river@v0.47.0: LICENSE line 1 = Mozilla Public License Version 2.0
+github.com/sqlc-dev/sqlc@v1.31.1: LICENSE line 1 = MIT License
+github.com/oapi-codegen/oapi-codegen/v2@v2.8.0: LICENSE line 1 = Apache License, Version 2.0
+github.com/prometheus/client_golang@v1.24.1: LICENSE line 1 = Apache License, Version 2.0
+go.opentelemetry.io/otel@v1.46.0: LICENSE line 1 = Apache License, Version 2.0
+gopkg.in/yaml.v3@v3.0.1: LICENSE states libyaml files MIT and remaining project files Apache License 2.0.
+
+Compatibility facts: each module was fetched successfully; go.mod GoVersion values are preserved in dependency-modules.json. No future-stage module was added to the application go.mod.

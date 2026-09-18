@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "project_name": "Urbino",
+  "project_slug": "urbino",
+  "binary_name": "urbino",
+  "current_phase": "00",
+  "release_decision": "NOT_ASSESSED",
+  "stages": {
+    "00": {
+      "title": "工程基础与依赖锁定",
+      "status": "verified",
+      "evidence_path": "evidence/stages/00.json",
+      "review_path": "progress/reports/00-review.md",
+      "blockers": []
+    },
+    "01": {
+      "title": "领域类型、接口与配置契约",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "02": {
+      "title": "数据库、迁移与查询边界",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "03": {
+      "title": "租户、用户、API Key 与管理鉴权",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "04": {
+      "title": "上游凭据加密与轮换",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "05": {
+      "title": "安全 Transport、代理和 SSRF 防护",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "06": {
+      "title": "原生协议解析与流式传输基础",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "07": {
+      "title": "OpenAI API Key 适配",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "08": {
+      "title": "Anthropic 与 Gemini 原生适配",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "09": {
+      "title": "授权 OAuth 框架与刷新安全",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "10": {
+      "title": "路由、配额、租约与有限重试",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "11": {
+      "title": "计量、预留与账本结算",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "12": {
+      "title": "完整请求链路与端到端服务",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "13": {
+      "title": "完整管理 API 与 CLI",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "14": {
+      "title": "后台任务、指标与审计运维",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "15": {
+      "title": "安全审查与回归完整化",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "16": {
+      "title": "故障、多实例与性能验证",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "17": {
+      "title": "容器、配置、备份还原与发布供应链",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "18": {
+      "title": "授权核对、真实上游与灰度演练",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    },
+    "19": {
+      "title": "独立终审与上线门禁",
+      "status": "not_started",
+      "evidence_path": null,
+      "review_path": null,
+      "blockers": []
+    }
+  },
+  "development_harness": "oh-my-pi"
+}

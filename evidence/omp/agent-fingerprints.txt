@@ -1,0 +1,5 @@
+5e29b5346a397b9c791aa16d2b57e18bb7b7d6780abb83341bf94f071560b6e2  .omp/agents/urbino-scout.md
+65a254f05dd8ef5001ec074c357cf1e15194ef90951c446ed8ae91e6d09b26d6  .omp/agents/urbino-implementer.md
+3d3d84f2e9d12f1f4cd9cbca2382fe547f8a73ec965991e8fc48854406ab1fcd  .omp/agents/urbino-tester.md
+c945aaf4a6c4fe953cb7f8abbc5e741242ca836461d6ca4ee165ebace9a179ca  .omp/agents/urbino-reviewer.md
+cebb3a97521c646dc53bddf72c610613daee529ad1868aab0db2f58d7f11805d  .omp/agents/urbino-security.md

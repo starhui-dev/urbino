@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "kind": "urbino-workflow-policy-not-omp-config",
+  "main_preference": "用户当前Sol",
+  "worker_preferences": [
+    "DS/DeepSeek低成本模型",
+    "GLM Flash",
+    "Luna"
+  ],
+  "use_existing_custom_gateway_only": true,
+  "mutate_global_config": false,
+  "switch_main_session": false,
+  "initial_concurrency": 2,
+  "max_concurrency": 4,
+  "max_child_depth": 1,
+  "no_progress_repair_limit": 2,
+  "advisor_default": false,
+  "prewalk_default": false,
+  "native_agents_require_verified_model_binding": true,
+  "state_writer": "main-session",
+  "review_context": "fresh",
+  "roles": {
+    "urbino-scout": {
+      "native_file": ".omp/agents/urbino-scout.md",
+      "write_access": false,
+      "model_selector": null
+    },
+    "urbino-implementer": {
+      "native_file": ".omp/agents/urbino-implementer.md",
+      "write_access": true,
+      "model_selector": null
+    },
+    "urbino-tester": {
+      "native_file": ".omp/agents/urbino-tester.md",
+      "write_access": true,
+      "model_selector": null
+    },
+    "urbino-reviewer": {
+      "native_file": ".omp/agents/urbino-reviewer.md",
+      "write_access": false,
+      "model_selector": null
+    },
+    "urbino-security": {
+      "native_file": ".omp/agents/urbino-security.md",
+      "write_access": false,
+      "model_selector": null
+    }
+  }
+}

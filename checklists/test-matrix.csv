@@ -1,0 +1,165 @@
+﻿test_id,phase,severity,scenario,expected_result,test_layer,required,actual_test,evidence_path,status
+P00-T01,00,P1,工程编译,go test/vet/build 真实成功,unit,true,"go test ./...; go vet ./...; go build ./cmd/urbino",evidence/commands/command-summary.txt,pass
+P00-T02,00,P1,版本锁定,依赖真实存在并锁定，不含CPA/S2A module,static,true,"go list -m all; dependency module queries and LICENSE checks",evidence/commands/dependency-modules.json,pass
+P00-T03,00,P0,基础配置秘密,示例/日志不含实际key或默认管理员口令,static,true,"repository grep credential-shaped patterns; Docker private-config ignore check",evidence/commands/secret-scan.txt,pass
+P00-T04,00,P1,健康与命令,version可读、未知命令非零、初始健康无裸推理接口,unit,true,"go test ./tests/foundation -count=2 -v; HEAD/unknown --help/real health smoke",evidence/commands/foundation-blackbox.txt,pass
+P01-T01,01,P0,金额边界,负数/溢出/非法币种拒绝,unit,true,,,not_started
+P01-T02,01,P0,状态转移,非法状态不能绕过已完成/已停用状态,unit,true,,,not_started
+P01-T03,01,P1,OpenAPI生成,验证通过且重复生成无diff,contract,true,,,not_started
+P01-T04,01,P0,未知配置,生产未知字段和测试开关拒绝,unit,true,,,not_started
+P01-T05,01,P0,JSON歧义,重复键、过深JSON、冲突字段拒绝,unit,true,,,not_started
+P01-T06,01,P1,能力契约,未支持功能返回稳定错误不是假成功,contract,true,,,not_started
+P02-T01,02,P0,租户复合外键,跨tenant引用数据库直接拒绝,integration,true,,,not_started
+P02-T02,02,P0,唯一性,request/attempt/settlement业务键唯一,integration,true,,,not_started
+P02-T03,02,P1,并行迁移,两个migrator不竞态执行同迁移,integration,true,,,not_started
+P02-T04,02,P0,运行角色权限,应用无DDL/任意账本修改权限,integration,true,,,not_started
+P02-T05,02,P1,事务取消,timeout/cancel完整回滚且连接归池,integration,true,,,not_started
+P02-T06,02,P1,schema兼容,不兼容版本启动拒绝且不自动有损迁移,integration,true,,,not_started
+P02-T07,02,P0,错误脱敏,DSN/driver错误不泄漏秘密,unit,true,,,not_started
+P03-T01,03,P0,public访问admin,public key对admin在任何listener均失败,e2e,true,,,not_started
+P03-T02,03,P0,跨租户读取,列表/单项/统计均不过界,integration,true,,,not_started
+P03-T03,03,P0,跨项目引用,无成员权限不能使用他项目资源,integration,true,,,not_started
+P03-T04,03,P0,撤销上界,多实例撤销在声明窗口内生效,e2e,true,,,not_started
+P03-T05,03,P0,过期与scope,失效或权限不足出站前拒绝,unit,true,,,not_started
+P03-T06,03,P0,双bootstrap,只有一个管理员初始化成功且不覆盖旧秘密,integration,true,,,not_started
+P03-T07,03,P0,认证头歧义,冲突Authorization/x-api-key/query-key拒绝,contract,true,,,not_started
+P03-T08,03,P0,一次性秘密,列表/错误/日志无法取回完整key,e2e,true,,,not_started
+P03-T09,03,P1,多模型一Key,同一key允许模型成功、未允许模型拒绝,e2e,true,,,not_started
+P04-T01,04,P0,AEAD篡改,密文/nonce/AAD篡改解密失败,unit,true,,,not_started
+P04-T02,04,P0,跨账户密文,替换tenant/account密文不可解密,integration,true,,,not_started
+P04-T03,04,P0,nonce随机,重复加密不会重复nonce且有规范容量边界,unit,true,,,not_started
+P04-T04,04,P0,秘密读权限,普通admin读取接口也不导出秘密,e2e,true,,,not_started
+P04-T05,04,P0,轮换中断,checkpoint/CAS恢复且旧数据可读,integration,true,,,not_started
+P04-T06,04,P0,密钥丢失,缺key明确拒绝不返回空token,unit,true,,,not_started
+P04-T07,04,P0,明文泄漏,合成secret不出现在DB普通字段/log/trace,integration,true,,,not_started
+P04-T08,04,P1,文件权限,Linux生产拒绝过宽secret文件权限,integration,true,,,not_started
+P05-T01,05,P0,SSRF私网,loopback/metadata/link-local/保留地址被阻止,contract,true,,,not_started
+P05-T02,05,P0,DNS重绑定,校验IP与实际拨号一致，二次恶意解析无效,contract,true,,,not_started
+P05-T03,05,P0,IPv6混合解析,IPv4-mapped/恶意AAAA不能绕过,contract,true,,,not_started
+P05-T04,05,P0,域名规范化,后缀伪装/userinfo/控制字符/path escape拒绝,unit,true,,,not_started
+P05-T05,05,P0,重定向,跨origin无法携带credential跳转,contract,true,,,not_started
+P05-T06,05,P0,TLS证书,错误CA/域名不能通过,contract,true,,,not_started
+P05-T07,05,P0,代理目标,CONNECT/SOCKS目标同样受IP策略保护,contract,true,,,not_started
+P05-T08,05,P0,代理故障,失败不偷偷直连,contract,true,,,not_started
+P05-T09,05,P0,头部串号,并发账号不共享认证/Cookie/组织头,race,true,,,not_started
+P05-T10,05,P0,XFF伪造,非可信直接对端无法控制ACL IP,contract,true,,,not_started
+P05-T11,05,P0,隐藏HTTP重试,推理POST没有未计入策略的重复发送,contract,true,,,not_started
+P06-T01,06,P1,逐字节分帧,SSE/UTF8任意拆包仍正确,contract,true,,,not_started
+P06-T02,06,P1,多行与CRLF,comments/multiline data/空行顺序保留,contract,true,,,not_started
+P06-T03,06,P0,大事件上限,过大event有界失败不OOM,unit,true,,,not_started
+P06-T04,06,P0,JSON深度,超深或畸形JSON有界拒绝,fuzz,true,,,not_started
+P06-T05,06,P1,工具增量,tool-call增量不丢字节和事件,contract,true,,,not_started
+P06-T06,06,P0,缺失终态,EOF不伪造成功事件,contract,true,,,not_started
+P06-T07,06,P0,终态重复,不会重复结算或追加多个成功,contract,true,,,not_started
+P06-T08,06,P0,用户取消,立即取消上游且无后台继续生成,e2e,true,,,not_started
+P06-T09,06,P0,慢下游,per-write deadline终止并清理资源,e2e,true,,,not_started
+P06-T10,06,P1,流空闲超时,正常持续流不被管理短超时误杀,e2e,true,,,not_started
+P06-T11,06,P1,流资源泄漏,重复连接取消后goroutine/连接无持续增长,race,true,,,not_started
+P07-T01,07,P1,Chat JSON/SSE,请求响应保持原生协议,contract,true,,,not_started
+P07-T02,07,P1,Responses生命周期,completed/incomplete/failed分别处理,contract,true,,,not_started
+P07-T03,07,P0,末尾usage,空choices usage块正确采集,contract,true,,,not_started
+P07-T04,07,P0,包含关系,cached/reasoning子计数不重复收费,unit,true,,,not_started
+P07-T05,07,P1,Embeddings有界,batch/body/usage正常且上限有效,contract,true,,,not_started
+P07-T06,07,P0,未支持能力,WS/background/hosted tools明确拒绝,contract,true,,,not_started
+P07-T07,07,P0,响应IDhook,ID透传前触发持久归属绑定,integration,true,,,not_started
+P08-T01,08,P1,Anthropic原生事件,message/content/tool事件顺序保留,contract,true,,,not_started
+P08-T02,08,P0,Anthropic累计usage,累计值不逐事件重复相加,unit,true,,,not_started
+P08-T03,08,P0,Anthropic缓存维度,cache read/write映射有独立golden,unit,true,,,not_started
+P08-T04,08,P1,Gemini原生事件,alt=sse和finishReason正确,contract,true,,,not_started
+P08-T05,08,P0,Gemini计量,usageMetadata/thoughts等按版本解释,unit,true,,,not_started
+P08-T06,08,P1,countTokens,官方统计与不支持路径明确区分,contract,true,,,not_started
+P08-T07,08,P0,协议不降级,不隐式经OpenAI Chat转换、不启用消费OAuth,static,true,,,not_started
+P09-T01,09,P0,PKCE,S256正确且verifier泄漏/不匹配被拒绝,contract,true,,,not_started
+P09-T02,09,P0,state重放,一次性、到期、tenant/admin/provider绑定有效,integration,true,,,not_started
+P09-T03,09,P0,OAuth调包,issuer/audience/redirect不匹配拒绝,contract,true,,,not_started
+P09-T04,09,P0,双实例刷新,一个版本只有一个真实refresh请求,e2e,true,,,not_started
+P09-T05,09,P0,轮换后丢响应,进入uncertain且不重发旧refresh token,chaos,true,,,not_started
+P09-T06,09,P0,轮换后写库失败,无成功假象、不覆盖新凭据,chaos,true,,,not_started
+P09-T07,09,P0,管理员并发更换,旧成功/失败不能改变新版本,integration,true,,,not_started
+P09-T08,09,P0,invalid_grant,requires_reauth而非无限重试,contract,true,,,not_started
+P09-T09,09,P0,claim失效恢复,request_sent超时不自动重用token,chaos,true,,,not_started
+P09-T10,09,P0,token缓存版本,丢失失效消息后仍有限期重读,e2e,true,,,not_started
+P09-T11,09,P0,授权registry,未获准auth模式不能生产启用,integration,true,,,not_started
+P10-T01,10,P0,组织范围配额,同主体两把key不能复制上游额度,integration,true,,,not_started
+P10-T02,10,P0,强归属路由,previous_response_id不迁移账户,e2e,true,,,not_started
+P10-T03,10,P0,软亲和权限,亲和不覆盖权限/冷却/能力,unit,true,,,not_started
+P10-T04,10,P0,原子admission,部分获取失败释放已取配额,integration,true,,,not_started
+P10-T05,10,P0,lease所有权,重复释放/旧owner不释放新lease,integration,true,,,not_started
+P10-T06,10,P0,续租失败,取消本地推理并闭锁新admission,chaos,true,,,not_started
+P10-T07,10,P0,有界等待,队列长度/超时/取消均受限,integration,true,,,not_started
+P10-T08,10,P0,429 reset,秒/HTTP-date解析且不提前重新开额度,contract,true,,,not_started
+P10-T09,10,P0,403/未知重试,安全拒绝或写后未知不轮换重试,contract,true,,,not_started
+P10-T10,10,P0,Valkey epoch,丢状态/重启必须通过恢复闸门,chaos,true,,,not_started
+P11-T01,11,P0,价格算例,合成测试价精确得到4500微美元,unit,true,,,not_started
+P11-T02,11,P0,并发抢余额,无合法hold不出站、available不穿透,integration,true,,,not_started
+P11-T03,11,P0,重复结算,重复terminal/usage/job只一次收费效果,integration,true,,,not_started
+P11-T04,11,P0,journal平衡,不平衡/修改历史写入被数据库拒绝,integration,true,,,not_started
+P11-T05,11,P0,价格版本,价格变更不改变在途/历史请求,integration,true,,,not_started
+P11-T06,11,P0,缺失usage,不是0也不是伪造actual,unit,true,,,not_started
+P11-T07,11,P0,预算上界,未知收费维度/上界拒绝prepaid,unit,true,,,not_started
+P11-T08,11,P0,费用超hold,用户不产生无授权欠款、异常可对账,integration,true,,,not_started
+P11-T09,11,P0,舍入溢出,decimal/整数边界一致并拒绝溢出,property,true,,,not_started
+P11-T10,11,P0,人工调整幂等,相同业务键不重复充值/退款,integration,true,,,not_started
+P11-T11,11,P0,事务崩溃,commit前后重放不重复收费,chaos,true,,,not_started
+P11-T12,11,P1,投影重建,usage/ledger重建结果与投影一致,integration,true,,,not_started
+P12-T01,12,P0,完整安全链,所有public路径均鉴权/配额/账务,e2e,true,,,not_started
+P12-T02,12,P0,异租户资源ID,拒绝且上游计数不增加,e2e,true,,,not_started
+P12-T03,12,P0,ID绑定故障,绑定未持久化不发给客户端,chaos,true,,,not_started
+P12-T04,12,P0,输出后失败,协议终止不换账号/重发,e2e,true,,,not_started
+P12-T05,12,P0,PG完成失败,不伪造最终成功，hold待核对,chaos,true,,,not_started
+P12-T06,12,P0,推理幂等,同键不重发、不同payload409,e2e,true,,,not_started
+P12-T07,12,P0,资源补偿,每个admission/dispatch失败路径无泄漏,integration,true,,,not_started
+P12-T08,12,P0,unknown状态,结果不确定不生成第二次请求,e2e,true,,,not_started
+P12-T09,12,P0,生产mock开关,production禁止启用mock/测试绕过,e2e,true,,,not_started
+P13-T01,13,P0,管理RBAC,资源操作按scope且不可自升权,e2e,true,,,not_started
+P13-T02,13,P0,敏感命令参数,secret不进argv/log/历史示例,static,true,,,not_started
+P13-T03,13,P0,版本冲突,并发更新409/412而非丢失覆盖,integration,true,,,not_started
+P13-T04,13,P0,含secret幂等,重放不缓存/泄漏一次性秘密,e2e,true,,,not_started
+P13-T05,13,P0,最后管理员,不可误删除最后可用管理员,integration,true,,,not_started
+P13-T06,13,P0,分页作用域,cursor不能跨tenant/过滤条件窃取数据,e2e,true,,,not_started
+P13-T07,13,P1,跨平台CLI,Linux/PowerShell示例真实可用或明确未测,e2e,true,,,not_started
+P14-T01,14,P0,job重复执行,业务效果幂等、无再次推理,integration,true,,,not_started
+P14-T02,14,P0,job数据安全,payload仅ID/版本，无token/正文,static,true,,,not_started
+P14-T03,14,P0,日志脱敏,错误正文/代理URL/合成secret不出日志,integration,true,,,not_started
+P14-T04,14,P0,指标基数,任意model/request_id不能产生无限标签,integration,true,,,not_started
+P14-T05,14,P1,readiness,PG/Valkey/epoch/drain正确反映,e2e,true,,,not_started
+P14-T06,14,P1,优雅停机,停止新流、有界drain/cleanup,e2e,true,,,not_started
+P14-T07,14,P0,retention安全,活跃hold/账本不随日志TTL删除,integration,true,,,not_started
+P14-T08,14,P1,观测告警,unknown/refresh uncertain/账本差异可告警,integration,true,,,not_started
+P15-T01,15,P0,静态安全扫描,实际工具结果无未处理关键问题,static,true,,,not_started
+P15-T02,15,P0,secret扫描,源码/样例/日志无真实秘密,static,true,,,not_started
+P15-T03,15,P0,统一Transport,适配器无无约束client绕过,static,true,,,not_started
+P15-T04,15,P0,fuzz回归,parser/URL/money无已知崩溃,fuzz,true,,,not_started
+P15-T05,15,P1,race回归,核心并发路径通过race,race,true,,,not_started
+P15-T06,15,P0,威胁可追踪,关键要求映射真实断言与证据,review,true,,,not_started
+P15-T07,15,P0,无规避实现,未添加伪造客户端/挑战绕过逻辑,review,true,,,not_started
+P16-T01,16,P0,refresh崩溃演练,旧token不重放且能安全恢复,chaos,true,,,not_started
+P16-T02,16,P0,PG窗口演练,预留/未知/结算所有故障窗口可核对,chaos,true,,,not_started
+P16-T03,16,P0,Valkey丢状态,跨进程恢复闭锁有效,chaos,true,,,not_started
+P16-T04,16,P0,进程暂停/时钟,lease过期处理不无条件扩容,chaos,true,,,not_started
+P16-T05,16,P0,租户隔离演练,重启/缓存清理后资源归属仍有效,chaos,true,,,not_started
+P16-T06,16,P0,重复worker演练,账本效果一次且可对账,chaos,true,,,not_started
+P16-T07,16,P1,并发SSE负载,有硬件/基线/原始结果、不OOM,performance,true,,,not_started
+P16-T08,16,P1,短请求p95,记录相对直连mock的增量,performance,true,,,not_started
+P16-T09,16,P1,资源稳定,RSS/goroutine/连接无持续增长,performance,true,,,not_started
+P16-T10,16,P0,两实例真实性,两个独立OS进程不是协程模拟,review,true,,,not_started
+P17-T01,17,P0,生产配置,无默认口令/测试模式/全开放策略,integration,true,,,not_started
+P17-T02,17,P0,网络暴露,public/admin与PG/Valkey端口隔离,integration,true,,,not_started
+P17-T03,17,P1,容器运行,非root/只读/resource limits/health正确,integration,true,,,not_started
+P17-T04,17,P0,SSE反代,无buffer/gzip误缓冲且cancel传播,e2e,true,,,not_started
+P17-T05,17,P0,备份还原,PG+密钥恢复后解密/账本核对成功,recovery,true,,,not_started
+P17-T06,17,P0,迁移回滚,兼容升级及应用rollback实际通过,recovery,true,,,not_started
+P17-T07,17,P0,供应链,digest/SBOM/扫描/许可证真实存在,static,true,,,not_started
+P17-T08,17,P1,架构平台,amd64/arm64编译与运行结果分别记录,integration,true,,,not_started
+P17-T09,17,P0,secret挂载,生产秘密不在镜像/env输出中,integration,true,,,not_started
+P18-T01,18,P0,上游授权,启用用途/认证有实际审核依据,review,true,,,not_started
+P18-T02,18,P0,真实调用,至少一个启用provider实际JSON/SSE通过,live,true,,,not_started
+P18-T03,18,P0,实际计量,每个启用计费维度有usage/价格比对,live,true,,,not_started
+P18-T04,18,P1,客户端能力,版本/配置/已测范围明确,live,true,,,not_started
+P18-T05,18,P0,测试预算,未超过明确批准请求/费用范围,live,true,,,not_started
+P18-T06,18,P0,灰度与回退,staging灰度观察/撤销/rollback有证据,live,true,,,not_started
+P19-T01,19,P0,最终revision,必要证据对应发布的同一代码版本,review,true,,,not_started
+P19-T02,19,P0,无跳过门禁,关键缺失/失败/SKIP使release-gate非零,integration,true,,,not_started
+P19-T03,19,P0,无假实现,生产无TODO/stub/mock/假200,review,true,,,not_started
+P19-T04,19,P0,启用范围完整,enabled能力全部有授权/live/计费证据,review,true,,,not_started
+P19-T05,19,P0,真实GO结论,缺live/restore等关键项只能NO-GO,review,true,,,not_started

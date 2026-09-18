@@ -1,0 +1,2 @@
+models 33
+selectors Hui AI (DeepSeek)/deepseek-v4-flash,Hui AI (GLM)/glm-5.3-flash,Hui AI (OpenAI)/gpt-5.6-sol

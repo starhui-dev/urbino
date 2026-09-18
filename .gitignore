@@ -1,0 +1,20 @@
+# Go build output
+/urbino
+*.test
+*.out
+
+# Local configuration and secrets
+.env
+.env.*
+urbino.yaml
+!configs/urbino.example.yaml
+configs/*.local.yaml
+
+# Generated and local state
+coverage/
+.tmp/
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

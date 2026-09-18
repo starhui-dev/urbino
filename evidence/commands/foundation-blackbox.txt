@@ -1,0 +1,58 @@
+=== RUN   TestVersionCommandPrintsReadableVersion
+--- PASS: TestVersionCommandPrintsReadableVersion (0.01s)
+=== RUN   TestUnknownCommandExitsNonZero
+--- PASS: TestUnknownCommandExitsNonZero (0.01s)
+=== RUN   TestUnknownCommandWithHelpExitsNonZero
+--- PASS: TestUnknownCommandWithHelpExitsNonZero (0.03s)
+=== RUN   TestServeWithMissingExplicitConfigFails
+--- PASS: TestServeWithMissingExplicitConfigFails (0.01s)
+=== RUN   TestServeWithMissingEnvConfigDoesNotFallBack
+--- PASS: TestServeWithMissingEnvConfigDoesNotFallBack (0.01s)
+=== RUN   TestServeWithInvalidConfigFails
+=== RUN   TestServeWithInvalidConfigFails/wrong_value_type
+=== RUN   TestServeWithInvalidConfigFails/unknown_field
+--- PASS: TestServeWithInvalidConfigFails (0.02s)
+    --- PASS: TestServeWithInvalidConfigFails/wrong_value_type (0.01s)
+    --- PASS: TestServeWithInvalidConfigFails/unknown_field (0.01s)
+=== RUN   TestConfigFlagOverridesDefaultFile
+--- PASS: TestConfigFlagOverridesDefaultFile (0.54s)
+=== RUN   TestHealthAddrEnvOverridesConfigFile
+--- PASS: TestHealthAddrEnvOverridesConfigFile (0.54s)
+=== RUN   TestInternalHealthListenerSurface
+=== RUN   TestInternalHealthListenerSurface/get_healthz_returns_200_json_ok
+=== RUN   TestInternalHealthListenerSurface/data_and_admin_planes_do_not_exist
+=== RUN   TestInternalHealthListenerSurface/non-get_healthz_is_rejected
+--- PASS: TestInternalHealthListenerSurface (0.01s)
+    --- PASS: TestInternalHealthListenerSurface/get_healthz_returns_200_json_ok (0.00s)
+    --- PASS: TestInternalHealthListenerSurface/data_and_admin_planes_do_not_exist (0.00s)
+    --- PASS: TestInternalHealthListenerSurface/non-get_healthz_is_rejected (0.00s)
+=== RUN   TestVersionCommandPrintsReadableVersion
+--- PASS: TestVersionCommandPrintsReadableVersion (0.01s)
+=== RUN   TestUnknownCommandExitsNonZero
+--- PASS: TestUnknownCommandExitsNonZero (0.01s)
+=== RUN   TestUnknownCommandWithHelpExitsNonZero
+--- PASS: TestUnknownCommandWithHelpExitsNonZero (0.03s)
+=== RUN   TestServeWithMissingExplicitConfigFails
+--- PASS: TestServeWithMissingExplicitConfigFails (0.01s)
+=== RUN   TestServeWithMissingEnvConfigDoesNotFallBack
+--- PASS: TestServeWithMissingEnvConfigDoesNotFallBack (0.01s)
+=== RUN   TestServeWithInvalidConfigFails
+=== RUN   TestServeWithInvalidConfigFails/wrong_value_type
+=== RUN   TestServeWithInvalidConfigFails/unknown_field
+--- PASS: TestServeWithInvalidConfigFails (0.02s)
+    --- PASS: TestServeWithInvalidConfigFails/wrong_value_type (0.01s)
+    --- PASS: TestServeWithInvalidConfigFails/unknown_field (0.01s)
+=== RUN   TestConfigFlagOverridesDefaultFile
+--- PASS: TestConfigFlagOverridesDefaultFile (0.54s)
+=== RUN   TestHealthAddrEnvOverridesConfigFile
+--- PASS: TestHealthAddrEnvOverridesConfigFile (0.54s)
+=== RUN   TestInternalHealthListenerSurface
+=== RUN   TestInternalHealthListenerSurface/get_healthz_returns_200_json_ok
+=== RUN   TestInternalHealthListenerSurface/data_and_admin_planes_do_not_exist
+=== RUN   TestInternalHealthListenerSurface/non-get_healthz_is_rejected
+--- PASS: TestInternalHealthListenerSurface (0.00s)
+    --- PASS: TestInternalHealthListenerSurface/get_healthz_returns_200_json_ok (0.00s)
+    --- PASS: TestInternalHealthListenerSurface/data_and_admin_planes_do_not_exist (0.00s)
+    --- PASS: TestInternalHealthListenerSurface/non-get_healthz_is_rejected (0.00s)
+PASS
+ok  	example.com/urbino/tests/foundation	3.441s

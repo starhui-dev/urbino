@@ -1,0 +1,26 @@
+$ curl /healthz
+HTTP/1.1 200 OK
+Cache-Control: no-store
+Content-Type: application/json
+Date: Fri, 18 Sep 2026 07:38:53 GMT
+Content-Length: 16
+
+{"status":"ok"}
+$ curl -I /healthz
+HTTP/1.1 405 Method Not Allowed
+Allow: GET
+Date: Fri, 18 Sep 2026 07:38:53 GMT
+
+$ curl /v1/models
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=utf-8
+X-Content-Type-Options: nosniff
+Date: Fri, 18 Sep 2026 07:39:24 GMT
+Content-Length: 19
+
+404 page not found
+$ curl -X POST /healthz
+HTTP/1.1 405 Method Not Allowed
+Allow: GET
+Date: Fri, 18 Sep 2026 07:39:24 GMT
+Content-Length: 0

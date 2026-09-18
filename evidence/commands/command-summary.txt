@@ -1,0 +1,10 @@
+go test ./...: exit 0
+ go vet ./...: exit 0
+go build ./cmd/urbino: exit 0
+make fmt: exit 0
+make vet: exit 0
+make test: exit 0
+make build: exit 0
+go test ./tests/foundation -count=2 -v: exit 0
+./urbino version: exit 0
+./urbino unknown: exit 2

@@ -1,0 +1,65 @@
+{
+  "checked_on": "2026-09-18",
+  "repository": "https://github.com/can1357/oh-my-pi",
+  "ref": "main",
+  "commit_sha": null,
+  "verification": "官方原始源码阅读；未运行 OMP；未获取固定 SHA",
+  "sources": [
+    {
+      "id": "O01",
+      "title": "OMP 官方仓库与 README",
+      "url": "https://github.com/can1357/oh-my-pi/blob/main/README.md",
+      "read_url": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/README.md",
+      "scope": "工具入口、项目定位；不推断用户版本"
+    },
+    {
+      "id": "O02",
+      "title": "项目提示词加载与参数展开",
+      "url": "https://github.com/can1357/oh-my-pi/blob/main/packages/coding-agent/src/config/prompt-templates.ts",
+      "read_url": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/prompt-templates.ts",
+      "scope": ".omp/prompts/*.md、文件名命令、description、$ARGUMENTS；同名模板优先级需实测"
+    },
+    {
+      "id": "O03",
+      "title": "Agent frontmatter 解析",
+      "url": "https://github.com/can1357/oh-my-pi/blob/main/packages/coding-agent/src/discovery/helpers.ts",
+      "read_url": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/discovery/helpers.ts",
+      "scope": "name/description/tools/model/output、prewalk/advisor；显式 tools 添加 yield"
+    },
+    {
+      "id": "O04",
+      "title": "原生资源发现",
+      "url": "https://github.com/can1357/oh-my-pi/blob/main/packages/coding-agent/src/discovery/builtin.ts",
+      "read_url": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/discovery/builtin.ts",
+      "scope": "项目/用户资源及 profile；项目 skills 目录"
+    },
+    {
+      "id": "O05",
+      "title": "任务工具类型与动态 schema",
+      "url": "https://github.com/can1357/oh-my-pi/blob/main/packages/coding-agent/src/task/types.ts",
+      "read_url": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/task/types.ts",
+      "scope": "single/batch、agent/task/context/tasks、isolated；不照搬固定 wire payload"
+    },
+    {
+      "id": "O06",
+      "title": "设置 schema",
+      "url": "https://github.com/can1357/oh-my-pi/blob/main/packages/coding-agent/src/config/settings-schema.ts",
+      "read_url": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/settings-schema.ts",
+      "scope": "task 并发、递归、隔离与模型设置边界；不覆盖用户配置"
+    },
+    {
+      "id": "O07",
+      "title": "内置 Agent 与模型角色",
+      "url": "https://github.com/can1357/oh-my-pi/blob/main/packages/coding-agent/src/task/agents.ts",
+      "read_url": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/task/agents.ts",
+      "scope": "角色选择和模型 selector/别名；以实际版本解析为准"
+    },
+    {
+      "id": "O08",
+      "title": "内置 reviewer 输出结构",
+      "url": "https://github.com/can1357/oh-my-pi/blob/main/packages/coding-agent/src/prompts/agents/reviewer.md",
+      "read_url": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/prompts/agents/reviewer.md",
+      "scope": "output 使用 JTD 结构；本包任务角色及文字独立编写"
+    }
+  ]
+}

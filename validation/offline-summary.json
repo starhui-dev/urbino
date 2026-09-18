@@ -1,0 +1,92 @@
+{
+  "structure": {
+    "returncode": 0
+  },
+  "omp-structure": {
+    "returncode": 0
+  },
+  "unittests": {
+    "returncode": 0
+  },
+  "compose-00": {
+    "returncode": 0
+  },
+  "compose-01": {
+    "returncode": 0
+  },
+  "compose-02": {
+    "returncode": 0
+  },
+  "compose-03": {
+    "returncode": 0
+  },
+  "compose-04": {
+    "returncode": 0
+  },
+  "compose-05": {
+    "returncode": 0
+  },
+  "compose-06": {
+    "returncode": 0
+  },
+  "compose-07": {
+    "returncode": 0
+  },
+  "compose-08": {
+    "returncode": 0
+  },
+  "compose-09": {
+    "returncode": 0
+  },
+  "compose-10": {
+    "returncode": 0
+  },
+  "compose-11": {
+    "returncode": 0
+  },
+  "compose-12": {
+    "returncode": 0
+  },
+  "compose-13": {
+    "returncode": 0
+  },
+  "compose-14": {
+    "returncode": 0
+  },
+  "compose-15": {
+    "returncode": 0
+  },
+  "compose-16": {
+    "returncode": 0
+  },
+  "compose-17": {
+    "returncode": 0
+  },
+  "compose-18": {
+    "returncode": 0
+  },
+  "compose-19": {
+    "returncode": 0
+  },
+  "composed_phases": 20,
+  "product_matrix_unchanged": true,
+  "product_matrix_sha256": "410da800d9c513e1c07474e27a2b19c8dfcd80e51dad3ab542c88a0597658b75",
+  "product_tests": 164,
+  "phase_dependency_and_title_unchanged": true,
+  "offline_yaml_frontmatters": 16,
+  "python_syntax": "pass",
+  "omp_installed": false,
+  "bun_installed": false,
+  "live_omp_smoke": "NOT_RUN",
+  "runtime-template": {
+    "expected_rejection": true,
+    "returncode": 1
+  },
+  "stage-template": {
+    "expected_rejection": true,
+    "returncode": 1
+  },
+  "native_config_payloads": "none",
+  "test_count": 46,
+  "check_scope": "prompt-pack-only; not OMP runtime and not product tests"
+}

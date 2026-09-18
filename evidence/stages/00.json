@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "stage": "00",
+  "status": "verified",
+  "code_revision": "working-tree:7a33e13d65ec4a9ca0ead39883b3fcdcb6e8519443519ba6f575e5ccacde2b26",
+  "environment": {
+    "os": "linux/amd64",
+    "go_version": "go1.27.1",
+    "postgres_version": null,
+    "valkey_version": null,
+    "docker_version": null
+  },
+  "commands": [
+    {"command":"make fmt","started_at":"2026-09-18T15:11:57+08:00","finished_at":"2026-09-18T15:17:43+08:00","exit_code":0,"output_path":"evidence/commands/make-targets.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
+    {"command":"go test ./...","started_at":"2026-09-18T15:11:57+08:00","finished_at":"2026-09-18T15:17:43+08:00","exit_code":0,"output_path":"evidence/commands/go-test.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
+    {"command":"go vet ./...","started_at":"2026-09-18T15:11:57+08:00","finished_at":"2026-09-18T15:17:43+08:00","exit_code":0,"output_path":"evidence/commands/go-vet-result.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
+    {"command":"go build ./cmd/urbino","started_at":"2026-09-18T15:11:57+08:00","finished_at":"2026-09-18T15:17:43+08:00","exit_code":0,"output_path":"evidence/commands/go-build-result.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
+    {"command":"go test ./tests/foundation -count=2 -v (HEAD and unknown --help regressions)","started_at":"2026-09-18T15:35:00+08:00","finished_at":"2026-09-18T15:42:47+08:00","exit_code":0,"output_path":"evidence/commands/foundation-blackbox.txt","result":"pass","required":true,"tests_passed":9,"tests_failed":0,"tests_skipped":0},
+    {"command":"go list -m all and CPA/S2A scan","started_at":"2026-09-18T15:11:57+08:00","finished_at":"2026-09-18T15:17:43+08:00","exit_code":0,"output_path":"evidence/commands/go-list-mod.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
+    {"command":"dependency module queries and LICENSE checks","started_at":"2026-09-18T15:20:00+08:00","finished_at":"2026-09-18T15:25:00+08:00","exit_code":0,"output_path":"evidence/commands/dependency-modules.json","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
+    {"command":"./urbino version and ./urbino unknown","started_at":"2026-09-18T15:11:57+08:00","finished_at":"2026-09-18T15:17:43+08:00","exit_code":0,"output_path":"evidence/commands/cli-smoke.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
+    {"command":"real internal health listener smoke","started_at":"2026-09-18T15:11:57+08:00","finished_at":"2026-09-18T15:17:43+08:00","exit_code":0,"output_path":"evidence/commands/health-smoke.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0}
+  ],
+  "requirements": [
+    {"test_id":"P00-T01","test_name":"工程编译","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/command-summary.txt"},
+    {"test_id":"P00-T02","test_name":"版本锁定","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/dependency-modules.json"},
+    {"test_id":"P00-T03","test_name":"基础配置秘密","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/secret-scan.txt"},
+    {"test_id":"P00-T04","test_name":"健康与命令","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/foundation-blackbox.txt"}
+  ],
+  "blockers": [],
+  "risks": [
+    "当前 module 仍是 project.json 允许的 example.com/urbino 占位，未声明正式仓库域名。",
+    "PostgreSQL、Valkey、Docker 和真实上游未在本阶段运行。"
+  ],
+  "review": {
+    "status":"pass",
+    "reviewer_session":"FoundationReviewerFinal",
+    "reviewed_revision":"working-tree:7a33e13d65ec4a9ca0ead39883b3fcdcb6e8519443519ba6f575e5ccacde2b26",
+    "report_path":"progress/reports/00-review.md",
+    "reviewed_at":"2026-09-18T15:45:00+08:00",
+    "reviewer_model":"Hui AI (OpenAI)/gpt-5.6-sol:xhigh",
+    "independent_context":true,
+    "security_review_path":null
+  },
+  "development": {
+    "harness":"oh-my-pi",
+    "orchestrator_session":"main-session",
+    "orchestrator_model":"Hui AI (OpenAI)/gpt-5.6-sol",
+    "runtime_report_path":"evidence/omp/runtime.json",
+    "task_report_paths":["evidence/tasks/00/FoundationImplementer.md","evidence/tasks/00/FoundationTester.md"],
+    "all_tasks_terminal":true
+  }
+}

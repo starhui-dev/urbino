@@ -1,0 +1,10 @@
+.git
+.gitignore
+.env
+.env.*
+urbino.yaml
+configs/*.local.yaml
+coverage/
+.tmp/
+*.test
+*.out

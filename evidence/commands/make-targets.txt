@@ -1,0 +1,13 @@
+gofmt -w $(find cmd internal tests -type f -name '*.go' -print)
+go vet ./...
+go test ./...
+?   	example.com/urbino/cmd/urbino	[no test files]
+ok  	example.com/urbino/internal/cli	(cached)
+?   	example.com/urbino/internal/clock	[no test files]
+ok  	example.com/urbino/internal/config	(cached)
+ok  	example.com/urbino/internal/httpapi	(cached)
+?   	example.com/urbino/internal/observability	[no test files]
+?   	example.com/urbino/internal/testutil	[no test files]
+ok  	example.com/urbino/internal/version	(cached)
+ok  	example.com/urbino/tests/foundation	(cached)
+go build -o urbino ./cmd/urbino

@@ -1,0 +1,72 @@
+{
+	"Path": "github.com/go-chi/chi/v5",
+	"Version": "v5.3.2",
+	"Time": "2026-08-20T09:37:52Z",
+	"Dir": "/home/zhenxin/go/pkg/mod/github.com/go-chi/chi/v5@v5.3.2",
+	"GoMod": "/home/zhenxin/go/pkg/mod/cache/download/github.com/go-chi/chi/v5/@v/v5.3.2.mod",
+	"GoVersion": "1.23"
+}
+{
+	"Path": "github.com/jackc/pgx/v5",
+	"Version": "v5.11.0",
+	"Time": "2026-09-07T23:39:32Z",
+	"Dir": "/home/zhenxin/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0",
+	"GoMod": "/home/zhenxin/go/pkg/mod/cache/download/github.com/jackc/pgx/v5/@v/v5.11.0.mod",
+	"GoVersion": "1.25.0"
+}
+{
+	"Path": "github.com/pressly/goose/v3",
+	"Version": "v3.28.0",
+	"Time": "2026-09-02T08:26:26Z",
+	"Dir": "/home/zhenxin/go/pkg/mod/github.com/pressly/goose/v3@v3.28.0",
+	"GoMod": "/home/zhenxin/go/pkg/mod/cache/download/github.com/pressly/goose/v3/@v/v3.28.0.mod",
+	"GoVersion": "1.26.0"
+}
+{
+	"Path": "github.com/valkey-io/valkey-go",
+	"Version": "v1.0.78",
+	"Time": "2026-09-15T03:45:49Z",
+	"Dir": "/home/zhenxin/go/pkg/mod/github.com/valkey-io/valkey-go@v1.0.78",
+	"GoMod": "/home/zhenxin/go/pkg/mod/cache/download/github.com/valkey-io/valkey-go/@v/v1.0.78.mod",
+	"GoVersion": "1.25.0"
+}
+{
+	"Path": "github.com/riverqueue/river",
+	"Version": "v0.47.0",
+	"Time": "2026-08-31T22:21:04Z",
+	"Dir": "/home/zhenxin/go/pkg/mod/github.com/riverqueue/river@v0.47.0",
+	"GoMod": "/home/zhenxin/go/pkg/mod/cache/download/github.com/riverqueue/river/@v/v0.47.0.mod",
+	"GoVersion": "1.26.0"
+}
+{
+	"Path": "github.com/sqlc-dev/sqlc",
+	"Version": "v1.31.1",
+	"Time": "2026-04-22T14:52:15Z",
+	"Dir": "/home/zhenxin/go/pkg/mod/github.com/sqlc-dev/sqlc@v1.31.1",
+	"GoMod": "/home/zhenxin/go/pkg/mod/cache/download/github.com/sqlc-dev/sqlc/@v/v1.31.1.mod",
+	"GoVersion": "1.26.0"
+}
+{
+	"Path": "github.com/oapi-codegen/oapi-codegen/v2",
+	"Version": "v2.8.0",
+	"Time": "2026-07-17T14:01:16Z",
+	"Dir": "/home/zhenxin/go/pkg/mod/github.com/oapi-codegen/oapi-codegen/v2@v2.8.0",
+	"GoMod": "/home/zhenxin/go/pkg/mod/cache/download/github.com/oapi-codegen/oapi-codegen/v2/@v/v2.8.0.mod",
+	"GoVersion": "1.25.0"
+}
+{
+	"Path": "github.com/prometheus/client_golang",
+	"Version": "v1.24.1",
+	"Time": "2026-07-24T06:32:04Z",
+	"Dir": "/home/zhenxin/go/pkg/mod/github.com/prometheus/client_golang@v1.24.1",
+	"GoMod": "/home/zhenxin/go/pkg/mod/cache/download/github.com/prometheus/client_golang/@v/v1.24.1.mod",
+	"GoVersion": "1.25.0"
+}
+{
+	"Path": "go.opentelemetry.io/otel",
+	"Version": "v1.46.0",
+	"Time": "2026-08-25T16:52:31Z",
+	"Dir": "/home/zhenxin/go/pkg/mod/go.opentelemetry.io/otel@v1.46.0",
+	"GoMod": "/home/zhenxin/go/pkg/mod/cache/download/go.opentelemetry.io/otel/@v/v1.46.0.mod",
+	"GoVersion": "1.25.0"
+}

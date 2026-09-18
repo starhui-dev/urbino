@@ -1,0 +1,51 @@
+$ ./urbino version
+urbino version dev
+exit=0
+$ ./urbino unknown --help
+urbino: unknown command "unknown"
+urbino - multi-model gateway
+
+Usage:
+  urbino [--config <file>] version
+  urbino [--config <file>] serve
+  urbino [--config <file>] help
+
+Commands:
+  version   print the version of this binary
+  serve     run the internal health listener
+  help      print this help text
+
+Flags:
+  --config <file>   configuration file; takes precedence over URBINO_CONFIG and ./urbino.yaml
+
+Environment:
+  URBINO_CONFIG      configuration file used when --config is absent
+  URBINO_HEALTH_ADDR internal health listener address, e.g. 127.0.0.1:9091
+
+Commands planned for later stages (worker, migrate, bootstrap, admin, doctor,
+config validate) are not implemented yet and fail with a usage error.
+exit=2
+$ ./urbino worker --help
+urbino: unknown command "worker"
+urbino - multi-model gateway
+
+Usage:
+  urbino [--config <file>] version
+  urbino [--config <file>] serve
+  urbino [--config <file>] help
+
+Commands:
+  version   print the version of this binary
+  serve     run the internal health listener
+  help      print this help text
+
+Flags:
+  --config <file>   configuration file; takes precedence over URBINO_CONFIG and ./urbino.yaml
+
+Environment:
+  URBINO_CONFIG      configuration file used when --config is absent
+  URBINO_HEALTH_ADDR internal health listener address, e.g. 127.0.0.1:9091
+
+Commands planned for later stages (worker, migrate, bootstrap, admin, doctor,
+config validate) are not implemented yet and fail with a usage error.
+exit=2

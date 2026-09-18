@@ -1,0 +1,3 @@
+# Urbino local development configuration.
+# Production secrets are supplied through restricted secret storage in later stages.
+health_addr: 127.0.0.1:9091
