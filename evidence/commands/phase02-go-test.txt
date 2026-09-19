@@ -1,0 +1,399 @@
+2026-09-19T17:12:43+08:00
+?   	example.com/urbino/api	[no test files]
+?   	example.com/urbino/cmd/urbino	[no test files]
+=== RUN   TestVersionCommand
+--- PASS: TestVersionCommand (0.00s)
+=== RUN   TestVersionRejectsArguments
+--- PASS: TestVersionRejectsArguments (0.00s)
+=== RUN   TestUnknownCommandFails
+--- PASS: TestUnknownCommandFails (0.00s)
+=== RUN   TestUnknownCommandWithHelpFails
+--- PASS: TestUnknownCommandWithHelpFails (0.00s)
+=== RUN   TestNoCommandPrintsUsageOnStderr
+--- PASS: TestNoCommandPrintsUsageOnStderr (0.00s)
+=== RUN   TestHelpFlagSucceeds
+--- PASS: TestHelpFlagSucceeds (0.00s)
+=== RUN   TestUnknownFlagFails
+--- PASS: TestUnknownFlagFails (0.00s)
+=== RUN   TestServeWithoutConfigFails
+--- PASS: TestServeWithoutConfigFails (0.00s)
+=== RUN   TestServeMissingExplicitConfigDoesNotFallBack
+--- PASS: TestServeMissingExplicitConfigDoesNotFallBack (0.00s)
+=== RUN   TestServeConfigSelectionAndInvalidAddress
+--- PASS: TestServeConfigSelectionAndInvalidAddress (0.00s)
+=== RUN   TestServeRejectsUnknownConfigField
+--- PASS: TestServeRejectsUnknownConfigField (0.00s)
+=== RUN   TestServeReportsBindFailure
+--- PASS: TestServeReportsBindFailure (0.00s)
+=== RUN   TestServeHealthListenerEndToEnd
+--- PASS: TestServeHealthListenerEndToEnd (0.01s)
+=== RUN   TestServeHealthAddrEnvironmentOverride
+--- PASS: TestServeHealthAddrEnvironmentOverride (0.00s)
+PASS
+ok  	example.com/urbino/internal/cli	0.043s
+?   	example.com/urbino/internal/clock	[no test files]
+=== RUN   TestStrictJSONDecodeRejectsConflictingFields
+--- PASS: TestStrictJSONDecodeRejectsConflictingFields (0.00s)
+=== RUN   TestStrictJSONDecodeRejectsAmbiguityAndDepth
+--- PASS: TestStrictJSONDecodeRejectsAmbiguityAndDepth (0.00s)
+=== RUN   TestApplyEnvironmentRejectsUnknownAndProductionDevelopment
+--- PASS: TestApplyEnvironmentRejectsUnknownAndProductionDevelopment (0.00s)
+=== RUN   TestConfigValidationRejectsInvalidSchemaValues
+--- PASS: TestConfigValidationRejectsInvalidSchemaValues (0.00s)
+=== RUN   TestLoadRejectsExplicitNullAndWrongTypes
+--- PASS: TestLoadRejectsExplicitNullAndWrongTypes (0.00s)
+=== RUN   TestResolvePathPrecedence
+=== RUN   TestResolvePathPrecedence/flag_beats_env_and_default
+=== RUN   TestResolvePathPrecedence/env_beats_default
+=== RUN   TestResolvePathPrecedence/default_is_urbino.yaml_in_the_working_directory
+=== RUN   TestResolvePathPrecedence/blank_flag_and_env_fall_through
+--- PASS: TestResolvePathPrecedence (0.00s)
+    --- PASS: TestResolvePathPrecedence/flag_beats_env_and_default (0.00s)
+    --- PASS: TestResolvePathPrecedence/env_beats_default (0.00s)
+    --- PASS: TestResolvePathPrecedence/default_is_urbino.yaml_in_the_working_directory (0.00s)
+    --- PASS: TestResolvePathPrecedence/blank_flag_and_env_fall_through (0.00s)
+=== RUN   TestResolvePathMissingFileIsAnError
+=== RUN   TestResolvePathMissingFileIsAnError/explicit_missing_file_does_not_fall_back
+=== RUN   TestResolvePathMissingFileIsAnError/env_missing_file_does_not_fall_back
+=== RUN   TestResolvePathMissingFileIsAnError/missing_default_file
+=== RUN   TestResolvePathMissingFileIsAnError/directory_is_not_a_configuration_file
+--- PASS: TestResolvePathMissingFileIsAnError (0.00s)
+    --- PASS: TestResolvePathMissingFileIsAnError/explicit_missing_file_does_not_fall_back (0.00s)
+    --- PASS: TestResolvePathMissingFileIsAnError/env_missing_file_does_not_fall_back (0.00s)
+    --- PASS: TestResolvePathMissingFileIsAnError/missing_default_file (0.00s)
+    --- PASS: TestResolvePathMissingFileIsAnError/directory_is_not_a_configuration_file (0.00s)
+=== RUN   TestLoadDecodesHealthAddr
+--- PASS: TestLoadDecodesHealthAddr (0.00s)
+=== RUN   TestLoadSupportsEmptyFile
+--- PASS: TestLoadSupportsEmptyFile (0.00s)
+=== RUN   TestLoadRejectsInvalidConfiguration
+=== RUN   TestLoadRejectsInvalidConfiguration/unknown_field
+=== RUN   TestLoadRejectsInvalidConfiguration/multiple_documents
+=== RUN   TestLoadRejectsInvalidConfiguration/malformed_yaml
+=== RUN   TestLoadRejectsInvalidConfiguration/missing_file
+--- PASS: TestLoadRejectsInvalidConfiguration (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfiguration/unknown_field (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfiguration/multiple_documents (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfiguration/malformed_yaml (0.00s)
+    --- PASS: TestLoadRejectsInvalidConfiguration/missing_file (0.00s)
+=== RUN   TestResolveHealthAddrPrecedence
+=== RUN   TestResolveHealthAddrPrecedence/default
+=== RUN   TestResolveHealthAddrPrecedence/config
+=== RUN   TestResolveHealthAddrPrecedence/env_beats_config
+=== RUN   TestResolveHealthAddrPrecedence/blank_env_falls_back_to_config
+--- PASS: TestResolveHealthAddrPrecedence (0.00s)
+    --- PASS: TestResolveHealthAddrPrecedence/default (0.00s)
+    --- PASS: TestResolveHealthAddrPrecedence/config (0.00s)
+    --- PASS: TestResolveHealthAddrPrecedence/env_beats_config (0.00s)
+    --- PASS: TestResolveHealthAddrPrecedence/blank_env_falls_back_to_config (0.00s)
+=== RUN   TestReadDatabaseDSNReadsRestrictedFile
+--- PASS: TestReadDatabaseDSNReadsRestrictedFile (0.00s)
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/missing_dsn_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/missing_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/empty_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/group_or_other_permission_bits
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/symbolic_link
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/directory
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/non-regular_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/owned_by_another_user
+    config_test.go:262: cannot change file ownership: chown /tmp/TestReadDatabaseDSNRejectsUnsafeInputowned_by_another_user483433643/001/other-owner.dsn: operation not permitted
+--- PASS: TestReadDatabaseDSNRejectsUnsafeInput (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/missing_dsn_file (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/missing_file (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/empty_file (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/group_or_other_permission_bits (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/symbolic_link (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/directory (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/non-regular_file (0.00s)
+    --- SKIP: TestReadDatabaseDSNRejectsUnsafeInput/owned_by_another_user (0.00s)
+PASS
+ok  	example.com/urbino/internal/config	0.013s
+=== RUN   TestParseMoneyRejectsNegativePrecisionAndOverflow
+--- PASS: TestParseMoneyRejectsNegativePrecisionAndOverflow (0.00s)
+=== RUN   TestMoneyOperationsRejectOverflow
+--- PASS: TestMoneyOperationsRejectOverflow (0.00s)
+=== RUN   TestTerminalStatesCannotTransition
+--- PASS: TestTerminalStatesCannotTransition (0.00s)
+=== RUN   TestUUIDv7AndScopedIDRoundTrip
+--- PASS: TestUUIDv7AndScopedIDRoundTrip (0.00s)
+=== RUN   TestDomainRejectsMalformedDirectValues
+--- PASS: TestDomainRejectsMalformedDirectValues (0.00s)
+=== RUN   TestUnknownAttemptIsPersistableTerminalState
+--- PASS: TestUnknownAttemptIsPersistableTerminalState (0.00s)
+=== RUN   TestUsagePartialAndMissingSemantics
+--- PASS: TestUsagePartialAndMissingSemantics (0.00s)
+PASS
+ok  	example.com/urbino/internal/domain	0.016s
+=== RUN   TestWriteUnsupportedReturnsStableNonSuccess
+--- PASS: TestWriteUnsupportedReturnsStableNonSuccess (0.00s)
+=== RUN   TestHealthHandlerServesOnlyGetHealthz
+=== RUN   TestHealthHandlerServesOnlyGetHealthz/GET_/healthz
+=== RUN   TestHealthHandlerServesOnlyGetHealthz/other_methods_on_/healthz_are_rejected
+=== RUN   TestHealthHandlerServesOnlyGetHealthz/no_public,_admin_or_model_route_exists
+--- PASS: TestHealthHandlerServesOnlyGetHealthz (0.00s)
+    --- PASS: TestHealthHandlerServesOnlyGetHealthz/GET_/healthz (0.00s)
+    --- PASS: TestHealthHandlerServesOnlyGetHealthz/other_methods_on_/healthz_are_rejected (0.00s)
+    --- PASS: TestHealthHandlerServesOnlyGetHealthz/no_public,_admin_or_model_route_exists (0.00s)
+=== RUN   TestNewHealthServerValidatesAddress
+--- PASS: TestNewHealthServerValidatesAddress (0.00s)
+=== RUN   TestHealthServerServesAndStopsWithContext
+--- PASS: TestHealthServerServesAndStopsWithContext (0.00s)
+=== RUN   TestServeBeforeCancelledContext
+--- PASS: TestServeBeforeCancelledContext (0.00s)
+=== RUN   TestServeClosesPreboundListenerWhenContextAlreadyCancelled
+--- PASS: TestServeClosesPreboundListenerWhenContextAlreadyCancelled (0.00s)
+=== RUN   TestHealthServerReportsBindFailure
+--- PASS: TestHealthServerReportsBindFailure (0.00s)
+PASS
+ok  	example.com/urbino/internal/httpapi	0.019s
+?   	example.com/urbino/internal/observability	[no test files]
+=== RUN   TestEgressProfileRequiresValidatedHTTPSOrigins
+--- PASS: TestEgressProfileRequiresValidatedHTTPSOrigins (0.00s)
+=== RUN   TestCredentialReferenceAndOutboundRequestFailClosed
+--- PASS: TestCredentialReferenceAndOutboundRequestFailClosed (0.00s)
+=== RUN   TestAuthenticatedRequestUsesBoundCredentialChannel
+--- PASS: TestAuthenticatedRequestUsesBoundCredentialChannel (0.00s)
+=== RUN   TestZeroCredentialOutboundBindRejected
+--- PASS: TestZeroCredentialOutboundBindRejected (0.00s)
+=== RUN   TestCredentialScopeMismatchRejected
+--- PASS: TestCredentialScopeMismatchRejected (0.00s)
+=== RUN   TestBoundRequestSnapshotsHeaders
+--- PASS: TestBoundRequestSnapshotsHeaders (0.00s)
+=== RUN   TestOutboundPathRejectsMultiEncodedEscapes
+--- PASS: TestOutboundPathRejectsMultiEncodedEscapes (0.00s)
+=== RUN   TestUsageAndLeaseScopesAreRequired
+--- PASS: TestUsageAndLeaseScopesAreRequired (0.00s)
+=== RUN   TestBoundedResponseLimitsAreExplicit
+--- PASS: TestBoundedResponseLimitsAreExplicit (0.00s)
+PASS
+ok  	example.com/urbino/internal/ports	0.015s
+=== RUN   TestLoadDirRejectsMigrationVersionGap
+--- PASS: TestLoadDirRejectsMigrationVersionGap (0.00s)
+=== RUN   TestLoadDirRejectsZeroMigrationVersion
+--- PASS: TestLoadDirRejectsZeroMigrationVersion (0.00s)
+=== RUN   TestLoadDirRejectsUnrecognizedSQLFilename
+--- PASS: TestLoadDirRejectsUnrecognizedSQLFilename (0.00s)
+PASS
+ok  	example.com/urbino/internal/storage/migrate	0.015s
+=== RUN   TestSafeErrorMessageDoesNotLeakDSNOrDriverText
+--- PASS: TestSafeErrorMessageDoesNotLeakDSNOrDriverText (0.00s)
+=== RUN   TestOpenRejectsBlankDSNWithoutDetail
+--- PASS: TestOpenRejectsBlankDSNWithoutDetail (0.00s)
+PASS
+ok  	example.com/urbino/internal/storage/postgres	0.019s
+?   	example.com/urbino/internal/storage/postgres/generated	[no test files]
+?   	example.com/urbino/internal/testutil	[no test files]
+=== RUN   TestStringReportsInjectedVersion
+--- PASS: TestStringReportsInjectedVersion (0.00s)
+PASS
+ok  	example.com/urbino/internal/version	0.003s
+=== RUN   TestP01T04UnknownConfigFieldsRejected
+=== RUN   TestP01T04UnknownConfigFieldsRejected/undeclared_key
+=== RUN   TestP01T04UnknownConfigFieldsRejected/misspelled_key
+--- PASS: TestP01T04UnknownConfigFieldsRejected (0.00s)
+    --- PASS: TestP01T04UnknownConfigFieldsRejected/undeclared_key (0.00s)
+    --- PASS: TestP01T04UnknownConfigFieldsRejected/misspelled_key (0.00s)
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_the_development_switch
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_undeclared_test_switches
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/development_may_enable_the_switch
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/production_without_switches_loads
+--- PASS: TestP01T04ProductionDevelopmentSwitchRejected (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_the_development_switch (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_undeclared_test_switches (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/development_may_enable_the_switch (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/production_without_switches_loads (0.00s)
+=== RUN   TestP01T04ShippedTemplatesMatchContract
+--- PASS: TestP01T04ShippedTemplatesMatchContract (0.00s)
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/declared_variables_are_applied
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/undeclared_variables_are_rejected
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_production_switch
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_health_address
+--- PASS: TestP01T04ExplicitEnvironmentAllowlist (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/declared_variables_are_applied (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/undeclared_variables_are_rejected (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_production_switch (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_health_address (0.00s)
+=== RUN   TestP01T06ErrorClassesAreStable
+--- PASS: TestP01T06ErrorClassesAreStable (0.00s)
+=== RUN   TestP01T06ClassifiedConstructors
+=== RUN   TestP01T06ClassifiedConstructors/unsupported
+=== RUN   TestP01T06ClassifiedConstructors/unauthorized
+=== RUN   TestP01T06ClassifiedConstructors/unknown
+--- PASS: TestP01T06ClassifiedConstructors (0.00s)
+    --- PASS: TestP01T06ClassifiedConstructors/unsupported (0.00s)
+    --- PASS: TestP01T06ClassifiedConstructors/unauthorized (0.00s)
+    --- PASS: TestP01T06ClassifiedConstructors/unknown (0.00s)
+=== RUN   TestP01T06PublicErrorEnvelopeJSON
+--- PASS: TestP01T06PublicErrorEnvelopeJSON (0.00s)
+=== RUN   TestP01T05StrictJSONAcceptsWellFormedConfig
+--- PASS: TestP01T05StrictJSONAcceptsWellFormedConfig (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys
+=== RUN   TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/unknown_field
+=== RUN   TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/exact_duplicate_key
+--- PASS: TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/unknown_field (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/exact_duplicate_key (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsConflictingFields
+--- PASS: TestP01T05StrictJSONRejectsConflictingFields (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsExcessiveNesting
+--- PASS: TestP01T05StrictJSONRejectsExcessiveNesting (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments
+=== RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/two_JSON_values
+=== RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/malformed_JSON
+--- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/two_JSON_values (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/malformed_JSON (0.00s)
+=== RUN   TestP01T05StrictJSONConfigTargetIsTyped
+--- PASS: TestP01T05StrictJSONConfigTargetIsTyped (0.00s)
+=== RUN   TestP01T01MoneyParseBoundaries
+=== RUN   TestP01T01MoneyParseBoundaries/zero
+=== RUN   TestP01T01MoneyParseBoundaries/whole_units
+=== RUN   TestP01T01MoneyParseBoundaries/fractional_units
+=== RUN   TestP01T01MoneyParseBoundaries/single_micro
+=== RUN   TestP01T01MoneyParseBoundaries/exactly_max_int64_micros
+=== RUN   TestP01T01MoneyParseBoundaries/negative_business_amount
+=== RUN   TestP01T01MoneyParseBoundaries/explicit_plus_sign
+=== RUN   TestP01T01MoneyParseBoundaries/empty_input
+=== RUN   TestP01T01MoneyParseBoundaries/non_numeric
+=== RUN   TestP01T01MoneyParseBoundaries/two_decimal_points
+=== RUN   TestP01T01MoneyParseBoundaries/missing_whole_part
+=== RUN   TestP01T01MoneyParseBoundaries/sub_micro_precision_must_not_be_truncated
+=== RUN   TestP01T01MoneyParseBoundaries/whole_part_beyond_micro_scale
+=== RUN   TestP01T01MoneyParseBoundaries/fraction_overflow_wraps_int64
+=== RUN   TestP01T01MoneyParseBoundaries/magnitude_beyond_uint64
+=== RUN   TestP01T01MoneyParseBoundaries/undeclared_currency
+--- PASS: TestP01T01MoneyParseBoundaries (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/zero (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/whole_units (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/fractional_units (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/single_micro (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/exactly_max_int64_micros (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/negative_business_amount (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/explicit_plus_sign (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/empty_input (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/non_numeric (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/two_decimal_points (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/missing_whole_part (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/sub_micro_precision_must_not_be_truncated (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/whole_part_beyond_micro_scale (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/fraction_overflow_wraps_int64 (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/magnitude_beyond_uint64 (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/undeclared_currency (0.00s)
+=== RUN   TestP01T01MoneyRejectsNegativeAmounts
+--- PASS: TestP01T01MoneyRejectsNegativeAmounts (0.00s)
+=== RUN   TestP01T01MoneyCurrencyDeclarations
+--- PASS: TestP01T01MoneyCurrencyDeclarations (0.00s)
+=== RUN   TestP01T01MoneyArithmeticOverflow
+--- PASS: TestP01T01MoneyArithmeticOverflow (0.00s)
+=== RUN   TestP01T03OpenAPIHeaderContract
+--- PASS: TestP01T03OpenAPIHeaderContract (0.00s)
+=== RUN   TestP01T03CommonErrorSchema
+--- PASS: TestP01T03CommonErrorSchema (0.00s)
+=== RUN   TestP01T03NoFakeSuccessOperations
+    openapi_contract_test.go:250: validated 5 operations across 3 paths
+--- PASS: TestP01T03NoFakeSuccessOperations (0.00s)
+=== RUN   TestP01T02RequestTransitions
+--- PASS: TestP01T02RequestTransitions (0.00s)
+=== RUN   TestP01T02AttemptTransitions
+--- PASS: TestP01T02AttemptTransitions (0.00s)
+=== RUN   TestP01T02CredentialTransitions
+--- PASS: TestP01T02CredentialTransitions (0.00s)
+PASS
+ok  	example.com/urbino/tests/contracts	0.029s
+=== RUN   TestVersionCommandPrintsReadableVersion
+--- PASS: TestVersionCommandPrintsReadableVersion (0.01s)
+=== RUN   TestUnknownCommandExitsNonZero
+--- PASS: TestUnknownCommandExitsNonZero (0.02s)
+=== RUN   TestUnknownCommandWithHelpExitsNonZero
+--- PASS: TestUnknownCommandWithHelpExitsNonZero (0.04s)
+=== RUN   TestServeWithMissingExplicitConfigFails
+--- PASS: TestServeWithMissingExplicitConfigFails (0.01s)
+=== RUN   TestServeWithMissingEnvConfigDoesNotFallBack
+--- PASS: TestServeWithMissingEnvConfigDoesNotFallBack (0.02s)
+=== RUN   TestServeWithInvalidConfigFails
+=== RUN   TestServeWithInvalidConfigFails/wrong_value_type
+=== RUN   TestServeWithInvalidConfigFails/unknown_field
+--- PASS: TestServeWithInvalidConfigFails (0.03s)
+    --- PASS: TestServeWithInvalidConfigFails/wrong_value_type (0.02s)
+    --- PASS: TestServeWithInvalidConfigFails/unknown_field (0.01s)
+=== RUN   TestConfigFlagOverridesDefaultFile
+--- PASS: TestConfigFlagOverridesDefaultFile (0.54s)
+=== RUN   TestHealthAddrEnvOverridesConfigFile
+--- PASS: TestHealthAddrEnvOverridesConfigFile (0.54s)
+=== RUN   TestInternalHealthListenerSurface
+=== RUN   TestInternalHealthListenerSurface/get_healthz_returns_200_json_ok
+=== RUN   TestInternalHealthListenerSurface/data_and_admin_planes_do_not_exist
+=== RUN   TestInternalHealthListenerSurface/non-get_healthz_is_rejected
+--- PASS: TestInternalHealthListenerSurface (0.01s)
+    --- PASS: TestInternalHealthListenerSurface/get_healthz_returns_200_json_ok (0.00s)
+    --- PASS: TestInternalHealthListenerSurface/data_and_admin_planes_do_not_exist (0.00s)
+    --- PASS: TestInternalHealthListenerSurface/non-get_healthz_is_rejected (0.00s)
+PASS
+ok  	example.com/urbino/tests/foundation	2.674s
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_host_query
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_hostaddr
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_service
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_hostaddr
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_service
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_missing_host
+--- PASS: TestResolveTestDSNRejectsRoutingOverrides (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_host_query (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_hostaddr (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_service (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_hostaddr (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_service (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_missing_host (0.00s)
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP/postgres://user:secret@127.0.0.1:5432/urbino_test?sslmode=disable
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP/host=localhost_port=5432_dbname=urbino_test_user=user_password=secret
+--- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP (0.00s)
+    --- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP/postgres://user:secret@127.0.0.1:5432/urbino_test?sslmode=disable (0.00s)
+    --- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP/host=localhost_port=5432_dbname=urbino_test_user=user_password=secret (0.00s)
+=== RUN   TestP02T01CompositeTenantForeignKeys
+    main_test.go:319: NOT_RUN TestP02T01CompositeTenantForeignKeys: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+--- SKIP: TestP02T01CompositeTenantForeignKeys (0.00s)
+=== RUN   TestP02T02BusinessKeyUniqueness
+    main_test.go:369: NOT_RUN TestP02T02BusinessKeyUniqueness: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+--- SKIP: TestP02T02BusinessKeyUniqueness (0.00s)
+=== RUN   TestP02T03ConcurrentMigratorLock
+    main_test.go:431: NOT_RUN TestP02T03ConcurrentMigratorLock: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+--- SKIP: TestP02T03ConcurrentMigratorLock (0.00s)
+=== RUN   TestP02T04ApplicationRoleCannotDDLOrMutateLedger
+    main_test.go:468: NOT_RUN TestP02T04ApplicationRoleCannotDDLOrMutateLedger: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+--- SKIP: TestP02T04ApplicationRoleCannotDDLOrMutateLedger (0.00s)
+=== RUN   TestP02T05CanceledTransactionRollsBack
+    main_test.go:591: NOT_RUN TestP02T05CanceledTransactionRollsBack: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+--- SKIP: TestP02T05CanceledTransactionRollsBack (0.00s)
+=== RUN   TestP02T06SchemaCompatibilityRejectsNewerVersion
+    main_test.go:643: NOT_RUN TestP02T06SchemaCompatibilityRejectsNewerVersion: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+--- SKIP: TestP02T06SchemaCompatibilityRejectsNewerVersion (0.00s)
+=== RUN   TestP02T06MigrationHistoryDriftRejected
+    main_test.go:667: NOT_RUN TestP02T06MigrationHistoryDriftRejected: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+--- SKIP: TestP02T06MigrationHistoryDriftRejected (0.00s)
+=== RUN   TestP02T07DatabaseErrorsAreRedacted
+    main_test.go:690: NOT_RUN TestP02T07DatabaseErrorsAreRedacted: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+--- SKIP: TestP02T07DatabaseErrorsAreRedacted (0.00s)
+=== RUN   TestP02T01CrossTenantCompositeForeignKeyRejected
+    fixture_test.go:73: NOT_RUN TestP02T01CrossTenantCompositeForeignKeyRejected: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+--- SKIP: TestP02T01CrossTenantCompositeForeignKeyRejected (0.00s)
+=== RUN   TestP02T02BusinessKeysAreUnique
+=== RUN   TestP02T02BusinessKeysAreUnique/requests_idempotency_digest_is_unique_per_tenant
+    fixture_test.go:73: NOT_RUN TestP02T02BusinessKeysAreUnique/requests_idempotency_digest_is_unique_per_tenant: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+=== RUN   TestP02T02BusinessKeysAreUnique/request_attempts_unique_per_request_and_attempt_no
+    fixture_test.go:73: NOT_RUN TestP02T02BusinessKeysAreUnique/request_attempts_unique_per_request_and_attempt_no: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+=== RUN   TestP02T02BusinessKeysAreUnique/settlements_business_key_is_unique_per_tenant
+    fixture_test.go:73: NOT_RUN TestP02T02BusinessKeysAreUnique/settlements_business_key_is_unique_per_tenant: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+--- PASS: TestP02T02BusinessKeysAreUnique (0.00s)
+    --- SKIP: TestP02T02BusinessKeysAreUnique/requests_idempotency_digest_is_unique_per_tenant (0.00s)
+    --- SKIP: TestP02T02BusinessKeysAreUnique/request_attempts_unique_per_request_and_attempt_no (0.00s)
+    --- SKIP: TestP02T02BusinessKeysAreUnique/settlements_business_key_is_unique_per_tenant (0.00s)
+=== RUN   TestP02T03ConcurrentMigratorsSerialize
+    p02_t03_concurrent_migrator_test.go:35: NOT_RUN TestP02T03ConcurrentMigratorsSerialize: environment variable URBINO_TEST_DATABASE_DSN is not set (tests never guess a database target)
+--- SKIP: TestP02T03ConcurrentMigratorsSerialize (0.00s)
+PASS
+ok  	example.com/urbino/tests/integration	0.013s
+2026-09-19T17:12:47+08:00

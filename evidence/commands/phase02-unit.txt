@@ -1,0 +1,98 @@
+2026-09-19T17:17:19+08:00
+=== RUN   TestReadDatabaseDSNReadsRestrictedFile
+--- PASS: TestReadDatabaseDSNReadsRestrictedFile (0.00s)
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/missing_dsn_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/missing_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/empty_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/group_or_other_permission_bits
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/symbolic_link
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/directory
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/non-regular_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/owned_by_another_user
+    config_test.go:262: cannot change file ownership: chown /tmp/TestReadDatabaseDSNRejectsUnsafeInputowned_by_another_user270056383/001/other-owner.dsn: operation not permitted
+--- PASS: TestReadDatabaseDSNRejectsUnsafeInput (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/missing_dsn_file (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/missing_file (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/empty_file (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/group_or_other_permission_bits (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/symbolic_link (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/directory (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/non-regular_file (0.00s)
+    --- SKIP: TestReadDatabaseDSNRejectsUnsafeInput/owned_by_another_user (0.00s)
+=== RUN   TestReadDatabaseDSNReadsRestrictedFile
+--- PASS: TestReadDatabaseDSNReadsRestrictedFile (0.00s)
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/missing_dsn_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/missing_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/empty_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/group_or_other_permission_bits
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/symbolic_link
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/directory
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/non-regular_file
+=== RUN   TestReadDatabaseDSNRejectsUnsafeInput/owned_by_another_user
+    config_test.go:262: cannot change file ownership: chown /tmp/TestReadDatabaseDSNRejectsUnsafeInputowned_by_another_user904711662/001/other-owner.dsn: operation not permitted
+--- PASS: TestReadDatabaseDSNRejectsUnsafeInput (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/missing_dsn_file (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/missing_file (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/empty_file (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/group_or_other_permission_bits (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/symbolic_link (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/directory (0.00s)
+    --- PASS: TestReadDatabaseDSNRejectsUnsafeInput/non-regular_file (0.00s)
+    --- SKIP: TestReadDatabaseDSNRejectsUnsafeInput/owned_by_another_user (0.00s)
+PASS
+ok  	example.com/urbino/internal/config	0.013s
+=== RUN   TestSafeErrorMessageDoesNotLeakDSNOrDriverText
+--- PASS: TestSafeErrorMessageDoesNotLeakDSNOrDriverText (0.00s)
+=== RUN   TestOpenRejectsBlankDSNWithoutDetail
+--- PASS: TestOpenRejectsBlankDSNWithoutDetail (0.00s)
+=== RUN   TestSafeErrorMessageDoesNotLeakDSNOrDriverText
+--- PASS: TestSafeErrorMessageDoesNotLeakDSNOrDriverText (0.00s)
+=== RUN   TestOpenRejectsBlankDSNWithoutDetail
+--- PASS: TestOpenRejectsBlankDSNWithoutDetail (0.00s)
+PASS
+ok  	example.com/urbino/internal/storage/postgres	0.010s
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_host_query
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_hostaddr
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_service
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_hostaddr
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_service
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_missing_host
+--- PASS: TestResolveTestDSNRejectsRoutingOverrides (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_host_query (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_hostaddr (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_service (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_hostaddr (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_service (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_missing_host (0.00s)
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP/postgres://user:secret@127.0.0.1:5432/urbino_test?sslmode=disable
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP/host=localhost_port=5432_dbname=urbino_test_user=user_password=secret
+--- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP (0.00s)
+    --- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP/postgres://user:secret@127.0.0.1:5432/urbino_test?sslmode=disable (0.00s)
+    --- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP/host=localhost_port=5432_dbname=urbino_test_user=user_password=secret (0.00s)
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_host_query
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_hostaddr
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_service
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_hostaddr
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_service
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_missing_host
+--- PASS: TestResolveTestDSNRejectsRoutingOverrides (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_host_query (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_hostaddr (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_service (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_hostaddr (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_service (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_missing_host (0.00s)
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP/postgres://user:secret@127.0.0.1:5432/urbino_test?sslmode=disable
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP/host=localhost_port=5432_dbname=urbino_test_user=user_password=secret
+--- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP (0.00s)
+    --- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP/postgres://user:secret@127.0.0.1:5432/urbino_test?sslmode=disable (0.00s)
+    --- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP/host=localhost_port=5432_dbname=urbino_test_user=user_password=secret (0.00s)
+PASS
+ok  	example.com/urbino/tests/integration	0.013s
+2026-09-19T17:17:20+08:00

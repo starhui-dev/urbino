@@ -4,6 +4,8 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
+	"syscall"
 	"testing"
 )
 
@@ -172,4 +174,93 @@ func TestResolveHealthAddrPrecedence(t *testing.T) {
 			}
 		})
 	}
+}
+
+// syntheticDSN is a fabricated DSN used only to observe what ReadDatabaseDSN
+// returns or refuses to return; it holds no real credential.
+const syntheticDSN = "postgres://urbino_app:synthetic@127.0.0.1:5432/urbino_test"
+
+func TestReadDatabaseDSNReadsRestrictedFile(t *testing.T) {
+	path := writeFile(t, t.TempDir(), "database.dsn", syntheticDSN+"\n")
+
+	dsn, err := ReadDatabaseDSN(Config{Database: DatabaseConfig{DSNFile: path}})
+	if err != nil {
+		t.Fatalf("ReadDatabaseDSN: %v", err)
+	}
+	if dsn != syntheticDSN {
+		t.Fatalf("ReadDatabaseDSN = %q, want the trimmed file contents", dsn)
+	}
+}
+
+func TestReadDatabaseDSNRejectsUnsafeInput(t *testing.T) {
+	assertRejected := func(t *testing.T, cfg Config) {
+		t.Helper()
+		dsn, err := ReadDatabaseDSN(cfg)
+		if err == nil {
+			t.Fatalf("ReadDatabaseDSN = %q, want an error", dsn)
+		}
+		if strings.Contains(err.Error(), syntheticDSN) {
+			t.Fatalf("error %q leaked the DSN", err)
+		}
+	}
+	configFor := func(path string) Config {
+		return Config{Database: DatabaseConfig{DSNFile: path}}
+	}
+
+	t.Run("missing dsn_file", func(t *testing.T) {
+		assertRejected(t, Config{})
+	})
+
+	t.Run("missing file", func(t *testing.T) {
+		assertRejected(t, configFor(filepath.Join(t.TempDir(), "absent.dsn")))
+	})
+
+	t.Run("empty file", func(t *testing.T) {
+		path := writeFile(t, t.TempDir(), "empty.dsn", " \n\t")
+		assertRejected(t, configFor(path))
+	})
+
+	t.Run("group or other permission bits", func(t *testing.T) {
+		for _, mode := range []os.FileMode{0o640, 0o604, 0o644, 0o660, 0o666} {
+			path := writeFile(t, t.TempDir(), "loose.dsn", syntheticDSN+"\n")
+			if err := os.Chmod(path, mode); err != nil {
+				t.Fatalf("chmod %#o: %v", mode, err)
+			}
+			assertRejected(t, configFor(path))
+		}
+	})
+
+	t.Run("symbolic link", func(t *testing.T) {
+		dir := t.TempDir()
+		target := writeFile(t, dir, "target.dsn", syntheticDSN+"\n")
+		link := filepath.Join(dir, "link.dsn")
+		if err := os.Symlink(target, link); err != nil {
+			t.Fatalf("symlink: %v", err)
+		}
+		assertRejected(t, configFor(link))
+	})
+
+	t.Run("directory", func(t *testing.T) {
+		dir := t.TempDir()
+		if err := os.Mkdir(filepath.Join(dir, "dsn-dir"), 0o700); err != nil {
+			t.Fatalf("mkdir: %v", err)
+		}
+		assertRejected(t, configFor(filepath.Join(dir, "dsn-dir")))
+	})
+
+	t.Run("non-regular file", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "named-pipe.dsn")
+		if err := syscall.Mkfifo(path, 0o600); err != nil {
+			t.Fatalf("mkfifo: %v", err)
+		}
+		assertRejected(t, configFor(path))
+	})
+
+	t.Run("owned by another user", func(t *testing.T) {
+		path := writeFile(t, t.TempDir(), "other-owner.dsn", syntheticDSN+"\n")
+		if err := os.Chown(path, os.Geteuid()+1, -1); err != nil {
+			t.Skipf("cannot change file ownership: %v", err)
+		}
+		assertRejected(t, configFor(path))
+	})
 }

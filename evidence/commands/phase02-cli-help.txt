@@ -1,0 +1,26 @@
+2026-09-19T17:17:19+08:00
+urbino - multi-model gateway
+
+Usage:
+  urbino [--config <file>] version
+  urbino [--config <file>] serve
+  urbino [--config <file>] migrate
+  urbino [--config <file>] help
+
+Commands:
+  version   print the version of this binary
+  serve     run the internal health listener
+  migrate   apply explicit PostgreSQL migrations
+  help      print this help text
+
+Flags:
+  --config <file>   configuration file; takes precedence over URBINO_CONFIG and ./urbino.yaml
+
+Environment:
+  URBINO_CONFIG              configuration file used when --config is absent
+  URBINO_HEALTH_ADDR         internal health listener address, e.g. 127.0.0.1:9091
+  URBINO_DATABASE_DSN_FILE   restricted file containing the PostgreSQL DSN for migrate
+
+Commands planned for later stages (worker, bootstrap, admin, doctor,
+config validate) are not implemented yet and fail with a usage error.
+2026-09-19T17:17:19+08:00

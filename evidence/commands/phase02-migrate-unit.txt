@@ -1,0 +1,10 @@
+2026-09-19T17:12:43+08:00
+=== RUN   TestLoadDirRejectsMigrationVersionGap
+--- PASS: TestLoadDirRejectsMigrationVersionGap (0.00s)
+=== RUN   TestLoadDirRejectsZeroMigrationVersion
+--- PASS: TestLoadDirRejectsZeroMigrationVersion (0.00s)
+=== RUN   TestLoadDirRejectsUnrecognizedSQLFilename
+--- PASS: TestLoadDirRejectsUnrecognizedSQLFilename (0.00s)
+PASS
+ok  	example.com/urbino/internal/storage/migrate	0.014s
+2026-09-19T17:12:44+08:00

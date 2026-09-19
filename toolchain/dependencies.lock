@@ -1,22 +1,24 @@
-# Urbino dependency lock — phase 00
-# Queried 2026-09-18 from the active Go module proxy. Future-stage entries
-# are intentionally not added to go.mod until source code imports them.
+# Urbino dependency lock — phase 02
+# Queried 2026-09-19 from the active Go module proxy. Runtime dependencies
+# are listed only after source import and final go.mod/go.sum resolution.
 
 go=1.27.1
 module=example.com/urbino
 
 direct gopkg.in/yaml.v3=v3.0.1 license=MIT+Apache-2.0
 direct github.com/oapi-codegen/runtime=v1.7.0 license=Apache-2.0
+direct github.com/jackc/pgx/v5=v5.11.0 license=MIT
 indirect github.com/google/uuid=v1.6.0 license=BSD-3-Clause
+indirect github.com/jackc/pgpassfile=v1.0.0 license=MIT
+indirect github.com/jackc/pgservicefile=v0.0.0-20240606120523-5a60cdf6a761 license=MIT
+indirect github.com/jackc/puddle/v2=v2.2.2 license=MIT
 tool github.com/oapi-codegen/oapi-codegen/v2=v2.8.0 license=Apache-2.0 command=go:generate
+tool github.com/sqlc-dev/sqlc=v1.31.1 license=MIT command=go:generate
 planned github.com/go-chi/chi/v5=v5.3.2 license=MIT
-planned github.com/jackc/pgx/v5=v5.11.0 license=MIT
 planned github.com/pressly/goose/v3=v3.28.0 license=MIT
 planned github.com/valkey-io/valkey-go=v1.0.78 license=Apache-2.0
 planned github.com/riverqueue/river=v0.47.0 license=MPL-2.0
-planned github.com/sqlc-dev/sqlc=v1.31.1 license=MIT
 planned github.com/prometheus/client_golang=v1.24.1 license=Apache-2.0
 planned go.opentelemetry.io/otel=v1.46.0 license=Apache-2.0
 
-# CPA/S2A module scan is a required phase 00 command; no reference project is
-# included in this file or in go.mod.
+# CPA/S2A module scan remains required; no reference project is included here.

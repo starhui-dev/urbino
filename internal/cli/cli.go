@@ -14,6 +14,8 @@ import (
 
 	"example.com/urbino/internal/config"
 	"example.com/urbino/internal/httpapi"
+	"example.com/urbino/internal/storage/migrate"
+	"example.com/urbino/internal/storage/postgres"
 	"example.com/urbino/internal/version"
 )
 
@@ -32,21 +34,24 @@ const usage = `urbino - multi-model gateway
 Usage:
   urbino [--config <file>] version
   urbino [--config <file>] serve
+  urbino [--config <file>] migrate
   urbino [--config <file>] help
 
 Commands:
   version   print the version of this binary
   serve     run the internal health listener
+  migrate   apply explicit PostgreSQL migrations
   help      print this help text
 
 Flags:
   --config <file>   configuration file; takes precedence over URBINO_CONFIG and ./urbino.yaml
 
 Environment:
-  URBINO_CONFIG      configuration file used when --config is absent
-  URBINO_HEALTH_ADDR internal health listener address, e.g. 127.0.0.1:9091
+  URBINO_CONFIG              configuration file used when --config is absent
+  URBINO_HEALTH_ADDR         internal health listener address, e.g. 127.0.0.1:9091
+  URBINO_DATABASE_DSN_FILE   restricted file containing the PostgreSQL DSN for migrate
 
-Commands planned for later stages (worker, migrate, bootstrap, admin, doctor,
+Commands planned for later stages (worker, bootstrap, admin, doctor,
 config validate) are not implemented yet and fail with a usage error.
 `
 
@@ -83,7 +88,7 @@ func (o *Options) environmentValues() map[string]string {
 	if o.LookupEnv == nil {
 		return values
 	}
-	for _, name := range []string{config.EnvConfigPath, config.EnvHealthAddr, config.EnvLogLevel, config.EnvEnvironment} {
+	for _, name := range []string{config.EnvConfigPath, config.EnvHealthAddr, config.EnvLogLevel, config.EnvEnvironment, config.EnvDatabaseDSNFile} {
 		if value, ok := o.LookupEnv(name); ok {
 			values[name] = value
 		}
@@ -124,7 +129,7 @@ func Run(ctx context.Context, o Options) int {
 	}
 	if inv.help {
 		switch inv.command {
-		case "", "help", "version", "serve":
+		case "", "help", "version", "serve", "migrate":
 			fmt.Fprint(o.Stdout, usage)
 			return ExitOK
 		default:
@@ -152,6 +157,11 @@ func Run(ctx context.Context, o Options) int {
 			return o.usageError("serve takes no arguments")
 		}
 		return o.serve(ctx, inv.configPath)
+	case "migrate":
+		if len(inv.args) > 0 {
+			return o.usageError("migrate takes no arguments")
+		}
+		return o.migrate(ctx, inv.configPath)
 	default:
 		return o.usageError("unknown command %q", inv.command)
 	}
@@ -196,6 +206,47 @@ func parseArgs(args []string) (invocation, error) {
 	return inv, nil
 }
 
+// migrate loads one configuration and explicitly applies the ordered SQL
+// migrations. It is never called by serve or any other startup path.
+func (o *Options) migrate(ctx context.Context, configFile string) int {
+	path, err := config.ResolvePath(config.PathInput{
+		Explicit: configFile,
+		Env:      o.env(config.EnvConfigPath),
+		Dir:      o.WorkDir,
+	})
+	if err != nil {
+		o.fail("%v", err)
+		return ExitError
+	}
+	cfg, err := config.LoadWithEnvironment(path.File, o.environmentValues())
+	if err != nil {
+		o.fail("%v", err)
+		return ExitError
+	}
+	dsn, err := config.ReadDatabaseDSN(cfg)
+	if err != nil {
+		o.fail("%v", err)
+		return ExitError
+	}
+	db, err := postgres.Open(ctx, postgres.Config{DSN: dsn})
+	if err != nil {
+		o.fail("%s", postgres.SafeErrorMessage(err))
+		return ExitError
+	}
+	defer db.Close()
+	migrations, err := migrate.LoadEmbedded()
+	if err != nil {
+		o.fail("%v", err)
+		return ExitError
+	}
+	if err := (migrate.Runner{Pool: db.Pool()}).Run(ctx, migrations); err != nil {
+		o.fail("%v", err)
+		return ExitError
+	}
+	fmt.Fprintf(o.Stdout, "urbino: migrations applied through version %04d\n", migrations[len(migrations)-1].Version)
+	return ExitOK
+}
+
 // serve loads the selected configuration and runs the internal health listener
 // until ctx is done.
 func (o *Options) serve(ctx context.Context, configFile string) int {
@@ -214,6 +265,30 @@ func (o *Options) serve(ctx context.Context, configFile string) int {
 	if err != nil {
 		o.fail("%v", err)
 		return ExitError
+	}
+	if cfg.Database.DSNFile != "" {
+		dsn, err := config.ReadDatabaseDSN(cfg)
+		if err != nil {
+			o.fail("%v", err)
+			return ExitError
+		}
+		db, err := postgres.Open(ctx, postgres.Config{DSN: dsn})
+		if err != nil {
+			o.fail("%s", postgres.SafeErrorMessage(err))
+			return ExitError
+		}
+		migrations, err := migrate.LoadEmbedded()
+		if err != nil {
+			db.Close()
+			o.fail("%v", err)
+			return ExitError
+		}
+		err = migrate.CheckCompatibility(ctx, db.Pool(), migrations)
+		db.Close()
+		if err != nil {
+			o.fail("%v", err)
+			return ExitError
+		}
 	}
 
 	addr := config.ResolveHealthAddr(cfg, o.env(config.EnvHealthAddr))

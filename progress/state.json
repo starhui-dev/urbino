@@ -3,8 +3,7 @@
   "project_name": "Urbino",
   "project_slug": "urbino",
   "binary_name": "urbino",
-  "current_phase": "01",
-  "release_decision": "NOT_ASSESSED",
+  "current_phase": "02",
   "stages": {
     "00": {
       "title": "工程基础与依赖锁定",
@@ -22,9 +21,9 @@
     },
     "02": {
       "title": "数据库、迁移与查询边界",
-      "status": "not_started",
-      "evidence_path": null,
-      "review_path": null,
+      "status": "verified",
+      "evidence_path": "evidence/stages/02.json",
+      "review_path": "progress/reports/02-review.md",
       "blockers": []
     },
     "03": {

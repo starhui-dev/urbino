@@ -17,3 +17,11 @@
 | P01-T04 | 未知配置、production 开发开关、精确枚举/空白拒绝、模板与显式环境 allowlist | `internal/config/`、`internal/cli/cli.go`、`api/config.schema.json`、`configs/`、`tests/contracts/config_contract_test.go` | `evidence/commands/phase01-contracts.txt`、`evidence/commands/phase01-focused.txt` |
 | P01-T05 | JSON 未知/重复/大小写冲突/过深/多文档拒绝 | `internal/config/config.go`、`tests/contracts/json_ambiguity_contract_test.go` | `evidence/commands/phase01-contracts.txt` |
 | P01-T06 | unsupported/unauthorized/unknown 分类、公共错误 JSON envelope、unsupported HTTP 501 稳定响应 | `internal/domain/error.go`、`internal/httpapi/errors.go`、`internal/httpapi/errors_test.go`、`tests/contracts/error_envelope_contract_test.go` | `evidence/commands/phase01-contracts.txt`、`evidence/commands/phase01-focused.txt` |
+
+| P02-T01 | `TestP02T01CompositeTenantForeignKeys`：跨 tenant/project 复合外键拒绝 | `migrations/0001_persistence.sql`、`tests/integration/` | `evidence/commands/phase02-integration.txt` |
+| P02-T02 | `TestP02T02BusinessKeyUniqueness`：request/attempt/settlement 业务键唯一 | `migrations/0001_persistence.sql`、`tests/integration/` | `evidence/commands/phase02-integration.txt` |
+| P02-T03 | `TestP02T03ConcurrentMigratorLock`：并发 migrator advisory lock 串行 | `internal/storage/migrate/runner.go`、`tests/integration/` | `evidence/commands/phase02-integration.txt` |
+| P02-T04 | `TestP02T04ApplicationRoleCannotDDLOrMutateLedger`：应用角色无 DDL/账本历史修改权限 | `docs/migrations.md`、`tests/integration/` | `evidence/commands/phase02-integration.txt` |
+| P02-T05 | `TestP02T05CanceledTransactionRollsBack`：取消事务回滚且连接可复用 | `internal/storage/postgres/postgres.go`、`tests/integration/` | `evidence/commands/phase02-integration.txt` |
+| P02-T06 | `TestP02T06SchemaCompatibilityRejectsNewerVersion`：版本不兼容拒绝且 schema 不变 | `internal/storage/migrate/runner.go`、`internal/cli/cli.go`、`tests/integration/` | `evidence/commands/phase02-integration.txt` |
+| P02-T07 | `TestP02T07DatabaseErrorsAreRedacted`：DSN/driver 错误不回显 | `internal/storage/postgres/postgres.go`、`tests/integration/` | `evidence/commands/phase02-unit.txt` |

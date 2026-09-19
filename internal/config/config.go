@@ -3,28 +3,38 @@ package config
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"strings"
+	"syscall"
 
 	"gopkg.in/yaml.v3"
 )
 
 // Config is the startup configuration decoded from urbino.yaml.
 type Config struct {
-	HealthAddr  string `yaml:"health_addr" json:"health_addr"`
-	Environment string `yaml:"environment" json:"environment"`
-	LogLevel    string `yaml:"log_level" json:"log_level"`
-	Development bool   `yaml:"development" json:"development"`
+	HealthAddr  string         `yaml:"health_addr" json:"health_addr"`
+	Environment string         `yaml:"environment" json:"environment"`
+	LogLevel    string         `yaml:"log_level" json:"log_level"`
+	Development bool           `yaml:"development" json:"development"`
+	Database    DatabaseConfig `yaml:"database" json:"database"`
+}
+
+// DatabaseConfig contains only a path to a restricted DSN file. The DSN is
+// never stored in the startup YAML or emitted in an error.
+type DatabaseConfig struct {
+	DSNFile string `yaml:"dsn_file" json:"dsn_file"`
 }
 
 // AllowedEnvironmentNames is the complete application-owned environment map.
 var AllowedEnvironmentNames = map[string]struct{}{
-	EnvConfigPath:  {},
-	EnvHealthAddr:  {},
-	EnvLogLevel:    {},
-	EnvEnvironment: {},
+	EnvConfigPath:      {},
+	EnvHealthAddr:      {},
+	EnvLogLevel:        {},
+	EnvEnvironment:     {},
+	EnvDatabaseDSNFile: {},
 }
 
 // Load decodes the configuration file at path. Malformed YAML and unknown
@@ -90,6 +100,16 @@ func validateConfigYAMLNode(document *yaml.Node) error {
 			if value.Tag != "!!bool" {
 				return fmt.Errorf("development must be a boolean")
 			}
+		case "database":
+			if value.Kind != yaml.MappingNode {
+				return fmt.Errorf("database must be a mapping")
+			}
+			for j := 0; j < len(value.Content); j += 2 {
+				dbKey, dbValue := value.Content[j], value.Content[j+1]
+				if dbKey.Value == "dsn_file" && (dbValue.Tag != "!!str" || strings.TrimSpace(dbValue.Value) == "") {
+					return fmt.Errorf("database.dsn_file must be a non-empty string")
+				}
+			}
 		}
 	}
 	return nil
@@ -120,6 +140,12 @@ func ApplyEnvironment(cfg Config, values map[string]string) (Config, error) {
 			return Config{}, fmt.Errorf("config: %s must be non-empty and trimmed", EnvEnvironment)
 		}
 		cfg.Environment = raw
+	}
+	if raw, ok := values[EnvDatabaseDSNFile]; ok {
+		if raw == "" || strings.TrimSpace(raw) != raw {
+			return Config{}, fmt.Errorf("config: %s must be non-empty and trimmed", EnvDatabaseDSNFile)
+		}
+		cfg.Database.DSNFile = raw
 	}
 	if err := cfg.Validate(); err != nil {
 		return Config{}, err
@@ -153,6 +179,9 @@ func (cfg Config) Validate() error {
 		default:
 			return fmt.Errorf("config: invalid log_level %q", cfg.LogLevel)
 		}
+	}
+	if cfg.Database.DSNFile != "" && strings.TrimSpace(cfg.Database.DSNFile) != cfg.Database.DSNFile {
+		return fmt.Errorf("config: database.dsn_file must be trimmed")
 	}
 	if cfg.Environment == "production" && cfg.Development {
 		return fmt.Errorf("config: development mode is forbidden in production")
@@ -204,6 +233,59 @@ func StrictJSONDecodeWithConflicts(data []byte, target any, conflicts ...FieldCo
 		}
 	}
 	return StrictJSONDecode(data, target)
+}
+
+// ReadDatabaseDSN reads the DSN from the configured restricted file without
+// exposing its contents in returned errors. The file is opened without
+// following symbolic links and inspected through the same descriptor that is
+// read, so a path swap between the checks and the read cannot bypass them. The
+// descriptor must be a regular file owned by the current effective user with
+// no group or other permission bits set.
+func ReadDatabaseDSN(cfg Config) (string, error) {
+	path := strings.TrimSpace(cfg.Database.DSNFile)
+	if path == "" {
+		return "", fmt.Errorf("config: database.dsn_file is required")
+	}
+	// O_NOFOLLOW refuses a symlink at the final path component. O_NONBLOCK
+	// keeps the open from stalling on a FIFO or device node, which the fstat
+	// checks below then reject as non-regular; it is ignored for regular files.
+	fd, err := syscall.Open(path, syscall.O_RDONLY|syscall.O_CLOEXEC|syscall.O_NOFOLLOW|syscall.O_NONBLOCK, 0)
+	if err != nil {
+		if errors.Is(err, syscall.ELOOP) {
+			return "", fmt.Errorf("config: database DSN file must not be a symbolic link")
+		}
+		return "", fmt.Errorf("config: database DSN file is unavailable")
+	}
+	file := os.NewFile(uintptr(fd), "database.dsn_file")
+	if file == nil {
+		_ = syscall.Close(fd)
+		return "", fmt.Errorf("config: database DSN file is unavailable")
+	}
+	defer func() { _ = file.Close() }()
+
+	var stat syscall.Stat_t
+	if err := syscall.Fstat(fd, &stat); err != nil {
+		return "", fmt.Errorf("config: database DSN file is unavailable")
+	}
+	if stat.Mode&syscall.S_IFMT != syscall.S_IFREG {
+		return "", fmt.Errorf("config: database DSN file must be a regular file")
+	}
+	if stat.Uid != uint32(os.Geteuid()) {
+		return "", fmt.Errorf("config: database DSN file must be owned by the current user")
+	}
+	if stat.Mode&0o077 != 0 {
+		return "", fmt.Errorf("config: database DSN file must not be accessible by group or others")
+	}
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		return "", fmt.Errorf("config: database DSN file is unreadable")
+	}
+	dsn := strings.TrimSpace(string(data))
+	if dsn == "" {
+		return "", fmt.Errorf("config: database DSN file is empty")
+	}
+	return dsn, nil
 }
 
 // LoadWithEnvironment loads one selected file and applies only the explicit

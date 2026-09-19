@@ -8,7 +8,14 @@
     "health_addr": {"type": "string", "minLength": 1},
     "environment": {"type": "string", "enum": ["development", "test", "production"]},
     "log_level": {"type": "string", "enum": ["debug", "info", "warn", "error"]},
-    "development": {"type": "boolean", "default": false}
+    "development": {"type": "boolean", "default": false},
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "dsn_file": {"type": "string", "minLength": 1}
+      }
+    }
   },
   "allOf": [
     {
@@ -23,6 +30,7 @@
     "URBINO_CONFIG": "selected startup file; --config has higher precedence",
     "URBINO_HEALTH_ADDR": "health_addr",
     "URBINO_LOG_LEVEL": "log_level",
-    "URBINO_ENV": "environment"
+    "URBINO_ENV": "environment",
+    "URBINO_DATABASE_DSN_FILE": "database.dsn_file"
   }
 }

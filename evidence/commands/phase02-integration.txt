@@ -1,0 +1,52 @@
+2026-09-19T17:13:52+08:00
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_host_query
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_hostaddr
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/url_service
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_hostaddr
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_service
+=== RUN   TestResolveTestDSNRejectsRoutingOverrides/keyword_missing_host
+--- PASS: TestResolveTestDSNRejectsRoutingOverrides (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_host_query (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_hostaddr (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/url_service (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_hostaddr (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_service (0.00s)
+    --- PASS: TestResolveTestDSNRejectsRoutingOverrides/keyword_missing_host (0.00s)
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP/postgres://user:secret@127.0.0.1:5432/urbino_test?sslmode=disable
+=== RUN   TestResolveTestDSNAcceptsExplicitLoopbackTCP/host=localhost_port=5432_dbname=urbino_test_user=user_password=secret
+--- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP (0.00s)
+    --- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP/postgres://user:secret@127.0.0.1:5432/urbino_test?sslmode=disable (0.00s)
+    --- PASS: TestResolveTestDSNAcceptsExplicitLoopbackTCP/host=localhost_port=5432_dbname=urbino_test_user=user_password=secret (0.00s)
+=== RUN   TestP02T01CompositeTenantForeignKeys
+--- PASS: TestP02T01CompositeTenantForeignKeys (1.99s)
+=== RUN   TestP02T02BusinessKeyUniqueness
+--- PASS: TestP02T02BusinessKeyUniqueness (0.04s)
+=== RUN   TestP02T03ConcurrentMigratorLock
+--- PASS: TestP02T03ConcurrentMigratorLock (0.67s)
+=== RUN   TestP02T04ApplicationRoleCannotDDLOrMutateLedger
+--- PASS: TestP02T04ApplicationRoleCannotDDLOrMutateLedger (0.11s)
+=== RUN   TestP02T05CanceledTransactionRollsBack
+--- PASS: TestP02T05CanceledTransactionRollsBack (0.03s)
+=== RUN   TestP02T06SchemaCompatibilityRejectsNewerVersion
+--- PASS: TestP02T06SchemaCompatibilityRejectsNewerVersion (0.84s)
+=== RUN   TestP02T06MigrationHistoryDriftRejected
+--- PASS: TestP02T06MigrationHistoryDriftRejected (0.81s)
+=== RUN   TestP02T07DatabaseErrorsAreRedacted
+--- PASS: TestP02T07DatabaseErrorsAreRedacted (0.02s)
+=== RUN   TestP02T01CrossTenantCompositeForeignKeyRejected
+--- PASS: TestP02T01CrossTenantCompositeForeignKeyRejected (0.69s)
+=== RUN   TestP02T02BusinessKeysAreUnique
+=== RUN   TestP02T02BusinessKeysAreUnique/requests_idempotency_digest_is_unique_per_tenant
+=== RUN   TestP02T02BusinessKeysAreUnique/request_attempts_unique_per_request_and_attempt_no
+=== RUN   TestP02T02BusinessKeysAreUnique/settlements_business_key_is_unique_per_tenant
+--- PASS: TestP02T02BusinessKeysAreUnique (1.63s)
+    --- PASS: TestP02T02BusinessKeysAreUnique/requests_idempotency_digest_is_unique_per_tenant (0.58s)
+    --- PASS: TestP02T02BusinessKeysAreUnique/request_attempts_unique_per_request_and_attempt_no (0.37s)
+    --- PASS: TestP02T02BusinessKeysAreUnique/settlements_business_key_is_unique_per_tenant (0.68s)
+=== RUN   TestP02T03ConcurrentMigratorsSerialize
+--- PASS: TestP02T03ConcurrentMigratorsSerialize (0.84s)
+PASS
+ok  	example.com/urbino/tests/integration	7.694s
+2026-09-19T17:14:00+08:00

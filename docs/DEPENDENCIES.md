@@ -41,3 +41,12 @@
 | github.com/oapi-codegen/oapi-codegen/v2 | v2.8.0 | `go:generate` 工具版本锁定，未作为运行时依赖 | Apache-2.0 | 从 `api/admin.openapi.yaml` 生成 `api/admin_gen.go` |
 
 阶段 01 的 OpenAPI 生成实际执行 `go run ...@v2.8.0`；生成文件声明版本为 v2.8.0，第二次生成由 `make generate-check` 验证无差异。
+
+## 阶段 02 实际引入
+
+| 依赖 | 锁定版本 | 状态 | 许可证 | 用途 |
+|---|---:|---|---|---|
+| github.com/jackc/pgx/v5 | v5.11.0 | 直接依赖，已写入 go.mod/go.sum | MIT | PostgreSQL pool、事务与迁移连接 |
+| github.com/sqlc-dev/sqlc | v1.31.1 | `go:generate` 工具版本锁定，未作为运行时依赖 | MIT | 从 `sqlc.yaml` 生成 PostgreSQL 查询仓储 |
+
+阶段 02 的 pgx 与 sqlc 版本来自实际 module proxy 下载；`go generate ./internal/storage/postgres` 已实际生成查询代码。goose 仍为后续候选，当前迁移 runner 使用仓库内显式 advisory-lock/history 实现，不引入未使用运行时依赖。

@@ -26,6 +26,8 @@ const (
 
 	// EnvEnvironment selects the explicitly supported runtime environment.
 	EnvEnvironment = "URBINO_ENV"
+	// EnvDatabaseDSNFile points to a restricted file containing the PostgreSQL DSN.
+	EnvDatabaseDSNFile = "URBINO_DATABASE_DSN_FILE"
 
 	// DefaultFileName is looked up in the working directory when neither
 	// --config nor URBINO_CONFIG is set.

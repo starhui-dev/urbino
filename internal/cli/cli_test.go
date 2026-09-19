@@ -91,7 +91,7 @@ func TestVersionRejectsArguments(t *testing.T) {
 }
 
 func TestUnknownCommandFails(t *testing.T) {
-	for _, command := range []string{"bogus", "versionn", "worker", "migrate", "bootstrap", "admin", "doctor"} {
+	for _, command := range []string{"bogus", "versionn", "worker", "bootstrap", "admin", "doctor"} {
 		code, stdout, stderr := runCLI(t, context.Background(), t.TempDir(), nil, command)
 		if code != ExitUsage {
 			t.Fatalf("%s: exit code = %d, want %d", command, code, ExitUsage)
