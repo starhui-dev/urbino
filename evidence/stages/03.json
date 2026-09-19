@@ -2,7 +2,7 @@
   "schema_version": 1,
   "stage": "03",
   "status": "blocked",
-  "code_revision": "tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93",
+  "code_revision": "commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b",
   "environment": {
     "os": "linux/amd64",
     "go_version": "go1.27.1",
@@ -11,14 +11,14 @@
     "docker_version": null
   },
   "commands": [
-    {"command":"go test ./... -count=1 -v","exit_code":0,"output_path":"evidence/commands/phase03-go-test.txt","result":"pass_with_declared_skips","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
-    {"command":"go vet ./...","exit_code":0,"output_path":"evidence/commands/phase03-go-vet.txt","result":"pass","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
-    {"command":"go build ./cmd/urbino","exit_code":0,"output_path":"evidence/commands/phase03-go-build.txt","result":"pass","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
-    {"command":"go generate ./api ./internal/storage/postgres && make generate-check","exit_code":0,"output_path":"evidence/commands/phase03-generate.txt","result":"pass","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
-    {"command":"go run ./cmd/urbino bootstrap --help","exit_code":0,"output_path":"evidence/commands/phase03-cli-help.txt","result":"pass","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
-    {"command":"go test -tags identityimpl ./tests/identity -count=1 -v","exit_code":0,"output_path":"evidence/commands/phase03-identity-linked.txt","result":"pass_with_7_scoped_store_skips","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
-    {"command":"go test -tags identityimpl ./tests/identity -count=2 -v","exit_code":0,"output_path":"evidence/tasks/03/run-tagged-count2.txt","result":"56_pass_14_skip_0_fail","required":false,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
-    {"command":"go test ./tests/identity -count=1","exit_code":0,"output_path":"evidence/tasks/03/run-default-build.txt","result":"pass_with_declared_skips","required":false,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"}
+    {"command":"go test ./... -count=1 -v","exit_code":0,"output_path":"evidence/commands/phase03-go-test.txt","result":"pass_with_declared_skips","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
+    {"command":"go vet ./...","exit_code":0,"output_path":"evidence/commands/phase03-go-vet.txt","result":"pass","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
+    {"command":"go build ./cmd/urbino","exit_code":0,"output_path":"evidence/commands/phase03-go-build.txt","result":"pass","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
+    {"command":"go generate ./api ./internal/storage/postgres && make generate-check","exit_code":0,"output_path":"evidence/commands/phase03-generate.txt","result":"pass","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
+    {"command":"go run ./cmd/urbino bootstrap --help","exit_code":0,"output_path":"evidence/commands/phase03-cli-help.txt","result":"pass","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
+    {"command":"go test -tags identityimpl ./tests/identity -count=1 -v","exit_code":0,"output_path":"evidence/commands/phase03-identity-linked.txt","result":"pass_with_7_scoped_store_skips","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
+    {"command":"go test -tags identityimpl ./tests/identity -count=2 -v","exit_code":0,"output_path":"evidence/tasks/03/run-tagged-count2.txt","result":"56_pass_14_skip_0_fail","required":false,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
+    {"command":"go test ./tests/identity -count=1","exit_code":0,"output_path":"evidence/tasks/03/run-default-build.txt","result":"pass_with_declared_skips","required":false,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"}
   ],
   "requirements": [
     {"test_id":"P03-T01","test_name":"public/admin listener 与 credential 隔离","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
