@@ -148,6 +148,25 @@ func TestServeBeforeCancelledContext(t *testing.T) {
 	}
 }
 
+func TestServeClosesPreboundListenerWhenContextAlreadyCancelled(t *testing.T) {
+	srv, err := NewHealthServer("127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := srv.Listen(); err != nil {
+		t.Fatal(err)
+	}
+	addr := srv.Addr().String()
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	if err := srv.Serve(ctx); !errors.Is(err, context.Canceled) {
+		t.Fatalf("Serve = %v, want context.Canceled", err)
+	}
+	if _, err := net.DialTimeout("tcp", addr, 200*time.Millisecond); err == nil {
+		t.Fatal("prebound listener remained open after cancelled Serve")
+	}
+}
+
 func TestHealthServerReportsBindFailure(t *testing.T) {
 	occupied, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {

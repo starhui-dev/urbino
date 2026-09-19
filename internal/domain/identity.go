@@ -16,7 +16,19 @@ func NewUUID() (UUID, error) {
 	if _, err := rand.Read(id[:]); err != nil {
 		return UUID{}, fmt.Errorf("generate uuid: %w", err)
 	}
-	id[6] = (id[6] & 0x0f) | 0x40
+	// RFC 9562 UUIDv7: 48-bit Unix millisecond timestamp followed by
+	// twelve random bits, the version nibble, and a variant-constrained tail.
+	ms := time.Now().UnixMilli()
+	if ms < 0 || ms > 0xffffffffffff {
+		return UUID{}, fmt.Errorf("generate uuid: timestamp out of range")
+	}
+	id[0] = byte(ms >> 40)
+	id[1] = byte(ms >> 32)
+	id[2] = byte(ms >> 24)
+	id[3] = byte(ms >> 16)
+	id[4] = byte(ms >> 8)
+	id[5] = byte(ms)
+	id[6] = (id[6] & 0x0f) | 0x70
 	id[8] = (id[8] & 0x3f) | 0x80
 	return id, nil
 }
@@ -56,3 +68,45 @@ type ProjectID UUID
 type PrincipalID UUID
 type RequestID UUID
 type AttemptID UUID
+
+func (id TenantID) String() string                  { return UUID(id).String() }
+func (id ProjectID) String() string                 { return UUID(id).String() }
+func (id PrincipalID) String() string               { return UUID(id).String() }
+func (id RequestID) String() string                 { return UUID(id).String() }
+func (id AttemptID) String() string                 { return UUID(id).String() }
+func (id TenantID) MarshalText() ([]byte, error)    { return []byte(id.String()), nil }
+func (id ProjectID) MarshalText() ([]byte, error)   { return []byte(id.String()), nil }
+func (id PrincipalID) MarshalText() ([]byte, error) { return []byte(id.String()), nil }
+func (id RequestID) MarshalText() ([]byte, error)   { return []byte(id.String()), nil }
+func (id AttemptID) MarshalText() ([]byte, error)   { return []byte(id.String()), nil }
+
+func (id TenantID) IsZero() bool    { return UUID(id).IsZero() }
+func (id ProjectID) IsZero() bool   { return UUID(id).IsZero() }
+func (id PrincipalID) IsZero() bool { return UUID(id).IsZero() }
+func (id RequestID) IsZero() bool   { return UUID(id).IsZero() }
+func (id AttemptID) IsZero() bool   { return UUID(id).IsZero() }
+
+func ParseTenantID(value string) (TenantID, error) {
+	id, err := ParseUUID(value)
+	return TenantID(id), err
+}
+
+func ParseProjectID(value string) (ProjectID, error) {
+	id, err := ParseUUID(value)
+	return ProjectID(id), err
+}
+
+func ParsePrincipalID(value string) (PrincipalID, error) {
+	id, err := ParseUUID(value)
+	return PrincipalID(id), err
+}
+
+func ParseRequestID(value string) (RequestID, error) {
+	id, err := ParseUUID(value)
+	return RequestID(id), err
+}
+
+func ParseAttemptID(value string) (AttemptID, error) {
+	id, err := ParseUUID(value)
+	return AttemptID(id), err
+}

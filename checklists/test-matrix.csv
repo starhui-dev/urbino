@@ -3,12 +3,12 @@ P00-T01,00,P1,工程编译,go test/vet/build 真实成功,unit,true,"go test ./.
 P00-T02,00,P1,版本锁定,依赖真实存在并锁定，不含CPA/S2A module,static,true,"go list -m all; dependency module queries and LICENSE checks",evidence/commands/dependency-modules.json,pass
 P00-T03,00,P0,基础配置秘密,示例/日志不含实际key或默认管理员口令,static,true,"repository grep credential-shaped patterns; Docker private-config ignore check",evidence/commands/secret-scan.txt,pass
 P00-T04,00,P1,健康与命令,version可读、未知命令非零、初始健康无裸推理接口,unit,true,"go test ./tests/foundation -count=2 -v; HEAD/unknown --help/real health smoke",evidence/commands/foundation-blackbox.txt,pass
-P01-T01,01,P0,金额边界,负数/溢出/非法币种拒绝,unit,true,,,not_started
-P01-T02,01,P0,状态转移,非法状态不能绕过已完成/已停用状态,unit,true,,,not_started
-P01-T03,01,P1,OpenAPI生成,验证通过且重复生成无diff,contract,true,,,not_started
-P01-T04,01,P0,未知配置,生产未知字段和测试开关拒绝,unit,true,,,not_started
-P01-T05,01,P0,JSON歧义,重复键、过深JSON、冲突字段拒绝,unit,true,,,not_started
-P01-T06,01,P1,能力契约,未支持功能返回稳定错误不是假成功,contract,true,,,not_started
+P01-T01,01,P0,金额边界,负数/溢出/非法币种拒绝,unit,true,"go test ./tests/contracts -count=2 -v; go test ./internal/domain ./internal/config ./internal/httpapi -count=1","evidence/commands/phase01-contracts.txt;evidence/commands/phase01-focused.txt",pass
+P01-T02,01,P0,状态转移,非法状态不能绕过已完成/已停用状态,unit,true,"go test ./tests/contracts -count=2 -v","evidence/commands/phase01-contracts.txt",pass
+P01-T03,01,P1,OpenAPI生成,验证通过且重复生成无diff,contract,true,"go generate ./api; make generate-check; jq empty api/config.schema.json; go run github.com/getkin/kin-openapi/cmd/validate@v0.142.0 api/admin.openapi.yaml","evidence/commands/phase01-generate-check.txt;evidence/commands/phase01-openapi.txt",pass
+P01-T04,01,P0,未知配置,生产未知字段和测试开关拒绝,unit,true,"go test ./tests/contracts -count=2 -v; go test ./internal/domain ./internal/config ./internal/httpapi -count=1","evidence/commands/phase01-contracts.txt;evidence/commands/phase01-focused.txt",pass
+P01-T05,01,P0,JSON歧义,重复键、过深JSON、冲突字段拒绝,unit,true,"go test ./tests/contracts -count=2 -v","evidence/commands/phase01-contracts.txt",pass
+P01-T06,01,P1,能力契约,未支持功能返回稳定错误不是假成功,contract,true,"go test ./tests/contracts -count=2 -v; go test ./internal/domain ./internal/config ./internal/httpapi -count=1","evidence/commands/phase01-contracts.txt;evidence/commands/phase01-focused.txt",pass
 P02-T01,02,P0,租户复合外键,跨tenant引用数据库直接拒绝,integration,true,,,not_started
 P02-T02,02,P0,唯一性,request/attempt/settlement业务键唯一,integration,true,,,not_started
 P02-T03,02,P1,并行迁移,两个migrator不竞态执行同迁移,integration,true,,,not_started

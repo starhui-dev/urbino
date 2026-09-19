@@ -15,9 +15,9 @@
     },
     "01": {
       "title": "领域类型、接口与配置契约",
-      "status": "implemented",
+      "status": "verified",
       "evidence_path": "evidence/stages/01.json",
-      "review_path": null,
+      "review_path": "progress/reports/01-review.md",
       "blockers": []
     },
     "02": {

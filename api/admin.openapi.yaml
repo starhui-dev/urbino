@@ -254,7 +254,7 @@ components:
       properties:
         name:
           type: string
-          minLength: 1
+          enum: [admin_api, chat_completions, responses, embeddings]
         version:
           type: string
           minLength: 1
@@ -264,7 +264,7 @@ components:
           type: array
           items:
             type: string
-            minLength: 1
+            enum: [tenants:read, tenants:write, models:read, usage:read]
     CreateTenantRequest:
       type: object
       additionalProperties: false
@@ -276,7 +276,7 @@ components:
           maxLength: 200
         currency:
           type: string
-          pattern: '^[A-Z]{3}$'
+          enum: [CNY, EUR, GBP, JPY, USD]
     UpdateTenantRequest:
       type: object
       additionalProperties: false
@@ -301,7 +301,7 @@ components:
           type: string
         currency:
           type: string
-          pattern: '^[A-Z]{3}$'
+          enum: [CNY, EUR, GBP, JPY, USD]
         status:
           type: string
           enum: [active, disabled]

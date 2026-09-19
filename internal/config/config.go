@@ -3,7 +3,6 @@ package config
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -30,24 +29,32 @@ var AllowedEnvironmentNames = map[string]struct{}{
 
 // Load decodes the configuration file at path. Malformed YAML and unknown
 // fields are errors. An empty file is a valid configuration and yields zero
-// values. Production configuration cannot enable development behavior.
+// values; non-empty values are validated against the startup schema.
 func Load(path string) (Config, error) {
-	f, err := os.Open(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return Config{}, fmt.Errorf("config: open %q: %w", path, err)
 	}
-	defer f.Close()
+	if len(bytes.TrimSpace(data)) == 0 {
+		return Config{}, nil
+	}
+	var document yaml.Node
+	if err := yaml.Unmarshal(data, &document); err != nil {
+		return Config{}, fmt.Errorf("config: decode %q: %w", path, err)
+	}
+	if err := validateConfigYAMLNode(&document); err != nil {
+		return Config{}, fmt.Errorf("config: validate %q: %w", path, err)
+	}
+	if len(document.Content) == 0 {
+		return Config{}, nil
+	}
 
-	dec := yaml.NewDecoder(f)
+	dec := yaml.NewDecoder(bytes.NewReader(data))
 	dec.KnownFields(true)
 	var cfg Config
 	if err := dec.Decode(&cfg); err != nil {
-		if errors.Is(err, io.EOF) {
-			return Config{}, nil
-		}
 		return Config{}, fmt.Errorf("config: decode %q: %w", path, err)
 	}
-
 	var extra yaml.Node
 	if err := dec.Decode(&extra); err != io.EOF {
 		if err == nil {
@@ -55,32 +62,102 @@ func Load(path string) (Config, error) {
 		}
 		return Config{}, fmt.Errorf("config: decode %q: trailing YAML document: %w", path, err)
 	}
-	if strings.EqualFold(strings.TrimSpace(cfg.Environment), "production") && cfg.Development {
-		return Config{}, fmt.Errorf("config: development mode is forbidden in production")
+	if err := cfg.Validate(); err != nil {
+		return Config{}, fmt.Errorf("config: validate %q: %w", path, err)
 	}
 	return cfg, nil
 }
 
-// ApplyEnvironment applies only explicitly declared URBINO_ variables.
+func validateConfigYAMLNode(document *yaml.Node) error {
+	if len(document.Content) == 0 {
+		return nil
+	}
+	if document.Kind != yaml.DocumentNode {
+		return fmt.Errorf("configuration must be a YAML document")
+	}
+	if len(document.Content) != 1 || document.Content[0].Kind != yaml.MappingNode {
+		return fmt.Errorf("configuration must be a YAML mapping")
+	}
+	mapping := document.Content[0]
+	for i := 0; i < len(mapping.Content); i += 2 {
+		key, value := mapping.Content[i], mapping.Content[i+1]
+		switch key.Value {
+		case "health_addr", "environment", "log_level":
+			if value.Tag != "!!str" || value.Value == "" {
+				return fmt.Errorf("%s must be a non-empty string", key.Value)
+			}
+		case "development":
+			if value.Tag != "!!bool" {
+				return fmt.Errorf("development must be a boolean")
+			}
+		}
+	}
+	return nil
+}
+
+// ApplyEnvironment applies only explicitly declared URBINO_ variables and
+// validates the resulting configuration before returning it.
 func ApplyEnvironment(cfg Config, values map[string]string) (Config, error) {
 	for name := range values {
 		if _, ok := AllowedEnvironmentNames[name]; !ok {
 			return Config{}, fmt.Errorf("config: unsupported environment variable %q", name)
 		}
 	}
-	if value := strings.TrimSpace(values[EnvHealthAddr]); value != "" {
-		cfg.HealthAddr = value
+	if raw, ok := values[EnvHealthAddr]; ok {
+		if raw == "" || strings.TrimSpace(raw) != raw {
+			return Config{}, fmt.Errorf("config: %s must be non-empty and trimmed", EnvHealthAddr)
+		}
+		cfg.HealthAddr = raw
 	}
-	if value := strings.TrimSpace(values[EnvLogLevel]); value != "" {
-		cfg.LogLevel = value
+	if raw, ok := values[EnvLogLevel]; ok {
+		if raw == "" || strings.TrimSpace(raw) != raw {
+			return Config{}, fmt.Errorf("config: %s must be non-empty and trimmed", EnvLogLevel)
+		}
+		cfg.LogLevel = raw
 	}
-	if value := strings.TrimSpace(values[EnvEnvironment]); value != "" {
-		cfg.Environment = value
+	if raw, ok := values[EnvEnvironment]; ok {
+		if raw == "" || strings.TrimSpace(raw) != raw {
+			return Config{}, fmt.Errorf("config: %s must be non-empty and trimmed", EnvEnvironment)
+		}
+		cfg.Environment = raw
 	}
-	if strings.EqualFold(cfg.Environment, "production") && cfg.Development {
-		return Config{}, fmt.Errorf("config: development mode is forbidden in production")
+	if err := cfg.Validate(); err != nil {
+		return Config{}, err
 	}
 	return cfg, nil
+}
+
+// Validate enforces the same semantic constraints as api/config.schema.json.
+// Empty optional fields remain valid so a minimal configuration can use
+// runtime defaults; once set, values must be from the closed startup schema.
+func (cfg Config) Validate() error {
+	if cfg.HealthAddr != "" && (strings.TrimSpace(cfg.HealthAddr) != cfg.HealthAddr || strings.TrimSpace(cfg.HealthAddr) == "") {
+		return fmt.Errorf("config: health_addr must be non-empty and trimmed")
+	}
+	if cfg.Environment != "" {
+		if strings.TrimSpace(cfg.Environment) != cfg.Environment {
+			return fmt.Errorf("config: environment must be trimmed")
+		}
+		switch cfg.Environment {
+		case "development", "test", "production":
+		default:
+			return fmt.Errorf("config: invalid environment %q", cfg.Environment)
+		}
+	}
+	if cfg.LogLevel != "" {
+		if strings.TrimSpace(cfg.LogLevel) != cfg.LogLevel {
+			return fmt.Errorf("config: log_level must be trimmed")
+		}
+		switch cfg.LogLevel {
+		case "debug", "info", "warn", "error":
+		default:
+			return fmt.Errorf("config: invalid log_level %q", cfg.LogLevel)
+		}
+	}
+	if cfg.Environment == "production" && cfg.Development {
+		return fmt.Errorf("config: development mode is forbidden in production")
+	}
+	return nil
 }
 
 // StrictJSONDecode rejects duplicate keys and excessive nesting before decoding.

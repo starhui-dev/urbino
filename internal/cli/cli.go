@@ -50,19 +50,15 @@ Commands planned for later stages (worker, migrate, bootstrap, admin, doctor,
 config validate) are not implemented yet and fail with a usage error.
 `
 
-// Options are the process inputs of Run.
+// Options are the process inputs of Run, including a presence-preserving
+// environment snapshot for strict URBINO_ allowlist validation.
 type Options struct {
-	// Args are the command line arguments without the program name.
-	Args []string
-	// Stdout receives command output.
-	Stdout io.Writer
-	// Stderr receives diagnostics.
-	Stderr io.Writer
-	// LookupEnv reads an environment variable; nil means no variables are set.
-	LookupEnv func(string) (string, bool)
-	// WorkDir is the directory searched for the default configuration file;
-	// empty means the process working directory.
-	WorkDir string
+	Args        []string
+	Stdout      io.Writer
+	Stderr      io.Writer
+	LookupEnv   func(string) (string, bool)
+	Environment map[string]string
+	WorkDir     string
 }
 
 func (o *Options) env(name string) string {
@@ -71,6 +67,28 @@ func (o *Options) env(name string) string {
 	}
 	v, _ := o.LookupEnv(name)
 	return v
+}
+
+func (o *Options) environmentValues() map[string]string {
+	if o.Environment != nil {
+		values := make(map[string]string)
+		for name, value := range o.Environment {
+			if strings.HasPrefix(name, "URBINO_") {
+				values[name] = value
+			}
+		}
+		return values
+	}
+	values := make(map[string]string)
+	if o.LookupEnv == nil {
+		return values
+	}
+	for _, name := range []string{config.EnvConfigPath, config.EnvHealthAddr, config.EnvLogLevel, config.EnvEnvironment} {
+		if value, ok := o.LookupEnv(name); ok {
+			values[name] = value
+		}
+	}
+	return values
 }
 
 func (o *Options) fail(format string, args ...any) {
@@ -191,11 +209,8 @@ func (o *Options) serve(ctx context.Context, configFile string) int {
 		return ExitError
 	}
 
-	cfg, err := config.LoadWithEnvironment(path.File, map[string]string{
-		config.EnvHealthAddr:  o.env(config.EnvHealthAddr),
-		config.EnvLogLevel:    o.env(config.EnvLogLevel),
-		config.EnvEnvironment: o.env(config.EnvEnvironment),
-	})
+	environment := o.environmentValues()
+	cfg, err := config.LoadWithEnvironment(path.File, environment)
 	if err != nil {
 		o.fail("%v", err)
 		return ExitError
@@ -211,6 +226,7 @@ func (o *Options) serve(ctx context.Context, configFile string) int {
 		o.fail("%v", err)
 		return ExitError
 	}
+	defer func() { _ = srv.Close() }()
 
 	fmt.Fprintf(o.Stderr, "urbino: config %s (source %s)\n", path.File, path.Source)
 	fmt.Fprintf(o.Stderr, "urbino: internal health listener on %s, GET %s only\n", srv.Addr(), httpapi.HealthPath)

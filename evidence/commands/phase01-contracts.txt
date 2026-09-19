@@ -1,3 +1,5 @@
+started_at=2026-09-19T12:12:16+08:00
+$ go test ./tests/contracts -count=2 -v
 === RUN   TestP01T04UnknownConfigFieldsRejected
 === RUN   TestP01T04UnknownConfigFieldsRejected/undeclared_key
 === RUN   TestP01T04UnknownConfigFieldsRejected/misspelled_key
@@ -51,11 +53,11 @@
 === RUN   TestP01T05StrictJSONRejectsExcessiveNesting
 --- PASS: TestP01T05StrictJSONRejectsExcessiveNesting (0.00s)
 === RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments
-=== RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/malformed_JSON
 === RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/two_JSON_values
+=== RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/malformed_JSON
 --- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments (0.00s)
-    --- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/malformed_JSON (0.00s)
     --- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/two_JSON_values (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/malformed_JSON (0.00s)
 === RUN   TestP01T05StrictJSONConfigTargetIsTyped
 --- PASS: TestP01T05StrictJSONConfigTargetIsTyped (0.00s)
 === RUN   TestP01T01MoneyParseBoundaries
@@ -212,12 +214,12 @@
 === RUN   TestP01T01MoneyArithmeticOverflow
 --- PASS: TestP01T01MoneyArithmeticOverflow (0.00s)
 === RUN   TestP01T03OpenAPIHeaderContract
---- PASS: TestP01T03OpenAPIHeaderContract (0.00s)
+--- PASS: TestP01T03OpenAPIHeaderContract (0.01s)
 === RUN   TestP01T03CommonErrorSchema
---- PASS: TestP01T03CommonErrorSchema (0.02s)
+--- PASS: TestP01T03CommonErrorSchema (0.00s)
 === RUN   TestP01T03NoFakeSuccessOperations
     openapi_contract_test.go:250: validated 5 operations across 3 paths
---- PASS: TestP01T03NoFakeSuccessOperations (0.01s)
+--- PASS: TestP01T03NoFakeSuccessOperations (0.00s)
 === RUN   TestP01T02RequestTransitions
 --- PASS: TestP01T02RequestTransitions (0.00s)
 === RUN   TestP01T02AttemptTransitions
@@ -225,4 +227,6 @@
 === RUN   TestP01T02CredentialTransitions
 --- PASS: TestP01T02CredentialTransitions (0.00s)
 PASS
-ok  	example.com/urbino/tests/contracts	0.080s
+ok  	example.com/urbino/tests/contracts	0.039s
+finished_at=2026-09-19T12:12:17+08:00
+exit_code=0

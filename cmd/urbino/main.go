@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"example.com/urbino/internal/cli"
@@ -21,12 +22,20 @@ func main() {
 		os.Exit(cli.ExitError)
 	}
 
+	environment := make(map[string]string)
+	for _, entry := range os.Environ() {
+		name, value, ok := strings.Cut(entry, "=")
+		if ok && strings.HasPrefix(name, "URBINO_") {
+			environment[name] = value
+		}
+	}
 	code := cli.Run(ctx, cli.Options{
-		Args:      os.Args[1:],
-		Stdout:    os.Stdout,
-		Stderr:    os.Stderr,
-		LookupEnv: os.LookupEnv,
-		WorkDir:   workDir,
+		Args:        os.Args[1:],
+		Stdout:      os.Stdout,
+		Stderr:      os.Stderr,
+		LookupEnv:   os.LookupEnv,
+		Environment: environment,
+		WorkDir:     workDir,
 	})
 	os.Exit(code)
 }

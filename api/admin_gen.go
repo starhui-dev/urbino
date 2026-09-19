@@ -7,6 +7,81 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
+// Defines values for CapabilityDescriptorName.
+const (
+	AdminApi        CapabilityDescriptorName = "admin_api"
+	ChatCompletions CapabilityDescriptorName = "chat_completions"
+	Embeddings      CapabilityDescriptorName = "embeddings"
+	Responses       CapabilityDescriptorName = "responses"
+)
+
+// Valid indicates whether the value is a known member of the CapabilityDescriptorName enum.
+func (e CapabilityDescriptorName) Valid() bool {
+	switch e {
+	case AdminApi:
+		return true
+	case ChatCompletions:
+		return true
+	case Embeddings:
+		return true
+	case Responses:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CapabilityDescriptorScopes.
+const (
+	ModelsRead   CapabilityDescriptorScopes = "models:read"
+	TenantsRead  CapabilityDescriptorScopes = "tenants:read"
+	TenantsWrite CapabilityDescriptorScopes = "tenants:write"
+	UsageRead    CapabilityDescriptorScopes = "usage:read"
+)
+
+// Valid indicates whether the value is a known member of the CapabilityDescriptorScopes enum.
+func (e CapabilityDescriptorScopes) Valid() bool {
+	switch e {
+	case ModelsRead:
+		return true
+	case TenantsRead:
+		return true
+	case TenantsWrite:
+		return true
+	case UsageRead:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreateTenantRequestCurrency.
+const (
+	CreateTenantRequestCurrencyCNY CreateTenantRequestCurrency = "CNY"
+	CreateTenantRequestCurrencyEUR CreateTenantRequestCurrency = "EUR"
+	CreateTenantRequestCurrencyGBP CreateTenantRequestCurrency = "GBP"
+	CreateTenantRequestCurrencyJPY CreateTenantRequestCurrency = "JPY"
+	CreateTenantRequestCurrencyUSD CreateTenantRequestCurrency = "USD"
+)
+
+// Valid indicates whether the value is a known member of the CreateTenantRequestCurrency enum.
+func (e CreateTenantRequestCurrency) Valid() bool {
+	switch e {
+	case CreateTenantRequestCurrencyCNY:
+		return true
+	case CreateTenantRequestCurrencyEUR:
+		return true
+	case CreateTenantRequestCurrencyGBP:
+		return true
+	case CreateTenantRequestCurrencyJPY:
+		return true
+	case CreateTenantRequestCurrencyUSD:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ErrorCode.
 const (
 	ErrorCodeBadRequest            ErrorCode = "bad_request"
@@ -34,6 +109,33 @@ func (e ErrorCode) Valid() bool {
 	case ErrorCodeUnsupportedCapability:
 		return true
 	case ErrorCodeVersionConflict:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TenantCurrency.
+const (
+	TenantCurrencyCNY TenantCurrency = "CNY"
+	TenantCurrencyEUR TenantCurrency = "EUR"
+	TenantCurrencyGBP TenantCurrency = "GBP"
+	TenantCurrencyJPY TenantCurrency = "JPY"
+	TenantCurrencyUSD TenantCurrency = "USD"
+)
+
+// Valid indicates whether the value is a known member of the TenantCurrency enum.
+func (e TenantCurrency) Valid() bool {
+	switch e {
+	case TenantCurrencyCNY:
+		return true
+	case TenantCurrencyEUR:
+		return true
+	case TenantCurrencyGBP:
+		return true
+	case TenantCurrencyJPY:
+		return true
+	case TenantCurrencyUSD:
 		return true
 	default:
 		return false
@@ -78,17 +180,26 @@ func (e UpdateTenantRequestStatus) Valid() bool {
 
 // CapabilityDescriptor defines model for CapabilityDescriptor.
 type CapabilityDescriptor struct {
-	Enabled bool     `json:"enabled"`
-	Name    string   `json:"name"`
-	Scopes  []string `json:"scopes"`
-	Version string   `json:"version"`
+	Enabled bool                         `json:"enabled"`
+	Name    CapabilityDescriptorName     `json:"name"`
+	Scopes  []CapabilityDescriptorScopes `json:"scopes"`
+	Version string                       `json:"version"`
 }
+
+// CapabilityDescriptorName defines model for CapabilityDescriptor.Name.
+type CapabilityDescriptorName string
+
+// CapabilityDescriptorScopes defines model for CapabilityDescriptor.Scopes.
+type CapabilityDescriptorScopes string
 
 // CreateTenantRequest defines model for CreateTenantRequest.
 type CreateTenantRequest struct {
-	Currency string `json:"currency"`
-	Name     string `json:"name"`
+	Currency CreateTenantRequestCurrency `json:"currency"`
+	Name     string                      `json:"name"`
 }
+
+// CreateTenantRequestCurrency defines model for CreateTenantRequest.Currency.
+type CreateTenantRequestCurrency string
 
 // Error defines model for Error.
 type Error struct {
@@ -104,12 +215,15 @@ type ErrorCode string
 
 // Tenant defines model for Tenant.
 type Tenant struct {
-	Currency string             `json:"currency"`
+	Currency TenantCurrency     `json:"currency"`
 	Id       openapi_types.UUID `json:"id"`
 	Name     string             `json:"name"`
 	Status   TenantStatus       `json:"status"`
 	Version  int64              `json:"version"`
 }
+
+// TenantCurrency defines model for Tenant.Currency.
+type TenantCurrency string
 
 // TenantStatus defines model for Tenant.Status.
 type TenantStatus string

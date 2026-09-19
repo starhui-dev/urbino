@@ -93,7 +93,23 @@ func parseDigits(value string) uint64 {
 	return result
 }
 
+func (m Money) Validate() error {
+	if _, err := ParseCurrency(string(m.Currency)); err != nil {
+		return err
+	}
+	if m.Micros < 0 {
+		return fmt.Errorf("money cannot be negative")
+	}
+	return nil
+}
+
 func (m Money) Add(other Money) (Money, error) {
+	if err := m.Validate(); err != nil {
+		return Money{}, err
+	}
+	if err := other.Validate(); err != nil {
+		return Money{}, err
+	}
 	if m.Currency != other.Currency {
 		return Money{}, fmt.Errorf("cannot add different currencies")
 	}
@@ -104,6 +120,9 @@ func (m Money) Add(other Money) (Money, error) {
 }
 
 func (m Money) Multiply(factor uint64) (Money, error) {
+	if err := m.Validate(); err != nil {
+		return Money{}, err
+	}
 	if factor != 0 && uint64(m.Micros) > uint64(math.MaxInt64)/factor {
 		return Money{}, fmt.Errorf("money multiplication overflows micro-units")
 	}

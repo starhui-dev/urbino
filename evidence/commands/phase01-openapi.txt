@@ -1,0 +1,4 @@
+started_at=2026-09-19T12:12:16+08:00
+$ jq empty api/config.schema.json && go run github.com/getkin/kin-openapi/cmd/validate@v0.142.0 api/admin.openapi.yaml
+finished_at=2026-09-19T12:12:19+08:00
+exit_code=0

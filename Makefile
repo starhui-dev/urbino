@@ -21,4 +21,4 @@ generate:
 	$(GO) generate ./api
 
 generate-check:
-	@tmp=$$(mktemp); trap 'rm -f "$$tmp"' EXIT; cp api/admin_gen.go "$$tmp"; $(GO) generate ./api; cmp -s api/admin_gen.go "$$tmp"
+	@tmp=$$(mktemp); trap 'rm -f "$$tmp"' EXIT; cp api/admin_gen.go "$$tmp"; $(GO) generate ./api && cmp -s api/admin_gen.go "$$tmp"

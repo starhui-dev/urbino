@@ -123,6 +123,9 @@ func (s *HealthServer) Close() error {
 // ctx.Err() so a caller can tell cancellation from a serving failure.
 func (s *HealthServer) Serve(ctx context.Context) error {
 	if err := ctx.Err(); err != nil {
+		if s.ln != nil {
+			_ = s.Close()
+		}
 		return err
 	}
 	if s.ln == nil {

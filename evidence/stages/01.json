@@ -2,7 +2,7 @@
   "schema_version": 1,
   "stage": "01",
   "status": "implemented",
-  "code_revision": "working-tree:uncommitted-final",
+  "code_revision": "working-tree:source-diff-sha256:3822895dc9de2b905abbf0164303eba27162c5e28a76cd003f54afcdca138b2e",
   "environment": {
     "os": "linux/amd64",
     "go_version": "go1.27.1",
@@ -11,36 +11,37 @@
     "docker_version": null
   },
   "commands": [
-    {"command":"go test ./tests/contracts -count=2 -v","started_at":"2026-09-18","finished_at":"2026-09-18","exit_code":0,"output_path":"evidence/commands/phase01-contracts.txt","result":"pass","required":true,"tests_passed":46,"tests_failed":0,"tests_skipped":0},
-    {"command":"go test ./...","started_at":"2026-09-18","finished_at":"2026-09-18","exit_code":0,"output_path":"evidence/commands/phase01-go-test.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
-    {"command":"go vet ./...","started_at":"2026-09-18","finished_at":"2026-09-18","exit_code":0,"output_path":"evidence/commands/phase01-go-vet.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
-    {"command":"go build ./cmd/urbino","started_at":"2026-09-18","finished_at":"2026-09-18","exit_code":0,"output_path":"evidence/commands/phase01-go-build.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
-    {"command":"make generate-check","started_at":"2026-09-18","finished_at":"2026-09-18","exit_code":0,"output_path":"evidence/commands/phase01-generate-check.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
-    {"command":"jq empty api/config.schema.json && go run github.com/getkin/kin-openapi/cmd/validate@v0.142.0 api/admin.openapi.yaml","started_at":"2026-09-18","finished_at":"2026-09-18","exit_code":0,"output_path":"evidence/commands/phase01-openapi.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0}
+    {"command":"go test ./... -count=1 -v","started_at":"2026-09-19T12:12:16+08:00","finished_at":"2026-09-19T12:12:19+08:00","exit_code":0,"output_path":"evidence/commands/phase01-go-test.txt","result":"pass","required":true,"revision":"working-tree:source-diff-sha256:3822895dc9de2b905abbf0164303eba27162c5e28a76cd003f54afcdca138b2e"},
+    {"command":"go vet ./...","started_at":"2026-09-19T12:12:16+08:00","finished_at":"2026-09-19T12:12:17+08:00","exit_code":0,"output_path":"evidence/commands/phase01-go-vet.txt","result":"pass","required":true,"revision":"working-tree:source-diff-sha256:3822895dc9de2b905abbf0164303eba27162c5e28a76cd003f54afcdca138b2e"},
+    {"command":"go build ./cmd/urbino","started_at":"2026-09-19T12:12:16+08:00","finished_at":"2026-09-19T12:12:17+08:00","exit_code":0,"output_path":"evidence/commands/phase01-go-build.txt","result":"pass","required":true,"revision":"working-tree:source-diff-sha256:3822895dc9de2b905abbf0164303eba27162c5e28a76cd003f54afcdca138b2e"},
+    {"command":"go generate ./api && make generate-check","started_at":"2026-09-19T12:12:16+08:00","finished_at":"2026-09-19T12:12:19+08:00","exit_code":0,"output_path":"evidence/commands/phase01-generate-check.txt","result":"pass","required":true,"revision":"working-tree:source-diff-sha256:3822895dc9de2b905abbf0164303eba27162c5e28a76cd003f54afcdca138b2e"},
+    {"command":"jq empty api/config.schema.json && go run github.com/getkin/kin-openapi/cmd/validate@v0.142.0 api/admin.openapi.yaml","started_at":"2026-09-19T12:12:16+08:00","finished_at":"2026-09-19T12:12:19+08:00","exit_code":0,"output_path":"evidence/commands/phase01-openapi.txt","result":"pass","required":true,"revision":"working-tree:source-diff-sha256:3822895dc9de2b905abbf0164303eba27162c5e28a76cd003f54afcdca138b2e"},
+    {"command":"go test ./tests/contracts -count=2 -v","started_at":"2026-09-19T12:12:16+08:00","finished_at":"2026-09-19T12:12:17+08:00","exit_code":0,"output_path":"evidence/commands/phase01-contracts.txt","result":"pass","required":true,"tests_passed":46,"tests_failed":0,"tests_skipped":0,"revision":"working-tree:source-diff-sha256:3822895dc9de2b905abbf0164303eba27162c5e28a76cd003f54afcdca138b2e"},
+    {"command":"go test ./internal/domain ./internal/config ./internal/httpapi ./internal/ports ./internal/cli -count=1 -v","started_at":"2026-09-19T12:12:16+08:00","finished_at":"2026-09-19T12:12:17+08:00","exit_code":0,"output_path":"evidence/commands/phase01-focused.txt","result":"pass","required":true,"revision":"working-tree:source-diff-sha256:3822895dc9de2b905abbf0164303eba27162c5e28a76cd003f54afcdca138b2e"}
   ],
   "requirements": [
-    {"test_id":"P01-T01","test_name":"金额边界","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/phase01-contracts.txt"},
+    {"test_id":"P01-T01","test_name":"金额边界","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/phase01-focused.txt"},
     {"test_id":"P01-T02","test_name":"状态转移","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/phase01-contracts.txt"},
-    {"test_id":"P01-T03","test_name":"OpenAPI生成","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/phase01-openapi.txt"},
-    {"test_id":"P01-T04","test_name":"未知配置","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/phase01-contracts.txt"},
+    {"test_id":"P01-T03","test_name":"OpenAPI生成","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/phase01-generate-check.txt"},
+    {"test_id":"P01-T04","test_name":"未知配置","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/phase01-focused.txt"},
     {"test_id":"P01-T05","test_name":"JSON歧义","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/phase01-contracts.txt"},
-    {"test_id":"P01-T06","test_name":"能力契约","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/phase01-contracts.txt"}
+    {"test_id":"P01-T06","test_name":"能力契约","source_path":"checklists/test-matrix.csv","result":"pass","evidence_path":"evidence/commands/phase01-focused.txt"}
   ],
   "blockers": [],
   "risks": [
     "真实管理 API handler 尚未实现；OpenAPI 仅为契约和生成类型，未启用能力不得假成功。",
     "PostgreSQL、Valkey、真实 provider 和部署未在本阶段运行。",
-    "实现 Agent 路由实际返回 deepseek-v4-flash 不支持的 404；代码由主 Agent按批准范围完成，路由问题未伪装为 PASS。",
-    "当前 module 仍是 project.json 允许的 example.com/urbino 占位路径。"
+    "当前 module 仍是 project.json 允许的 example.com/urbino 占位路径。",
+    "阶段修复任务的 implementer 路由本轮未成功启动；修复由主 Agent完成并由最终工作区命令验证。"
   ],
   "review": {
-    "status": "not_started",
-    "reviewer_session": null,
-    "reviewed_revision": null,
-    "report_path": null,
-    "reviewed_at": null,
-    "reviewer_model": null,
-    "independent_context": null,
+    "status": "pass",
+    "reviewer_session": "FinalAuthBoundaryReview",
+    "reviewed_revision": "working-tree:source-diff-sha256:3822895dc9de2b905abbf0164303eba27162c5e28a76cd003f54afcdca138b2e",
+    "report_path": "progress/reports/01-review.md",
+    "reviewed_at": "2026-09-19",
+    "reviewer_model": "urbino-reviewer",
+    "independent_context": true,
     "security_review_path": null
   },
   "development": {
