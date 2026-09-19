@@ -21,13 +21,19 @@ const (
 	// EnvHealthAddr overrides the health listener address.
 	EnvHealthAddr = "URBINO_HEALTH_ADDR"
 
+	// EnvLogLevel selects the explicitly supported log level.
+	EnvLogLevel = "URBINO_LOG_LEVEL"
+
+	// EnvEnvironment selects the explicitly supported runtime environment.
+	EnvEnvironment = "URBINO_ENV"
+
 	// DefaultFileName is looked up in the working directory when neither
 	// --config nor URBINO_CONFIG is set.
 	DefaultFileName = "urbino.yaml"
 
 	// DefaultHealthAddr is the standard internal health listener address. It is
-	// a loopback address: the health listener never binds every interface
-	// unless an operator overrides it explicitly.
+	// a loopback address: the health listener never binds every interface unless
+	// an operator overrides it explicitly.
 	DefaultHealthAddr = "127.0.0.1:9091"
 )
 

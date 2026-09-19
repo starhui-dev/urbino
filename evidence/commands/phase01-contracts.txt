@@ -1,0 +1,228 @@
+=== RUN   TestP01T04UnknownConfigFieldsRejected
+=== RUN   TestP01T04UnknownConfigFieldsRejected/undeclared_key
+=== RUN   TestP01T04UnknownConfigFieldsRejected/misspelled_key
+--- PASS: TestP01T04UnknownConfigFieldsRejected (0.00s)
+    --- PASS: TestP01T04UnknownConfigFieldsRejected/undeclared_key (0.00s)
+    --- PASS: TestP01T04UnknownConfigFieldsRejected/misspelled_key (0.00s)
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_the_development_switch
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_undeclared_test_switches
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/development_may_enable_the_switch
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/production_without_switches_loads
+--- PASS: TestP01T04ProductionDevelopmentSwitchRejected (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_the_development_switch (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_undeclared_test_switches (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/development_may_enable_the_switch (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/production_without_switches_loads (0.00s)
+=== RUN   TestP01T04ShippedTemplatesMatchContract
+--- PASS: TestP01T04ShippedTemplatesMatchContract (0.00s)
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/declared_variables_are_applied
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/undeclared_variables_are_rejected
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_production_switch
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_health_address
+--- PASS: TestP01T04ExplicitEnvironmentAllowlist (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/declared_variables_are_applied (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/undeclared_variables_are_rejected (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_production_switch (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_health_address (0.00s)
+=== RUN   TestP01T06ErrorClassesAreStable
+--- PASS: TestP01T06ErrorClassesAreStable (0.00s)
+=== RUN   TestP01T06ClassifiedConstructors
+=== RUN   TestP01T06ClassifiedConstructors/unsupported
+=== RUN   TestP01T06ClassifiedConstructors/unauthorized
+=== RUN   TestP01T06ClassifiedConstructors/unknown
+--- PASS: TestP01T06ClassifiedConstructors (0.00s)
+    --- PASS: TestP01T06ClassifiedConstructors/unsupported (0.00s)
+    --- PASS: TestP01T06ClassifiedConstructors/unauthorized (0.00s)
+    --- PASS: TestP01T06ClassifiedConstructors/unknown (0.00s)
+=== RUN   TestP01T06PublicErrorEnvelopeJSON
+--- PASS: TestP01T06PublicErrorEnvelopeJSON (0.00s)
+=== RUN   TestP01T05StrictJSONAcceptsWellFormedConfig
+--- PASS: TestP01T05StrictJSONAcceptsWellFormedConfig (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys
+=== RUN   TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/unknown_field
+=== RUN   TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/exact_duplicate_key
+--- PASS: TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/unknown_field (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/exact_duplicate_key (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsConflictingFields
+--- PASS: TestP01T05StrictJSONRejectsConflictingFields (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsExcessiveNesting
+--- PASS: TestP01T05StrictJSONRejectsExcessiveNesting (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments
+=== RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/malformed_JSON
+=== RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/two_JSON_values
+--- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/malformed_JSON (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/two_JSON_values (0.00s)
+=== RUN   TestP01T05StrictJSONConfigTargetIsTyped
+--- PASS: TestP01T05StrictJSONConfigTargetIsTyped (0.00s)
+=== RUN   TestP01T01MoneyParseBoundaries
+=== RUN   TestP01T01MoneyParseBoundaries/zero
+=== RUN   TestP01T01MoneyParseBoundaries/whole_units
+=== RUN   TestP01T01MoneyParseBoundaries/fractional_units
+=== RUN   TestP01T01MoneyParseBoundaries/single_micro
+=== RUN   TestP01T01MoneyParseBoundaries/exactly_max_int64_micros
+=== RUN   TestP01T01MoneyParseBoundaries/negative_business_amount
+=== RUN   TestP01T01MoneyParseBoundaries/explicit_plus_sign
+=== RUN   TestP01T01MoneyParseBoundaries/empty_input
+=== RUN   TestP01T01MoneyParseBoundaries/non_numeric
+=== RUN   TestP01T01MoneyParseBoundaries/two_decimal_points
+=== RUN   TestP01T01MoneyParseBoundaries/missing_whole_part
+=== RUN   TestP01T01MoneyParseBoundaries/sub_micro_precision_must_not_be_truncated
+=== RUN   TestP01T01MoneyParseBoundaries/whole_part_beyond_micro_scale
+=== RUN   TestP01T01MoneyParseBoundaries/fraction_overflow_wraps_int64
+=== RUN   TestP01T01MoneyParseBoundaries/magnitude_beyond_uint64
+=== RUN   TestP01T01MoneyParseBoundaries/undeclared_currency
+--- PASS: TestP01T01MoneyParseBoundaries (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/zero (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/whole_units (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/fractional_units (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/single_micro (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/exactly_max_int64_micros (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/negative_business_amount (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/explicit_plus_sign (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/empty_input (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/non_numeric (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/two_decimal_points (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/missing_whole_part (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/sub_micro_precision_must_not_be_truncated (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/whole_part_beyond_micro_scale (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/fraction_overflow_wraps_int64 (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/magnitude_beyond_uint64 (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/undeclared_currency (0.00s)
+=== RUN   TestP01T01MoneyRejectsNegativeAmounts
+--- PASS: TestP01T01MoneyRejectsNegativeAmounts (0.00s)
+=== RUN   TestP01T01MoneyCurrencyDeclarations
+--- PASS: TestP01T01MoneyCurrencyDeclarations (0.00s)
+=== RUN   TestP01T01MoneyArithmeticOverflow
+--- PASS: TestP01T01MoneyArithmeticOverflow (0.00s)
+=== RUN   TestP01T03OpenAPIHeaderContract
+--- PASS: TestP01T03OpenAPIHeaderContract (0.00s)
+=== RUN   TestP01T03CommonErrorSchema
+--- PASS: TestP01T03CommonErrorSchema (0.00s)
+=== RUN   TestP01T03NoFakeSuccessOperations
+    openapi_contract_test.go:250: validated 5 operations across 3 paths
+--- PASS: TestP01T03NoFakeSuccessOperations (0.00s)
+=== RUN   TestP01T02RequestTransitions
+--- PASS: TestP01T02RequestTransitions (0.00s)
+=== RUN   TestP01T02AttemptTransitions
+--- PASS: TestP01T02AttemptTransitions (0.00s)
+=== RUN   TestP01T02CredentialTransitions
+--- PASS: TestP01T02CredentialTransitions (0.00s)
+=== RUN   TestP01T04UnknownConfigFieldsRejected
+=== RUN   TestP01T04UnknownConfigFieldsRejected/undeclared_key
+=== RUN   TestP01T04UnknownConfigFieldsRejected/misspelled_key
+--- PASS: TestP01T04UnknownConfigFieldsRejected (0.00s)
+    --- PASS: TestP01T04UnknownConfigFieldsRejected/undeclared_key (0.00s)
+    --- PASS: TestP01T04UnknownConfigFieldsRejected/misspelled_key (0.00s)
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_the_development_switch
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_undeclared_test_switches
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/development_may_enable_the_switch
+=== RUN   TestP01T04ProductionDevelopmentSwitchRejected/production_without_switches_loads
+--- PASS: TestP01T04ProductionDevelopmentSwitchRejected (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_the_development_switch (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/production_forbids_undeclared_test_switches (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/development_may_enable_the_switch (0.00s)
+    --- PASS: TestP01T04ProductionDevelopmentSwitchRejected/production_without_switches_loads (0.00s)
+=== RUN   TestP01T04ShippedTemplatesMatchContract
+--- PASS: TestP01T04ShippedTemplatesMatchContract (0.00s)
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/declared_variables_are_applied
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/undeclared_variables_are_rejected
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_production_switch
+=== RUN   TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_health_address
+--- PASS: TestP01T04ExplicitEnvironmentAllowlist (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/declared_variables_are_applied (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/undeclared_variables_are_rejected (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_production_switch (0.00s)
+    --- PASS: TestP01T04ExplicitEnvironmentAllowlist/environment_beats_file_for_the_health_address (0.00s)
+=== RUN   TestP01T06ErrorClassesAreStable
+--- PASS: TestP01T06ErrorClassesAreStable (0.00s)
+=== RUN   TestP01T06ClassifiedConstructors
+=== RUN   TestP01T06ClassifiedConstructors/unsupported
+=== RUN   TestP01T06ClassifiedConstructors/unauthorized
+=== RUN   TestP01T06ClassifiedConstructors/unknown
+--- PASS: TestP01T06ClassifiedConstructors (0.00s)
+    --- PASS: TestP01T06ClassifiedConstructors/unsupported (0.00s)
+    --- PASS: TestP01T06ClassifiedConstructors/unauthorized (0.00s)
+    --- PASS: TestP01T06ClassifiedConstructors/unknown (0.00s)
+=== RUN   TestP01T06PublicErrorEnvelopeJSON
+--- PASS: TestP01T06PublicErrorEnvelopeJSON (0.00s)
+=== RUN   TestP01T05StrictJSONAcceptsWellFormedConfig
+--- PASS: TestP01T05StrictJSONAcceptsWellFormedConfig (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys
+=== RUN   TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/unknown_field
+=== RUN   TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/exact_duplicate_key
+--- PASS: TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/unknown_field (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsUnknownAndDuplicateKeys/exact_duplicate_key (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsConflictingFields
+--- PASS: TestP01T05StrictJSONRejectsConflictingFields (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsExcessiveNesting
+--- PASS: TestP01T05StrictJSONRejectsExcessiveNesting (0.00s)
+=== RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments
+=== RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/two_JSON_values
+=== RUN   TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/malformed_JSON
+--- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/two_JSON_values (0.00s)
+    --- PASS: TestP01T05StrictJSONRejectsMultipleAndMalformedDocuments/malformed_JSON (0.00s)
+=== RUN   TestP01T05StrictJSONConfigTargetIsTyped
+--- PASS: TestP01T05StrictJSONConfigTargetIsTyped (0.00s)
+=== RUN   TestP01T01MoneyParseBoundaries
+=== RUN   TestP01T01MoneyParseBoundaries/zero
+=== RUN   TestP01T01MoneyParseBoundaries/whole_units
+=== RUN   TestP01T01MoneyParseBoundaries/fractional_units
+=== RUN   TestP01T01MoneyParseBoundaries/single_micro
+=== RUN   TestP01T01MoneyParseBoundaries/exactly_max_int64_micros
+=== RUN   TestP01T01MoneyParseBoundaries/negative_business_amount
+=== RUN   TestP01T01MoneyParseBoundaries/explicit_plus_sign
+=== RUN   TestP01T01MoneyParseBoundaries/empty_input
+=== RUN   TestP01T01MoneyParseBoundaries/non_numeric
+=== RUN   TestP01T01MoneyParseBoundaries/two_decimal_points
+=== RUN   TestP01T01MoneyParseBoundaries/missing_whole_part
+=== RUN   TestP01T01MoneyParseBoundaries/sub_micro_precision_must_not_be_truncated
+=== RUN   TestP01T01MoneyParseBoundaries/whole_part_beyond_micro_scale
+=== RUN   TestP01T01MoneyParseBoundaries/fraction_overflow_wraps_int64
+=== RUN   TestP01T01MoneyParseBoundaries/magnitude_beyond_uint64
+=== RUN   TestP01T01MoneyParseBoundaries/undeclared_currency
+--- PASS: TestP01T01MoneyParseBoundaries (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/zero (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/whole_units (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/fractional_units (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/single_micro (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/exactly_max_int64_micros (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/negative_business_amount (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/explicit_plus_sign (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/empty_input (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/non_numeric (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/two_decimal_points (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/missing_whole_part (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/sub_micro_precision_must_not_be_truncated (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/whole_part_beyond_micro_scale (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/fraction_overflow_wraps_int64 (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/magnitude_beyond_uint64 (0.00s)
+    --- PASS: TestP01T01MoneyParseBoundaries/undeclared_currency (0.00s)
+=== RUN   TestP01T01MoneyRejectsNegativeAmounts
+--- PASS: TestP01T01MoneyRejectsNegativeAmounts (0.00s)
+=== RUN   TestP01T01MoneyCurrencyDeclarations
+--- PASS: TestP01T01MoneyCurrencyDeclarations (0.00s)
+=== RUN   TestP01T01MoneyArithmeticOverflow
+--- PASS: TestP01T01MoneyArithmeticOverflow (0.00s)
+=== RUN   TestP01T03OpenAPIHeaderContract
+--- PASS: TestP01T03OpenAPIHeaderContract (0.00s)
+=== RUN   TestP01T03CommonErrorSchema
+--- PASS: TestP01T03CommonErrorSchema (0.02s)
+=== RUN   TestP01T03NoFakeSuccessOperations
+    openapi_contract_test.go:250: validated 5 operations across 3 paths
+--- PASS: TestP01T03NoFakeSuccessOperations (0.01s)
+=== RUN   TestP01T02RequestTransitions
+--- PASS: TestP01T02RequestTransitions (0.00s)
+=== RUN   TestP01T02AttemptTransitions
+--- PASS: TestP01T02AttemptTransitions (0.00s)
+=== RUN   TestP01T02CredentialTransitions
+--- PASS: TestP01T02CredentialTransitions (0.00s)
+PASS
+ok  	example.com/urbino/tests/contracts	0.080s

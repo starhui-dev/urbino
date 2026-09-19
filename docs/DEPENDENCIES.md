@@ -27,7 +27,17 @@
 
 ## 锁定与限制
 
-- `go.mod`/`go.sum` 只包含当前源码真实导入的 yaml 依赖；不把工具或未来阶段库伪装成当前运行时依赖。
+- `go.mod`/`go.sum` 只包含当前源码真实导入的运行时模块；生成工具只通过带精确版本的 `go:generate` 命令使用，不伪装成运行时依赖。
 - 具体版本、Go 最低版本、许可证变更和安全公告在首次引入、升级及发布阶段重新核对；不接受未审查的自动升级。
 - 禁止 CPA、CPA SDK、Sub2API、NewAPI 作为 module、SDK、submodule 或实现来源；`go list -m all` 是阶段 P00-T02 的门禁。
 - PostgreSQL/Valkey 服务版本属于运行环境，不在本地 module lock 中；部署阶段另行记录镜像 digest、备份/还原和兼容性证据。
+
+## 阶段 01 实际引入
+
+| 依赖 | 锁定版本 | 状态 | 许可证 | 用途 |
+|---|---:|---|---|---|
+| github.com/oapi-codegen/runtime | v1.7.0 | 直接依赖，已写入 go.mod/go.sum | Apache-2.0 | 生成管理契约的 UUID 类型 |
+| github.com/google/uuid | v1.6.0 | 间接依赖，已写入 go.mod/go.sum | BSD-3-Clause | oapi-codegen runtime 的 UUID 支持 |
+| github.com/oapi-codegen/oapi-codegen/v2 | v2.8.0 | `go:generate` 工具版本锁定，未作为运行时依赖 | Apache-2.0 | 从 `api/admin.openapi.yaml` 生成 `api/admin_gen.go` |
+
+阶段 01 的 OpenAPI 生成实际执行 `go run ...@v2.8.0`；生成文件声明版本为 v2.8.0，第二次生成由 `make generate-check` 验证无差异。

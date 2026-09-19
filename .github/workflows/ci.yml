@@ -16,7 +16,8 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
-      - run: gofmt -l cmd internal tests
+      - run: gofmt -l cmd internal tests api
+      - run: make generate-check
       - run: go vet ./...
       - run: go test ./...
       - run: go build ./cmd/urbino

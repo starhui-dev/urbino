@@ -1,0 +1,13 @@
+?   	example.com/urbino/api	[no test files]
+?   	example.com/urbino/cmd/urbino	[no test files]
+ok  	example.com/urbino/internal/cli	0.029s
+?   	example.com/urbino/internal/clock	[no test files]
+ok  	example.com/urbino/internal/config	0.012s
+ok  	example.com/urbino/internal/domain	0.010s
+ok  	example.com/urbino/internal/httpapi	0.019s
+?   	example.com/urbino/internal/observability	[no test files]
+?   	example.com/urbino/internal/ports	[no test files]
+?   	example.com/urbino/internal/testutil	[no test files]
+ok  	example.com/urbino/internal/version	(cached)
+ok  	example.com/urbino/tests/contracts	0.031s
+ok  	example.com/urbino/tests/foundation	(cached)

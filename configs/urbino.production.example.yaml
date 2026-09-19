@@ -1,0 +1,6 @@
+# Urbino production configuration template.
+# Credentials, database URLs and key material are external secret references and
+# are intentionally absent from this file.
+environment: production
+health_addr: 127.0.0.1:9091
+log_level: info

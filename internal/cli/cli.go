@@ -191,7 +191,11 @@ func (o *Options) serve(ctx context.Context, configFile string) int {
 		return ExitError
 	}
 
-	cfg, err := config.Load(path.File)
+	cfg, err := config.LoadWithEnvironment(path.File, map[string]string{
+		config.EnvHealthAddr:  o.env(config.EnvHealthAddr),
+		config.EnvLogLevel:    o.env(config.EnvLogLevel),
+		config.EnvEnvironment: o.env(config.EnvEnvironment),
+	})
 	if err != nil {
 		o.fail("%v", err)
 		return ExitError

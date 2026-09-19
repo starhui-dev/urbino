@@ -1,0 +1,323 @@
+openapi: 3.0.3
+info:
+  title: Urbino
+  version: 0.1.0
+  description: Versioned management contract. Undeployed operations return a stable unsupported error.
+servers:
+  - url: /admin/v1
+paths:
+  /capabilities:
+    get:
+      operationId: listCapabilities
+      summary: List enabled capabilities
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Enabled capabilities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CapabilityDescriptor'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '501':
+          $ref: '#/components/responses/Unsupported'
+  /tenants:
+    get:
+      operationId: listTenants
+      summary: List tenants in the administrator scope
+      security:
+        - bearerAuth: [tenants:read]
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: Tenant page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '501':
+          $ref: '#/components/responses/Unsupported'
+    post:
+      operationId: createTenant
+      summary: Create a tenant
+      security:
+        - bearerAuth: [tenants:write]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTenantRequest'
+      responses:
+        '201':
+          description: Tenant created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '501':
+          $ref: '#/components/responses/Unsupported'
+  /tenants/{tenantId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      operationId: getTenant
+      summary: Read a tenant
+      security:
+        - bearerAuth: [tenants:read]
+      responses:
+        '200':
+          description: Tenant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '501':
+          $ref: '#/components/responses/Unsupported'
+    patch:
+      operationId: updateTenant
+      summary: Update tenant metadata with optimistic concurrency
+      security:
+        - bearerAuth: [tenants:write]
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTenantRequest'
+      responses:
+        '200':
+          description: Tenant updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '501':
+          $ref: '#/components/responses/Unsupported'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: admin-token
+  parameters:
+    TenantId:
+      name: tenantId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
+        default: 50
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+        maxLength: 1024
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 200
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 200
+  responses:
+    BadRequest:
+      description: Invalid request or unsupported field
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid administrator credential
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Scope does not permit this operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource is absent or outside the caller scope
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Idempotency or state conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    PreconditionFailed:
+      description: Version precondition failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unsupported:
+      description: This capability is not enabled or implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      additionalProperties: false
+      required: [code, message, request_id, retryable, details]
+      properties:
+        code:
+          type: string
+          enum: [bad_request, unauthorized, permission_denied, resource_not_found, version_conflict, unsupported_capability, unknown]
+        message:
+          type: string
+          minLength: 1
+          maxLength: 500
+        request_id:
+          type: string
+          format: uuid
+        retryable:
+          type: boolean
+        details:
+          type: object
+          additionalProperties:
+            type: string
+    CapabilityDescriptor:
+      type: object
+      additionalProperties: false
+      required: [name, version, enabled, scopes]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        version:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        scopes:
+          type: array
+          items:
+            type: string
+            minLength: 1
+    CreateTenantRequest:
+      type: object
+      additionalProperties: false
+      required: [name, currency]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        currency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+    UpdateTenantRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        status:
+          type: string
+          enum: [active, disabled]
+    Tenant:
+      type: object
+      additionalProperties: false
+      required: [id, name, currency, status, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        currency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+        status:
+          type: string
+          enum: [active, disabled]
+        version:
+          type: integer
+          format: int64
+          minimum: 1
+    TenantPage:
+      type: object
+      additionalProperties: false
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
+        next_cursor:
+          type: string
+          nullable: true

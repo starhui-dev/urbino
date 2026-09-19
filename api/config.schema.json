@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/urbino/config.schema.json",
+  "title": "Urbino startup configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "health_addr": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "enum": ["development", "test", "production"]},
+    "log_level": {"type": "string", "enum": ["debug", "info", "warn", "error"]},
+    "development": {"type": "boolean", "default": false}
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["environment"],
+        "properties": {"environment": {"const": "production"}}
+      },
+      "then": {"properties": {"development": {"const": false}}}
+    }
+  ],
+  "x-urbino-environment": {
+    "URBINO_CONFIG": "selected startup file; --config has higher precedence",
+    "URBINO_HEALTH_ADDR": "health_addr",
+    "URBINO_LOG_LEVEL": "log_level",
+    "URBINO_ENV": "environment"
+  }
+}
