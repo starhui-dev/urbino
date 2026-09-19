@@ -1,0 +1,2 @@
+command=go generate ./api ./internal/storage/postgres && make generate-check
+exit_code=0

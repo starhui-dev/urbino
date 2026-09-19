@@ -11,7 +11,9 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 
+	"example.com/urbino/internal/auth"
 	"example.com/urbino/internal/config"
 	"example.com/urbino/internal/httpapi"
 	"example.com/urbino/internal/storage/migrate"
@@ -35,24 +37,27 @@ Usage:
   urbino [--config <file>] version
   urbino [--config <file>] serve
   urbino [--config <file>] migrate
+  urbino [--config <file>] bootstrap --output <new-file> --pepper-file <restricted-file>
   urbino [--config <file>] help
 
 Commands:
   version   print the version of this binary
   serve     run the internal health listener
   migrate   apply explicit PostgreSQL migrations
+  bootstrap create the first administrator and write its token once
   help      print this help text
 
 Flags:
-  --config <file>   configuration file; takes precedence over URBINO_CONFIG and ./urbino.yaml
+  --config <file>       configuration file; takes precedence over URBINO_CONFIG and ./urbino.yaml
+  --output <new-file>   exclusive output file for the one-time administrator token
+  --pepper-file <file>  restricted HMAC pepper file; its contents are never logged
 
 Environment:
   URBINO_CONFIG              configuration file used when --config is absent
   URBINO_HEALTH_ADDR         internal health listener address, e.g. 127.0.0.1:9091
-  URBINO_DATABASE_DSN_FILE   restricted file containing the PostgreSQL DSN for migrate
+  URBINO_DATABASE_DSN_FILE   restricted file containing the PostgreSQL DSN for migrate/bootstrap
 
-Commands planned for later stages (worker, bootstrap, admin, doctor,
-config validate) are not implemented yet and fail with a usage error.
+Unimplemented later commands fail with a usage error; no command silently succeeds.
 `
 
 // Options are the process inputs of Run, including a presence-preserving
@@ -111,6 +116,8 @@ type invocation struct {
 	command    string
 	args       []string
 	configPath string
+	outputPath string
+	pepperFile string
 	help       bool
 }
 
@@ -129,7 +136,7 @@ func Run(ctx context.Context, o Options) int {
 	}
 	if inv.help {
 		switch inv.command {
-		case "", "help", "version", "serve", "migrate":
+		case "", "help", "version", "serve", "migrate", "bootstrap":
 			fmt.Fprint(o.Stdout, usage)
 			return ExitOK
 		default:
@@ -162,6 +169,11 @@ func Run(ctx context.Context, o Options) int {
 			return o.usageError("migrate takes no arguments")
 		}
 		return o.migrate(ctx, inv.configPath)
+	case "bootstrap":
+		if len(inv.args) > 0 || inv.outputPath == "" || inv.pepperFile == "" {
+			return o.usageError("bootstrap requires --output and --pepper-file and accepts no positional arguments")
+		}
+		return o.bootstrap(ctx, inv.configPath, inv.outputPath, inv.pepperFile)
 	default:
 		return o.usageError("unknown command %q", inv.command)
 	}
@@ -190,6 +202,20 @@ func parseArgs(args []string) (invocation, error) {
 		case strings.HasPrefix(a, "-config="):
 			inv.configPath = strings.TrimPrefix(a, "-config=")
 			gaveConfig = true
+		case a == "--output":
+			if len(rest) == 0 {
+				return invocation{}, errors.New("--output requires a file path")
+			}
+			inv.outputPath, rest = rest[0], rest[1:]
+		case strings.HasPrefix(a, "--output="):
+			inv.outputPath = strings.TrimPrefix(a, "--output=")
+		case a == "--pepper-file":
+			if len(rest) == 0 {
+				return invocation{}, errors.New("--pepper-file requires a file path")
+			}
+			inv.pepperFile, rest = rest[0], rest[1:]
+		case strings.HasPrefix(a, "--pepper-file="):
+			inv.pepperFile = strings.TrimPrefix(a, "--pepper-file=")
 		case a == "--help" || a == "-h" || a == "-help":
 			inv.help = true
 		case strings.HasPrefix(a, "-") && a != "-":
@@ -244,6 +270,41 @@ func (o *Options) migrate(ctx context.Context, configFile string) int {
 		return ExitError
 	}
 	fmt.Fprintf(o.Stdout, "urbino: migrations applied through version %04d\n", migrations[len(migrations)-1].Version)
+	return ExitOK
+}
+
+func (o *Options) bootstrap(ctx context.Context, configFile, outputPath, pepperFile string) int {
+	path, err := config.ResolvePath(config.PathInput{Explicit: configFile, Env: o.env(config.EnvConfigPath), Dir: o.WorkDir})
+	if err != nil {
+		o.fail("%v", err)
+		return ExitError
+	}
+	cfg, err := config.LoadWithEnvironment(path.File, o.environmentValues())
+	if err != nil {
+		o.fail("%v", err)
+		return ExitError
+	}
+	dsn, err := config.ReadDatabaseDSN(cfg)
+	if err != nil {
+		o.fail("%v", err)
+		return ExitError
+	}
+	pepper, err := auth.ReadPepperFile(pepperFile, "admin-v1")
+	if err != nil {
+		o.fail("administrator bootstrap secret configuration is invalid")
+		return ExitError
+	}
+	db, err := postgres.Open(ctx, postgres.Config{DSN: dsn})
+	if err != nil {
+		o.fail("%s", postgres.SafeErrorMessage(err))
+		return ExitError
+	}
+	defer db.Close()
+	if err := postgres.BootstrapAdmin(ctx, db, auth.Issuer{Current: pepper}, outputPath, time.Now().UTC()); err != nil {
+		o.fail("%v", err)
+		return ExitError
+	}
+	fmt.Fprintf(o.Stdout, "urbino: administrator bootstrap token written to %s\n", outputPath)
 	return ExitOK
 }
 

@@ -28,10 +28,15 @@
     },
     "03": {
       "title": "租户、用户、API Key 与管理鉴权",
-      "status": "not_started",
-      "evidence_path": null,
-      "review_path": null,
-      "blockers": []
+      "status": "blocked",
+      "evidence_path": "evidence/stages/03.json",
+      "review_path": "progress/reports/03-review.md",
+      "blockers": [
+        "CredentialMiddleware 必须绑定真实 auth.Service 验证回调；当前无 public/admin 网络装配",
+        "身份凭据和 bootstrap 尚未接入 PostgreSQL/Valkey 运行时路径",
+        "P03-T02/P03-T03 共 7 项 PostgreSQL ScopedStore 测试尚未绑定并实跑",
+        "真实 bootstrap、listener 隔离和持久化多实例路径尚未验证"
+      ]
     },
     "04": {
       "title": "上游凭据加密与轮换",

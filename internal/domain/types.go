@@ -11,12 +11,15 @@ const (
 	ScopeTenantsRead  PermissionScope = "tenants:read"
 	ScopeTenantsWrite PermissionScope = "tenants:write"
 	ScopeModelsRead   PermissionScope = "models:read"
+	ScopeModelsInvoke PermissionScope = "models:invoke"
 	ScopeUsageRead    PermissionScope = "usage:read"
+	ScopeKeysRead     PermissionScope = "admin:keys:read"
+	ScopeKeysWrite    PermissionScope = "admin:keys:write"
 )
 
 func (s PermissionScope) Valid() bool {
 	switch s {
-	case ScopeTenantsRead, ScopeTenantsWrite, ScopeModelsRead, ScopeUsageRead:
+	case ScopeTenantsRead, ScopeTenantsWrite, ScopeModelsRead, ScopeModelsInvoke, ScopeUsageRead, ScopeKeysRead, ScopeKeysWrite:
 		return true
 	default:
 		return false

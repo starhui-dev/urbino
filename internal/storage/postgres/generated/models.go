@@ -8,6 +8,58 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type AdminPrincipal struct {
+	ID          pgtype.UUID        `json:"id"`
+	DisplayName string             `json:"display_name"`
+	Status      string             `json:"status"`
+	Scopes      []string           `json:"scopes"`
+	Version     int64              `json:"version"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+}
+
+type AdminToken struct {
+	ID           pgtype.UUID        `json:"id"`
+	PrincipalID  pgtype.UUID        `json:"principal_id"`
+	PublicID     string             `json:"public_id"`
+	SecretDigest []byte             `json:"secret_digest"`
+	DigestKeyID  string             `json:"digest_key_id"`
+	ExpiresAt    pgtype.Timestamptz `json:"expires_at"`
+	RevokedAt    pgtype.Timestamptz `json:"revoked_at"`
+	AuthVersion  int64              `json:"auth_version"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+}
+
+type ApiKey struct {
+	TenantID      pgtype.UUID        `json:"tenant_id"`
+	ID            pgtype.UUID        `json:"id"`
+	ProjectID     pgtype.UUID        `json:"project_id"`
+	UserID        pgtype.UUID        `json:"user_id"`
+	PublicID      string             `json:"public_id"`
+	SecretDigest  []byte             `json:"secret_digest"`
+	DigestKeyID   string             `json:"digest_key_id"`
+	Scopes        []string           `json:"scopes"`
+	AllowedModels []string           `json:"allowed_models"`
+	Status        string             `json:"status"`
+	ExpiresAt     pgtype.Timestamptz `json:"expires_at"`
+	RevokedAt     pgtype.Timestamptz `json:"revoked_at"`
+	AuthVersion   int64              `json:"auth_version"`
+	CreatedAt     pgtype.Timestamptz `json:"created_at"`
+}
+
+type AuditEvent struct {
+	ID           pgtype.UUID        `json:"id"`
+	TenantID     pgtype.UUID        `json:"tenant_id"`
+	ActorKind    string             `json:"actor_kind"`
+	ActorID      pgtype.UUID        `json:"actor_id"`
+	Action       string             `json:"action"`
+	TargetType   string             `json:"target_type"`
+	TargetID     pgtype.UUID        `json:"target_id"`
+	Reason       pgtype.Text        `json:"reason"`
+	Result       string             `json:"result"`
+	SafeMetadata []byte             `json:"safe_metadata"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+}
+
 type BillingAccount struct {
 	TenantID            pgtype.UUID `json:"tenant_id"`
 	ID                  pgtype.UUID `json:"id"`
@@ -59,6 +111,15 @@ type Project struct {
 	TenantID  pgtype.UUID        `json:"tenant_id"`
 	ID        pgtype.UUID        `json:"id"`
 	Name      string             `json:"name"`
+	Status    string             `json:"status"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+type ProjectMember struct {
+	TenantID  pgtype.UUID        `json:"tenant_id"`
+	ProjectID pgtype.UUID        `json:"project_id"`
+	UserID    pgtype.UUID        `json:"user_id"`
+	Role      string             `json:"role"`
 	Status    string             `json:"status"`
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }

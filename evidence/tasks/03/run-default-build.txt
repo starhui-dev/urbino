@@ -1,0 +1,2 @@
+ok  	example.com/urbino/tests/identity	0.011s
+DEFAULT_EXIT=0

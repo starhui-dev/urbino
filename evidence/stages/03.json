@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "stage": "03",
+  "status": "blocked",
+  "code_revision": "tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93",
+  "environment": {
+    "os": "linux/amd64",
+    "go_version": "go1.27.1",
+    "postgres_version": null,
+    "valkey_version": null,
+    "docker_version": null
+  },
+  "commands": [
+    {"command":"go test ./... -count=1 -v","exit_code":0,"output_path":"evidence/commands/phase03-go-test.txt","result":"pass_with_declared_skips","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
+    {"command":"go vet ./...","exit_code":0,"output_path":"evidence/commands/phase03-go-vet.txt","result":"pass","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
+    {"command":"go build ./cmd/urbino","exit_code":0,"output_path":"evidence/commands/phase03-go-build.txt","result":"pass","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
+    {"command":"go generate ./api ./internal/storage/postgres && make generate-check","exit_code":0,"output_path":"evidence/commands/phase03-generate.txt","result":"pass","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
+    {"command":"go run ./cmd/urbino bootstrap --help","exit_code":0,"output_path":"evidence/commands/phase03-cli-help.txt","result":"pass","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
+    {"command":"go test -tags identityimpl ./tests/identity -count=1 -v","exit_code":0,"output_path":"evidence/commands/phase03-identity-linked.txt","result":"pass_with_7_scoped_store_skips","required":true,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
+    {"command":"go test -tags identityimpl ./tests/identity -count=2 -v","exit_code":0,"output_path":"evidence/tasks/03/run-tagged-count2.txt","result":"56_pass_14_skip_0_fail","required":false,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"},
+    {"command":"go test ./tests/identity -count=1","exit_code":0,"output_path":"evidence/tasks/03/run-default-build.txt","result":"pass_with_declared_skips","required":false,"revision":"tree:f18b7347d2fa1519b3f90db924c8115f42fa9e93"}
+  ],
+  "requirements": [
+    {"test_id":"P03-T01","test_name":"public/admin listener 与 credential 隔离","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
+    {"test_id":"P03-T02","test_name":"tenant scope 过滤、单项读取与统计","result":"skip","evidence_path":"evidence/tasks/03/identity-boundary-tests.md"},
+    {"test_id":"P03-T03","test_name":"project membership 与跨项目边界","result":"skip","evidence_path":"evidence/tasks/03/identity-boundary-tests.md"},
+    {"test_id":"P03-T04","test_name":"撤销 TTL、传播与 fail-closed","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
+    {"test_id":"P03-T05","test_name":"过期、scope 与 admin scope","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
+    {"test_id":"P03-T06","test_name":"并发 bootstrap 与独占秘密输出","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
+    {"test_id":"P03-T07","test_name":"认证头与 query key 冲突拒绝","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
+    {"test_id":"P03-T08","test_name":"秘密摘要、错误与日志脱敏","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
+    {"test_id":"P03-T09","test_name":"多模型策略与策略隔离","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"}
+  ],
+  "blockers": ["P03-T02/P03-T03 共 7 项 PostgreSQL ScopedStore 测试尚未绑定并实跑"],
+  "risks": [
+    "未运行真实 PostgreSQL 阶段三身份集成；迁移生成一致性已通过但新身份表未在 loopback 数据库执行。",
+    "Valkey、River、真实 provider、完整管理 API、生产部署、备份恢复和升级回滚不属于本阶段实测。",
+    "阶段三仍为 working tree 未提交；reviewer/security reviewer 复核尚未完成。"
+  ],
+  "review": {
+    "status":"blocked",
+    "reviewer_session":"Stage03CodeReview",
+    "reviewed_revision":"working-tree before final middleware/membership fixes; HEAD=483ee4b6ceb9f46e939f8eccb4d47196bef3b585",
+    "report_path":"progress/reports/03-review.md",
+    "security_review_path":"progress/reports/03-review.md",
+    "independent_context":true
+  },
+  "development": {
+    "harness":"oh-my-pi",
+    "orchestrator_session":"main-session",
+    "orchestrator_model":"Hui AI (OpenAI)/gpt-5.6-sol",
+    "runtime_report_path":"evidence/omp/runtime.json",
+    "task_report_paths":["evidence/tasks/03/identity-boundary-tests.md","evidence/tasks/03/run-tagged-count2.txt","evidence/tasks/03/run-default-build.txt"],
+    "all_tasks_terminal":true
+  }
+}

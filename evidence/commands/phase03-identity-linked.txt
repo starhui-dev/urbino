@@ -1,0 +1,161 @@
+=== RUN   TestP03T01PublicKeyRejectedOnAdminPath
+=== RUN   TestP03T01PublicKeyRejectedOnAdminPath/bearer
+=== RUN   TestP03T01PublicKeyRejectedOnAdminPath/x-api-key
+=== RUN   TestP03T01PublicKeyRejectedOnAdminPath/x-goog-api-key
+--- PASS: TestP03T01PublicKeyRejectedOnAdminPath (0.00s)
+    --- PASS: TestP03T01PublicKeyRejectedOnAdminPath/bearer (0.00s)
+    --- PASS: TestP03T01PublicKeyRejectedOnAdminPath/x-api-key (0.00s)
+    --- PASS: TestP03T01PublicKeyRejectedOnAdminPath/x-goog-api-key (0.00s)
+=== RUN   TestP03T01AdminTokenRejectedOnPublicPath
+=== RUN   TestP03T01AdminTokenRejectedOnPublicPath/bearer
+=== RUN   TestP03T01AdminTokenRejectedOnPublicPath/x-api-key
+--- PASS: TestP03T01AdminTokenRejectedOnPublicPath (0.00s)
+    --- PASS: TestP03T01AdminTokenRejectedOnPublicPath/bearer (0.00s)
+    --- PASS: TestP03T01AdminTokenRejectedOnPublicPath/x-api-key (0.00s)
+=== RUN   TestP03T01IndependentPrefixes
+--- PASS: TestP03T01IndependentPrefixes (0.00s)
+=== RUN   TestP03T01PublicPrincipalLacksAdminScopes
+--- PASS: TestP03T01PublicPrincipalLacksAdminScopes (0.00s)
+=== RUN   TestP03T02CrossTenantSingleReadNotFound
+    p03_t02_tenant_scope_test.go:46: ScopedStore requires the main agent's PostgreSQL adapter; internal/auth is linked but storage binding is pending (SKIP is not a pass)
+--- SKIP: TestP03T02CrossTenantSingleReadNotFound (0.00s)
+=== RUN   TestP03T02ListFilteredByTenant
+    p03_t02_tenant_scope_test.go:60: ScopedStore requires the main agent's PostgreSQL adapter; internal/auth is linked but storage binding is pending (SKIP is not a pass)
+--- SKIP: TestP03T02ListFilteredByTenant (0.00s)
+=== RUN   TestP03T02StatsScopedByTenant
+    p03_t02_tenant_scope_test.go:98: ScopedStore requires the main agent's PostgreSQL adapter; internal/auth is linked but storage binding is pending (SKIP is not a pass)
+--- SKIP: TestP03T02StatsScopedByTenant (0.00s)
+=== RUN   TestP03T02MissingAndForeignLookupsIndistinguishable
+    p03_t02_tenant_scope_test.go:123: ScopedStore requires the main agent's PostgreSQL adapter; internal/auth is linked but storage binding is pending (SKIP is not a pass)
+--- SKIP: TestP03T02MissingAndForeignLookupsIndistinguishable (0.00s)
+=== RUN   TestP03T03MembershipRequiredForProjectResources
+    p03_t03_project_boundary_test.go:47: ScopedStore requires the main agent's PostgreSQL adapter; internal/auth is linked but storage binding is pending (SKIP is not a pass)
+--- SKIP: TestP03T03MembershipRequiredForProjectResources (0.00s)
+=== RUN   TestP03T03CrossProjectReferenceRejected
+    p03_t03_project_boundary_test.go:66: ScopedStore requires the main agent's PostgreSQL adapter; internal/auth is linked but storage binding is pending (SKIP is not a pass)
+--- SKIP: TestP03T03CrossProjectReferenceRejected (0.00s)
+=== RUN   TestP03T03TenantBoundaryHoldsUnderProjectChecks
+    p03_t03_project_boundary_test.go:93: ScopedStore requires the main agent's PostgreSQL adapter; internal/auth is linked but storage binding is pending (SKIP is not a pass)
+--- SKIP: TestP03T03TenantBoundaryHoldsUnderProjectChecks (0.00s)
+=== RUN   TestP03T04RevocationTTLBound
+--- PASS: TestP03T04RevocationTTLBound (0.00s)
+=== RUN   TestP03T04RevokedKeyRejectedWithinWindow
+=== RUN   TestP03T04RevokedKeyRejectedWithinWindow/instance_that_revoked
+=== RUN   TestP03T04RevokedKeyRejectedWithinWindow/instance_with_warmed_cache
+--- PASS: TestP03T04RevokedKeyRejectedWithinWindow (0.00s)
+    --- PASS: TestP03T04RevokedKeyRejectedWithinWindow/instance_that_revoked (0.00s)
+    --- PASS: TestP03T04RevokedKeyRejectedWithinWindow/instance_with_warmed_cache (0.00s)
+=== RUN   TestP03T04RevocationPropagatesToSharedStore
+--- PASS: TestP03T04RevocationPropagatesToSharedStore (0.00s)
+=== RUN   TestP03T04CacheErrorFailsClosed
+=== RUN   TestP03T04CacheErrorFailsClosed/cold_key_backend_error
+=== RUN   TestP03T04CacheErrorFailsClosed/warm_entry_backend_error
+=== RUN   TestP03T04CacheErrorFailsClosed/window_elapsed_backend_error
+--- PASS: TestP03T04CacheErrorFailsClosed (0.00s)
+    --- PASS: TestP03T04CacheErrorFailsClosed/cold_key_backend_error (0.00s)
+    --- PASS: TestP03T04CacheErrorFailsClosed/warm_entry_backend_error (0.00s)
+    --- PASS: TestP03T04CacheErrorFailsClosed/window_elapsed_backend_error (0.00s)
+=== RUN   TestP03T04StaleVersionFailsClosed
+--- PASS: TestP03T04StaleVersionFailsClosed (0.00s)
+=== RUN   TestP03T05ExpiredKeyRejected
+--- PASS: TestP03T05ExpiredKeyRejected (0.00s)
+=== RUN   TestP03T05ExpiredKeyRejectedWithWarmCache
+--- PASS: TestP03T05ExpiredKeyRejectedWithWarmCache (0.00s)
+=== RUN   TestP03T05MissingScopeRejected
+--- PASS: TestP03T05MissingScopeRejected (0.00s)
+=== RUN   TestP03T05AdminScopeEscalationRejected
+--- PASS: TestP03T05AdminScopeEscalationRejected (0.00s)
+=== RUN   TestP03T06ConcurrentBootstrapSingleWinner
+--- PASS: TestP03T06ConcurrentBootstrapSingleWinner (0.00s)
+=== RUN   TestP03T06BootstrapDoesNotResetOldSecret
+--- PASS: TestP03T06BootstrapDoesNotResetOldSecret (0.00s)
+=== RUN   TestP03T06SecretOutputIsExclusive
+--- PASS: TestP03T06SecretOutputIsExclusive (0.00s)
+=== RUN   TestP03T07ConflictingHeadersRejected
+=== RUN   TestP03T07ConflictingHeadersRejected/duplicate_x_api_key
+=== RUN   TestP03T07ConflictingHeadersRejected/bearer_valid_plus_x_api_key_garbage
+=== RUN   TestP03T07ConflictingHeadersRejected/bearer_garbage_plus_x_api_key_valid
+=== RUN   TestP03T07ConflictingHeadersRejected/bearer_plus_x_api_key
+=== RUN   TestP03T07ConflictingHeadersRejected/bearer_plus_x_goog_api_key
+=== RUN   TestP03T07ConflictingHeadersRejected/x_api_key_plus_x_goog_api_key
+=== RUN   TestP03T07ConflictingHeadersRejected/duplicate_authorization
+--- PASS: TestP03T07ConflictingHeadersRejected (0.00s)
+    --- PASS: TestP03T07ConflictingHeadersRejected/duplicate_x_api_key (0.00s)
+    --- PASS: TestP03T07ConflictingHeadersRejected/bearer_valid_plus_x_api_key_garbage (0.00s)
+    --- PASS: TestP03T07ConflictingHeadersRejected/bearer_garbage_plus_x_api_key_valid (0.00s)
+    --- PASS: TestP03T07ConflictingHeadersRejected/bearer_plus_x_api_key (0.00s)
+    --- PASS: TestP03T07ConflictingHeadersRejected/bearer_plus_x_goog_api_key (0.00s)
+    --- PASS: TestP03T07ConflictingHeadersRejected/x_api_key_plus_x_goog_api_key (0.00s)
+    --- PASS: TestP03T07ConflictingHeadersRejected/duplicate_authorization (0.00s)
+=== RUN   TestP03T07QueryKeyRejected
+=== RUN   TestP03T07QueryKeyRejected/key
+=== RUN   TestP03T07QueryKeyRejected/api_key
+=== RUN   TestP03T07QueryKeyRejected/apikey
+=== RUN   TestP03T07QueryKeyRejected/access_token
+=== RUN   TestP03T07QueryKeyRejected/token
+=== RUN   TestP03T07QueryKeyRejected/x-api-key
+=== RUN   TestP03T07QueryKeyRejected/x-goog-api-key
+--- PASS: TestP03T07QueryKeyRejected (0.00s)
+    --- PASS: TestP03T07QueryKeyRejected/key (0.00s)
+    --- PASS: TestP03T07QueryKeyRejected/api_key (0.00s)
+    --- PASS: TestP03T07QueryKeyRejected/apikey (0.00s)
+    --- PASS: TestP03T07QueryKeyRejected/access_token (0.00s)
+    --- PASS: TestP03T07QueryKeyRejected/token (0.00s)
+    --- PASS: TestP03T07QueryKeyRejected/x-api-key (0.00s)
+    --- PASS: TestP03T07QueryKeyRejected/x-goog-api-key (0.00s)
+=== RUN   TestP03T07MalformedAuthorizationRejected
+=== RUN   TestP03T07MalformedAuthorizationRejected/empty_bearer
+=== RUN   TestP03T07MalformedAuthorizationRejected/unknown_key
+=== RUN   TestP03T07MalformedAuthorizationRejected/whitespace_only
+=== RUN   TestP03T07MalformedAuthorizationRejected/basic_scheme
+=== RUN   TestP03T07MalformedAuthorizationRejected/raw_no_scheme
+--- PASS: TestP03T07MalformedAuthorizationRejected (0.00s)
+    --- PASS: TestP03T07MalformedAuthorizationRejected/empty_bearer (0.00s)
+    --- PASS: TestP03T07MalformedAuthorizationRejected/unknown_key (0.00s)
+    --- PASS: TestP03T07MalformedAuthorizationRejected/whitespace_only (0.00s)
+    --- PASS: TestP03T07MalformedAuthorizationRejected/basic_scheme (0.00s)
+    --- PASS: TestP03T07MalformedAuthorizationRejected/raw_no_scheme (0.00s)
+=== RUN   TestP03T07ConflictingHeadersRejectedOnAdminPath
+=== RUN   TestP03T07ConflictingHeadersRejectedOnAdminPath/bearer_plus_x_api_key
+=== RUN   TestP03T07ConflictingHeadersRejectedOnAdminPath/query_key
+--- PASS: TestP03T07ConflictingHeadersRejectedOnAdminPath (0.00s)
+    --- PASS: TestP03T07ConflictingHeadersRejectedOnAdminPath/bearer_plus_x_api_key (0.00s)
+    --- PASS: TestP03T07ConflictingHeadersRejectedOnAdminPath/query_key (0.00s)
+=== RUN   TestP03T07CanonicalSingleHeadersAccepted
+=== RUN   TestP03T07CanonicalSingleHeadersAccepted/bearer
+=== RUN   TestP03T07CanonicalSingleHeadersAccepted/x_api_key
+=== RUN   TestP03T07CanonicalSingleHeadersAccepted/x_goog_api_key
+--- PASS: TestP03T07CanonicalSingleHeadersAccepted (0.00s)
+    --- PASS: TestP03T07CanonicalSingleHeadersAccepted/bearer (0.00s)
+    --- PASS: TestP03T07CanonicalSingleHeadersAccepted/x_api_key (0.00s)
+    --- PASS: TestP03T07CanonicalSingleHeadersAccepted/x_goog_api_key (0.00s)
+=== RUN   TestP03T08KeyRecordCarriesNoPlaintext
+--- PASS: TestP03T08KeyRecordCarriesNoPlaintext (0.00s)
+=== RUN   TestP03T08ErrorsNeverEchoSecret
+=== RUN   TestP03T08ErrorsNeverEchoSecret/expired_key
+=== RUN   TestP03T08ErrorsNeverEchoSecret/revoked_key
+=== RUN   TestP03T08ErrorsNeverEchoSecret/unknown_public_id
+=== RUN   TestP03T08ErrorsNeverEchoSecret/conflicting_headers
+=== RUN   TestP03T08ErrorsNeverEchoSecret/query_key
+=== RUN   TestP03T08ErrorsNeverEchoSecret/cache_down
+--- PASS: TestP03T08ErrorsNeverEchoSecret (0.00s)
+    --- PASS: TestP03T08ErrorsNeverEchoSecret/expired_key (0.00s)
+    --- PASS: TestP03T08ErrorsNeverEchoSecret/revoked_key (0.00s)
+    --- PASS: TestP03T08ErrorsNeverEchoSecret/unknown_public_id (0.00s)
+    --- PASS: TestP03T08ErrorsNeverEchoSecret/conflicting_headers (0.00s)
+    --- PASS: TestP03T08ErrorsNeverEchoSecret/query_key (0.00s)
+    --- PASS: TestP03T08ErrorsNeverEchoSecret/cache_down (0.00s)
+=== RUN   TestP03T08LogsNeverContainSecret
+--- PASS: TestP03T08LogsNeverContainSecret (0.00s)
+=== RUN   TestP03T08AdminTokenAlsoOneTime
+--- PASS: TestP03T08AdminTokenAlsoOneTime (0.00s)
+=== RUN   TestP03T09OneKeyMultipleAllowedModels
+--- PASS: TestP03T09OneKeyMultipleAllowedModels (0.00s)
+=== RUN   TestP03T09EmptyPolicyRejectedAtCreation
+--- PASS: TestP03T09EmptyPolicyRejectedAtCreation (0.00s)
+=== RUN   TestP03T09PolicyIsPerKeyAndShareable
+--- PASS: TestP03T09PolicyIsPerKeyAndShareable (0.00s)
+PASS
+ok  	example.com/urbino/tests/identity	0.017s
+command=go test -tags identityimpl ./tests/identity -count=1 -v
+exit_code=0

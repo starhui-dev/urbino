@@ -21,7 +21,7 @@ generate:
 	$(GO) generate ./api ./internal/storage/postgres
 
 generate-check:
-	@set -e; tmp=$$(mktemp -d); trap 'rm -rf "$$tmp"' EXIT; cp api/admin_gen.go "$$tmp/admin_gen.go"; cp -R internal/storage/postgres/generated "$$tmp/generated"; $(GO) generate ./api ./internal/storage/postgres; cmp -s api/admin_gen.go "$$tmp/admin_gen.go"; diff -ru "$$tmp/generated" internal/storage/postgres/generated; cmp -s migrations/0001_persistence.sql internal/storage/migrate/migrations/0001_persistence.sql
+	@set -e; tmp=$$(mktemp -d); trap 'rm -rf "$$tmp"' EXIT; cp api/admin_gen.go "$$tmp/admin_gen.go"; cp -R internal/storage/postgres/generated "$$tmp/generated"; $(GO) generate ./api ./internal/storage/postgres; cmp -s api/admin_gen.go "$$tmp/admin_gen.go"; diff -ru "$$tmp/generated" internal/storage/postgres/generated; diff -ru migrations internal/storage/migrate/migrations
 
 sqlc-generate:
 	$(GO) generate ./internal/storage/postgres

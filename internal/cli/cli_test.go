@@ -91,7 +91,7 @@ func TestVersionRejectsArguments(t *testing.T) {
 }
 
 func TestUnknownCommandFails(t *testing.T) {
-	for _, command := range []string{"bogus", "versionn", "worker", "bootstrap", "admin", "doctor"} {
+	for _, command := range []string{"bogus", "versionn", "worker", "admin", "doctor"} {
 		code, stdout, stderr := runCLI(t, context.Background(), t.TempDir(), nil, command)
 		if code != ExitUsage {
 			t.Fatalf("%s: exit code = %d, want %d", command, code, ExitUsage)
@@ -102,6 +102,17 @@ func TestUnknownCommandFails(t *testing.T) {
 		if stdout != "" {
 			t.Fatalf("%s: stdout = %q, want empty", command, stdout)
 		}
+	}
+}
+
+func TestBootstrapRequiresExclusiveSecretInputs(t *testing.T) {
+	code, stdout, stderr := runCLI(t, context.Background(), t.TempDir(), nil, "bootstrap")
+	if code != ExitUsage || stdout != "" || !strings.Contains(stderr, "--output") || !strings.Contains(stderr, "--pepper-file") {
+		t.Fatalf("bootstrap without inputs: code=%d stdout=%q stderr=%q", code, stdout, stderr)
+	}
+	code, stdout, stderr = runCLI(t, context.Background(), t.TempDir(), nil, "bootstrap", "--help")
+	if code != ExitOK || stdout == "" || stderr != "" || !strings.Contains(stdout, "bootstrap") {
+		t.Fatalf("bootstrap help: code=%d stdout=%q stderr=%q", code, stdout, stderr)
 	}
 }
 func TestUnknownCommandWithHelpFails(t *testing.T) {
