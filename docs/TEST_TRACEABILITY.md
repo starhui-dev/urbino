@@ -25,3 +25,13 @@
 | P02-T05 | `TestP02T05CanceledTransactionRollsBack`：取消事务回滚且连接可复用 | `internal/storage/postgres/postgres.go`、`tests/integration/` | `evidence/commands/phase02-integration.txt` |
 | P02-T06 | `TestP02T06SchemaCompatibilityRejectsNewerVersion`：版本不兼容拒绝且 schema 不变 | `internal/storage/migrate/runner.go`、`internal/cli/cli.go`、`tests/integration/` | `evidence/commands/phase02-integration.txt` |
 | P02-T07 | `TestP02T07DatabaseErrorsAreRedacted`：DSN/driver 错误不回显 | `internal/storage/postgres/postgres.go`、`tests/integration/` | `evidence/commands/phase02-unit.txt` |
+
+| P03-T01 | `TestP03T01*`、真实 serve smoke：public/admin listener 与 credential 隔离 | `internal/httpapi/auth.go`、`internal/httpapi/authservers.go`、`internal/storage/postgres/authenticator.go`、`tests/identity/` | `evidence/commands/phase03-identity-full.txt`、`evidence/commands/phase03-runtime-listeners.txt` |
+| P03-T02 | `TestP03T02*`：tenant-scoped list/single read/stats，跨 tenant 统一 not-found | `internal/storage/postgres/identity.go`、`tests/identity/binding_identityimpl.go`、`tests/identity/p03_t02_tenant_scope_test.go` | `evidence/commands/phase03-identity-full.txt` |
+| P03-T03 | `TestP03T03*`：project membership 与跨 project/tenant 引用隔离 | `internal/storage/postgres/identity.go`、`tests/identity/binding_identityimpl.go`、`tests/identity/p03_t03_project_boundary_test.go` | `evidence/commands/phase03-identity-full.txt` |
+| P03-T04 | revocation TTL 上界、共享后端传播与 fail-closed | `internal/auth/service.go`、`tests/identity/p03_t04_revocation_cache_test.go` | `evidence/commands/phase03-identity-full.txt` |
+| P03-T05 | expiry、scope、admin scope 拒绝 | `internal/auth/service.go`、`internal/storage/postgres/authenticator.go`、`tests/identity/p03_t05_expiry_scope_test.go` | `evidence/commands/phase03-identity-full.txt` |
+| P03-T06 | 并发 bootstrap 单胜者与 O_EXCL 独占秘密输出 | `internal/storage/postgres/admin.go`、`tests/identity/p03_t06_double_bootstrap_test.go` | `evidence/commands/phase03-identity-full.txt`、`evidence/commands/phase03-runtime-listeners.txt` |
+| P03-T07 | 重复/冲突认证头、query key 拒绝 | `internal/auth/auth.go`、`internal/httpapi/auth.go`、`tests/identity/p03_t07_header_conflict_test.go` | `evidence/commands/phase03-identity-full.txt` |
+| P03-T08 | digest-only、错误/日志脱敏、admin token 一次性 | `internal/auth/`、`internal/storage/postgres/authenticator.go`、`tests/identity/p03_t08_secret_redaction_test.go` | `evidence/commands/phase03-identity-full.txt` |
+| P03-T09 | 一 key 多模型策略与策略隔离 | `internal/auth/service.go`、`tests/identity/p03_t09_multi_model_test.go` | `evidence/commands/phase03-identity-full.txt` |

@@ -15,11 +15,17 @@ package identity
 
 import (
 	"context"
+	"crypto/rand"
+	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"example.com/urbino/internal/auth"
 	"example.com/urbino/internal/clock"
+	"example.com/urbino/internal/domain"
+	"example.com/urbino/internal/storage/migrate"
+	"example.com/urbino/internal/storage/postgres"
 )
 
 type system struct {
@@ -232,11 +238,148 @@ func (secretFileWriter) WriteNew(path, secret string) error {
 	return nil
 }
 
-// NewScopedStore is intentionally unbound: tenant/project scoped persistence
-// is the storage integration the main agent wires. P03-T02/T03 skip with
-// ErrPGAdapterPending until that binding exists.
-func NewScopedStore(_ context.Context, _ string) (ScopedStore, error) {
-	return nil, ErrPGAdapterPending
+type scopedStore struct {
+	db     *postgres.DB
+	store  *postgres.IdentityStore
+	pepper auth.Pepper
+}
+
+func NewScopedStore(ctx context.Context, dsn string) (ScopedStore, error) {
+	if strings.TrimSpace(dsn) == "" {
+		return nil, ErrPGAdapterPending
+	}
+	pepperKey := make([]byte, 32)
+	if _, err := rand.Read(pepperKey); err != nil {
+		return nil, fmt.Errorf("identity test pepper unavailable")
+	}
+	db, err := postgres.Open(ctx, postgres.Config{DSN: dsn})
+	if err != nil {
+		return nil, fmt.Errorf("identity scoped store unavailable")
+	}
+	migrations, err := migrate.LoadEmbedded()
+	if err != nil {
+		db.Close()
+		return nil, fmt.Errorf("identity migrations unavailable")
+	}
+	if err := (migrate.Runner{Pool: db.Pool()}).Run(ctx, migrations); err != nil {
+		db.Close()
+		return nil, fmt.Errorf("identity schema unavailable")
+	}
+	store, err := postgres.NewIdentityStore(db)
+	if err != nil {
+		db.Close()
+		return nil, fmt.Errorf("identity store unavailable")
+	}
+	return &scopedStore{db: db, store: store, pepper: auth.Pepper{ID: "identity-test-v1", Key: pepperKey}}, nil
+}
+
+func (s *scopedStore) SeedScope(ctx context.Context) (Scope, error) {
+	tenantID := domain.TenantID(newScopedUUID())
+	projectID := domain.ProjectID(newScopedUUID())
+	if err := s.store.CreateTenant(ctx, domain.Tenant{ID: tenantID, Name: "identity-test-tenant", Currency: domain.Currency("USD"), Status: domain.TenantActive, Version: 1}); err != nil {
+		return Scope{}, fmt.Errorf("seed tenant: %w", err)
+	}
+	if err := s.store.CreateProject(ctx, domain.Project{ID: projectID, Tenant: tenantID, Name: "identity-test-project", Version: 1}); err != nil {
+		return Scope{}, fmt.Errorf("seed project: %w", err)
+	}
+	return Scope{TenantID: tenantID, ProjectID: projectID}, nil
+}
+
+func (s *scopedStore) SeedKey(ctx context.Context, scope Scope, seed KeySeed) (string, error) {
+	if scope.TenantID.IsZero() || scope.ProjectID.IsZero() || seed.UserID.IsZero() || len(seed.Scopes) == 0 || len(seed.Models) == 0 {
+		return "", ErrUnauthorized
+	}
+	now := time.Now().UTC()
+	if !seed.ExpiresAt.After(now) {
+		return "", ErrUnauthorized
+	}
+	if err := s.store.EnsureUser(ctx, scope.TenantID, seed.UserID, "identity-test-user"); err != nil {
+		return "", fmt.Errorf("seed user: %w", err)
+	}
+	if err := s.store.EnsureProjectMember(ctx, scope.TenantID, scope.ProjectID, seed.UserID, "member"); err != nil {
+		return "", fmt.Errorf("seed member: %w", err)
+	}
+	scopes := make([]domain.PermissionScope, 0, len(seed.Scopes))
+	for _, value := range seed.Scopes {
+		scopes = append(scopes, domain.PermissionScope(value))
+	}
+	issued, err := (auth.Issuer{Current: s.pepper}).Issue(scope.TenantID, scope.ProjectID, seed.UserID, scopes, seed.Models, now, seed.ExpiresAt.Sub(now))
+	if err != nil {
+		return "", fmt.Errorf("seed key: %w", err)
+	}
+	if err := s.store.CreateAPIKey(ctx, issued); err != nil {
+		return "", fmt.Errorf("persist key: %w", err)
+	}
+	return issued.Record.PublicID, nil
+}
+
+func (s *scopedStore) AddMember(ctx context.Context, scope Scope, user domain.PrincipalID) error {
+	if err := s.store.EnsureUser(ctx, scope.TenantID, user, "identity-test-user"); err != nil {
+		return fmt.Errorf("add member user: %w", err)
+	}
+	return mapScopedStoreError(s.store.EnsureProjectMember(ctx, scope.TenantID, scope.ProjectID, user, "member"))
+}
+
+func (s *scopedStore) RequireMembership(ctx context.Context, scope Scope, user domain.PrincipalID) error {
+	active, err := s.store.IsActiveMember(ctx, scope.TenantID, scope.ProjectID, user)
+	if err != nil {
+		return fmt.Errorf("membership lookup failed")
+	}
+	if !active {
+		return ErrForbidden
+	}
+	return nil
+}
+
+func (s *scopedStore) GetKeyRecord(ctx context.Context, scope Scope, publicID string) (KeyRecord, error) {
+	record, err := s.store.LookupAPIKey(ctx, scope.TenantID, scope.ProjectID, publicID)
+	if err != nil {
+		if errors.Is(err, postgres.ErrNotFound) || errors.Is(err, auth.ErrRevoked) {
+			return KeyRecord{}, ErrNotFound
+		}
+		return KeyRecord{}, fmt.Errorf("scoped key lookup failed")
+	}
+	return seamRecord(record), nil
+}
+
+func (s *scopedStore) ListKeyRecords(ctx context.Context, scope Scope, filter ListFilter) ([]KeyRecord, error) {
+	records, err := s.store.ListAPIKeys(ctx, scope.TenantID, scope.ProjectID, filter.Status, filter.Limit)
+	if err != nil {
+		return nil, fmt.Errorf("scoped key list failed")
+	}
+	result := make([]KeyRecord, 0, len(records))
+	for _, record := range records {
+		result = append(result, seamRecord(record))
+	}
+	return result, nil
+}
+
+func (s *scopedStore) KeyStats(ctx context.Context, scope Scope) (Stats, error) {
+	total, active, revoked, err := s.store.CountAPIKeys(ctx, scope.TenantID, scope.ProjectID)
+	if err != nil {
+		return Stats{}, fmt.Errorf("scoped key statistics failed")
+	}
+	return Stats{TotalKeys: total, ActiveKeys: active, RevokedKeys: revoked}, nil
+}
+
+func (s *scopedStore) Close() { s.db.Close() }
+
+func newScopedUUID() domain.UUID {
+	id, err := domain.NewUUID()
+	if err != nil {
+		panic("identity test UUID generation failed")
+	}
+	return id
+}
+
+func mapScopedStoreError(err error) error {
+	if err == nil {
+		return nil
+	}
+	if errors.Is(err, postgres.ErrNotFound) {
+		return ErrNotFound
+	}
+	return fmt.Errorf("scoped store operation failed")
 }
 
 // Compile-time guard tying the adapter to the seam.

@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "stage": "03",
-  "status": "blocked",
-  "code_revision": "commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b",
+  "status": "implemented",
+  "code_revision": "working-tree:source-tree-sha256:29630cda7c87790e41877eade7d0711699934c70b350d924698be0fff682223d",
   "environment": {
     "os": "linux/amd64",
     "go_version": "go1.27.1",
@@ -11,46 +11,47 @@
     "docker_version": null
   },
   "commands": [
-    {"command":"go test ./... -count=1 -v","exit_code":0,"output_path":"evidence/commands/phase03-go-test.txt","result":"pass_with_declared_skips","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
-    {"command":"go vet ./...","exit_code":0,"output_path":"evidence/commands/phase03-go-vet.txt","result":"pass","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
-    {"command":"go build ./cmd/urbino","exit_code":0,"output_path":"evidence/commands/phase03-go-build.txt","result":"pass","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
-    {"command":"go generate ./api ./internal/storage/postgres && make generate-check","exit_code":0,"output_path":"evidence/commands/phase03-generate.txt","result":"pass","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
-    {"command":"go run ./cmd/urbino bootstrap --help","exit_code":0,"output_path":"evidence/commands/phase03-cli-help.txt","result":"pass","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
-    {"command":"go test -tags identityimpl ./tests/identity -count=1 -v","exit_code":0,"output_path":"evidence/commands/phase03-identity-linked.txt","result":"pass_with_7_scoped_store_skips","required":true,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
-    {"command":"go test -tags identityimpl ./tests/identity -count=2 -v","exit_code":0,"output_path":"evidence/tasks/03/run-tagged-count2.txt","result":"56_pass_14_skip_0_fail","required":false,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"},
-    {"command":"go test ./tests/identity -count=1","exit_code":0,"output_path":"evidence/tasks/03/run-default-build.txt","result":"pass_with_declared_skips","required":false,"revision":"commit:9b0d0318fe0e7d2d8d5fce8e7fa4f2b58d35b80b"}
+    {"command":"go test ./... -count=1 -v","started_at":"2026-09-21T10:20:00+08:00","finished_at":"2026-09-21T10:20:02+08:00","exit_code":0,"output_path":"evidence/commands/phase03-go-test.txt","result":"pass_with_declared_skips","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":49},
+    {"command":"go vet ./...","started_at":"2026-09-21T10:20:00+08:00","finished_at":"2026-09-21T10:20:03+08:00","exit_code":0,"output_path":"evidence/commands/phase03-go-vet.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":null,"tests_skipped":null},
+    {"command":"go build ./cmd/urbino","started_at":"2026-09-21T10:20:00+08:00","finished_at":"2026-09-21T10:20:05+08:00","exit_code":0,"output_path":"evidence/commands/phase03-go-build.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":null,"tests_skipped":null},
+    {"command":"jq empty api/config.schema.json && make generate-check","started_at":"2026-09-21T10:20:00+08:00","finished_at":"2026-09-21T10:20:05+08:00","exit_code":0,"output_path":"evidence/commands/phase03-generate.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":null},
+    {"command":"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run 'TestP03T0[23]' -count=1 -v","started_at":"2026-09-21T10:17:00+08:00","finished_at":"2026-09-21T10:17:02+08:00","exit_code":0,"output_path":"evidence/commands/phase03-scoped-store.txt","result":"pass","required":true,"tests_passed":7,"tests_failed":0,"tests_skipped":0},
+    {"command":"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -count=2 -v","started_at":"2026-09-21T10:19:00+08:00","finished_at":"2026-09-21T10:19:03+08:00","exit_code":0,"output_path":"evidence/commands/phase03-identity-full.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
+    {"command":"go run ./cmd/urbino bootstrap ...; go run ./cmd/urbino serve ...; curl health/admin/public isolation checks","started_at":"2026-09-21T10:22:00+08:00","finished_at":"2026-09-21T10:23:00+08:00","exit_code":0,"output_path":"evidence/commands/phase03-runtime-listeners.txt","result":"pass","required":true,"tests_passed":4,"tests_failed":0,"tests_skipped":0}
   ],
   "requirements": [
-    {"test_id":"P03-T01","test_name":"public/admin listener 与 credential 隔离","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
-    {"test_id":"P03-T02","test_name":"tenant scope 过滤、单项读取与统计","result":"skip","evidence_path":"evidence/tasks/03/identity-boundary-tests.md"},
-    {"test_id":"P03-T03","test_name":"project membership 与跨项目边界","result":"skip","evidence_path":"evidence/tasks/03/identity-boundary-tests.md"},
-    {"test_id":"P03-T04","test_name":"撤销 TTL、传播与 fail-closed","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
-    {"test_id":"P03-T05","test_name":"过期、scope 与 admin scope","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
-    {"test_id":"P03-T06","test_name":"并发 bootstrap 与独占秘密输出","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
-    {"test_id":"P03-T07","test_name":"认证头与 query key 冲突拒绝","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
-    {"test_id":"P03-T08","test_name":"秘密摘要、错误与日志脱敏","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"},
-    {"test_id":"P03-T09","test_name":"多模型策略与策略隔离","result":"pass","evidence_path":"evidence/commands/phase03-identity-linked.txt"}
+    {"test_id":"P03-T01","test_name":"public/admin listener 与 credential 隔离","source_path":"tests/identity/p03_t01_admin_isolation_test.go;internal/httpapi/authservers.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt;evidence/commands/phase03-runtime-listeners.txt"},
+    {"test_id":"P03-T02","test_name":"tenant scope 过滤、单项读取与统计","source_path":"tests/identity/p03_t02_tenant_scope_test.go;tests/identity/binding_identityimpl.go","result":"pass","evidence_path":"evidence/commands/phase03-scoped-store.txt"},
+    {"test_id":"P03-T03","test_name":"project membership 与跨项目边界","source_path":"tests/identity/p03_t03_project_boundary_test.go;tests/identity/binding_identityimpl.go","result":"pass","evidence_path":"evidence/commands/phase03-scoped-store.txt"},
+    {"test_id":"P03-T04","test_name":"撤销 TTL、传播与 fail-closed","source_path":"tests/identity/p03_t04_revocation_cache_test.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"},
+    {"test_id":"P03-T05","test_name":"过期、scope 与 admin scope","source_path":"tests/identity/p03_t05_expiry_scope_test.go;internal/storage/postgres/authenticator.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"},
+    {"test_id":"P03-T06","test_name":"并发 bootstrap 与独占秘密输出","source_path":"tests/identity/p03_t06_double_bootstrap_test.go;internal/storage/postgres/admin.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt;evidence/commands/phase03-runtime-listeners.txt"},
+    {"test_id":"P03-T07","test_name":"认证头与 query key 冲突拒绝","source_path":"tests/identity/p03_t07_header_conflict_test.go;internal/httpapi/auth.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"},
+    {"test_id":"P03-T08","test_name":"秘密摘要、错误与日志脱敏","source_path":"tests/identity/p03_t08_secret_redaction_test.go;internal/storage/postgres/authenticator.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"},
+    {"test_id":"P03-T09","test_name":"多模型策略与策略隔离","source_path":"tests/identity/p03_t09_multi_model_test.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"}
   ],
-  "blockers": ["P03-T02/P03-T03 共 7 项 PostgreSQL ScopedStore 测试尚未绑定并实跑"],
+  "blockers": [],
   "risks": [
-    "未运行真实 PostgreSQL 阶段三身份集成；迁移生成一致性已通过但新身份表未在 loopback 数据库执行。",
-    "Valkey、River、真实 provider、完整管理 API、生产部署、备份恢复和升级回滚不属于本阶段实测。",
-    "阶段三仍为 working tree 未提交；reviewer/security reviewer 复核尚未完成。"
+    "本阶段未运行生产 PostgreSQL、Valkey、River、真实 provider、部署、备份恢复或升级回滚。",
+    "完整管理资源 API、Valkey 多实例缓存与后续请求链仍属于后续阶段；本次 public/admin surface 仅提供经过认证的身份检查端点。",
+    "当前工作树未提交；必须由新上下文 reviewer 复核后才能标记 verified。"
   ],
   "review": {
-    "status":"blocked",
-    "reviewer_session":"Stage03CodeReview",
-    "reviewed_revision":"working-tree before final middleware/membership fixes; HEAD=483ee4b6ceb9f46e939f8eccb4d47196bef3b585",
+    "status":"pending",
+    "reviewer_session":null,
+    "reviewed_revision":null,
     "report_path":"progress/reports/03-review.md",
-    "security_review_path":"progress/reports/03-review.md",
-    "independent_context":true
+    "reviewed_at":null,
+    "reviewer_model":null,
+    "independent_context":null,
+    "security_review_path":"progress/reports/03-review.md"
   },
   "development": {
     "harness":"oh-my-pi",
     "orchestrator_session":"main-session",
     "orchestrator_model":"Hui AI (OpenAI)/gpt-5.6-sol",
     "runtime_report_path":"evidence/omp/runtime.json",
-    "task_report_paths":["evidence/tasks/03/identity-boundary-tests.md","evidence/tasks/03/run-tagged-count2.txt","evidence/tasks/03/run-default-build.txt"],
+    "task_report_paths":[],
     "all_tasks_terminal":true
   }
 }

@@ -1,0 +1,4 @@
+command: go run ./cmd/urbino bootstrap --config <temporary-config> --output <temporary-token-file> --pepper-file <temporary-pepper-file>; start `go run ./cmd/urbino serve --config <temporary-config>`; curl health/public/admin endpoints
+exit_code: 0
+result: bootstrap wrote the one-time token to an exclusive 0600 file; serve reported distinct loopback health/public/admin listeners; health=200; admin_valid=200; public_admin_token=401; admin_missing=401.
+configuration: temporary loopback PostgreSQL test database and synthetic pepper only; token value and DSN omitted.

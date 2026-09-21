@@ -15,11 +15,14 @@ import (
 
 // Config is the startup configuration decoded from urbino.yaml.
 type Config struct {
-	HealthAddr  string         `yaml:"health_addr" json:"health_addr"`
-	Environment string         `yaml:"environment" json:"environment"`
-	LogLevel    string         `yaml:"log_level" json:"log_level"`
-	Development bool           `yaml:"development" json:"development"`
-	Database    DatabaseConfig `yaml:"database" json:"database"`
+	HealthAddr     string         `yaml:"health_addr" json:"health_addr"`
+	PublicAddr     string         `yaml:"public_addr" json:"public_addr"`
+	AdminAddr      string         `yaml:"admin_addr" json:"admin_addr"`
+	AuthPepperFile string         `yaml:"auth_pepper_file" json:"auth_pepper_file"`
+	Environment    string         `yaml:"environment" json:"environment"`
+	LogLevel       string         `yaml:"log_level" json:"log_level"`
+	Development    bool           `yaml:"development" json:"development"`
+	Database       DatabaseConfig `yaml:"database" json:"database"`
 }
 
 // DatabaseConfig contains only a path to a restricted DSN file. The DSN is
@@ -32,6 +35,9 @@ type DatabaseConfig struct {
 var AllowedEnvironmentNames = map[string]struct{}{
 	EnvConfigPath:      {},
 	EnvHealthAddr:      {},
+	EnvPublicAddr:      {},
+	EnvAdminAddr:       {},
+	EnvAuthPepperFile:  {},
 	EnvLogLevel:        {},
 	EnvEnvironment:     {},
 	EnvDatabaseDSNFile: {},
@@ -92,7 +98,7 @@ func validateConfigYAMLNode(document *yaml.Node) error {
 	for i := 0; i < len(mapping.Content); i += 2 {
 		key, value := mapping.Content[i], mapping.Content[i+1]
 		switch key.Value {
-		case "health_addr", "environment", "log_level":
+		case "health_addr", "public_addr", "admin_addr", "auth_pepper_file", "environment", "log_level":
 			if value.Tag != "!!str" || value.Value == "" {
 				return fmt.Errorf("%s must be a non-empty string", key.Value)
 			}
@@ -129,6 +135,24 @@ func ApplyEnvironment(cfg Config, values map[string]string) (Config, error) {
 		}
 		cfg.HealthAddr = raw
 	}
+	if raw, ok := values[EnvPublicAddr]; ok {
+		if raw == "" || strings.TrimSpace(raw) != raw {
+			return Config{}, fmt.Errorf("config: %s must be non-empty and trimmed", EnvPublicAddr)
+		}
+		cfg.PublicAddr = raw
+	}
+	if raw, ok := values[EnvAdminAddr]; ok {
+		if raw == "" || strings.TrimSpace(raw) != raw {
+			return Config{}, fmt.Errorf("config: %s must be non-empty and trimmed", EnvAdminAddr)
+		}
+		cfg.AdminAddr = raw
+	}
+	if raw, ok := values[EnvAuthPepperFile]; ok {
+		if raw == "" || strings.TrimSpace(raw) != raw {
+			return Config{}, fmt.Errorf("config: %s must be non-empty and trimmed", EnvAuthPepperFile)
+		}
+		cfg.AuthPepperFile = raw
+	}
 	if raw, ok := values[EnvLogLevel]; ok {
 		if raw == "" || strings.TrimSpace(raw) != raw {
 			return Config{}, fmt.Errorf("config: %s must be non-empty and trimmed", EnvLogLevel)
@@ -159,6 +183,11 @@ func ApplyEnvironment(cfg Config, values map[string]string) (Config, error) {
 func (cfg Config) Validate() error {
 	if cfg.HealthAddr != "" && (strings.TrimSpace(cfg.HealthAddr) != cfg.HealthAddr || strings.TrimSpace(cfg.HealthAddr) == "") {
 		return fmt.Errorf("config: health_addr must be non-empty and trimmed")
+	}
+	for name, value := range map[string]string{"public_addr": cfg.PublicAddr, "admin_addr": cfg.AdminAddr, "auth_pepper_file": cfg.AuthPepperFile} {
+		if value != "" && strings.TrimSpace(value) != value {
+			return fmt.Errorf("config: %s must be trimmed", name)
+		}
 	}
 	if cfg.Environment != "" {
 		if strings.TrimSpace(cfg.Environment) != cfg.Environment {

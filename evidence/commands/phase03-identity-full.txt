@@ -1,0 +1,5 @@
+command: URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -count=2 -v
+exit_code: 0
+result: pass
+output: two complete runs; P03-T01..P03-T09 tests all PASS; no SKIP/NOT_RUN in the explicit PostgreSQL run.
+coverage: tenant/project ScopedStore, listener credential isolation seam, revocation fail-closed, expiry/scope, concurrent bootstrap, header/query rejection, secret redaction, multi-model policy.

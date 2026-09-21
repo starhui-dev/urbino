@@ -1,0 +1,5 @@
+command: URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run 'TestP03T0[23]' -count=1 -v
+exit_code: 0
+result: pass
+output: TestP03T02CrossTenantSingleReadNotFound PASS; TestP03T02ListFilteredByTenant PASS; TestP03T02StatsScopedByTenant PASS; TestP03T02MissingAndForeignLookupsIndistinguishable PASS; TestP03T03MembershipRequiredForProjectResources PASS; TestP03T03CrossProjectReferenceRejected PASS; TestP03T03TenantBoundaryHoldsUnderProjectChecks PASS.
+postgres: disposable loopback PostgreSQL 16.x test database; no secrets recorded.

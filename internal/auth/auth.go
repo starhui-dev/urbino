@@ -66,6 +66,17 @@ type Pepper struct {
 	Key []byte
 }
 
+// ParsePublicCredential splits a gateway public credential after header
+// parsing. It never accepts an administrator token.
+func ParsePublicCredential(value string) (string, string, error) {
+	return splitCredential(value, publicPrefix)
+}
+
+// ParseAdminCredential splits an administrator credential after header parsing.
+func ParseAdminCredential(value string) (string, string, error) {
+	return splitCredential(value, adminPrefix)
+}
+
 type Issuer struct {
 	Current Pepper
 }

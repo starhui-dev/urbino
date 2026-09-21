@@ -11,6 +11,8 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+var ErrNotFound = errors.New("identity record not found")
+
 // IdentityStore contains only scoped identity operations. Every mutation and
 // lookup requires the tenant/project scope supplied by the caller.
 type IdentityStore struct {
@@ -31,6 +33,51 @@ func (s *IdentityStore) CreateTenant(ctx context.Context, tenant domain.Tenant) 
 	_, err := s.db.Pool().Exec(ctx, `
 		INSERT INTO tenants (id, name, status, currency, policy_version)
 		VALUES ($1, $2, $3, $4, $5)`, uuidArg(tenant.ID), tenant.Name, string(tenant.Status), string(tenant.Currency), tenant.Version)
+	if err != nil {
+		return classifyError(err)
+	}
+	return nil
+}
+func (s *IdentityStore) CreateProject(ctx context.Context, project domain.Project) error {
+	if err := project.Validate(); err != nil {
+		return err
+	}
+	_, err := s.db.Pool().Exec(ctx, `
+		INSERT INTO projects (tenant_id, id, name, status)
+		VALUES ($1, $2, $3, 'active')`, uuidArg(project.Tenant), uuidArg(project.ID), project.Name)
+	if err != nil {
+		return classifyError(err)
+	}
+	return nil
+}
+
+// EnsureUser is reserved for deterministic integration fixtures. It is
+// idempotent only for the same tenant-scoped identity.
+func (s *IdentityStore) EnsureUser(ctx context.Context, tenant domain.TenantID, user domain.PrincipalID, displayName string) error {
+	if tenant.IsZero() || user.IsZero() || displayName == "" {
+		return errors.New("invalid scoped user")
+	}
+	_, err := s.db.Pool().Exec(ctx, `
+		INSERT INTO users (tenant_id, id, display_name, status)
+		VALUES ($1, $2, $3, 'active')
+		ON CONFLICT (tenant_id, id) DO NOTHING`, uuidArg(tenant), uuidArg(user), displayName)
+	if err != nil {
+		return classifyError(err)
+	}
+	return nil
+}
+
+// EnsureProjectMember is reserved for deterministic integration fixtures. It
+// never grants membership outside the explicit tenant/project scope.
+func (s *IdentityStore) EnsureProjectMember(ctx context.Context, tenant domain.TenantID, project domain.ProjectID, user domain.PrincipalID, role string) error {
+	if tenant.IsZero() || project.IsZero() || user.IsZero() || role == "" {
+		return errors.New("invalid project membership")
+	}
+	_, err := s.db.Pool().Exec(ctx, `
+		INSERT INTO project_members (tenant_id, project_id, user_id, role, status)
+		VALUES ($1, $2, $3, $4, 'active')
+		ON CONFLICT (tenant_id, project_id, user_id)
+		DO UPDATE SET role = EXCLUDED.role, status = 'active'`, uuidArg(tenant), uuidArg(project), uuidArg(user), role)
 	if err != nil {
 		return classifyError(err)
 	}
@@ -125,7 +172,7 @@ func (s *IdentityStore) LookupAPIKey(ctx context.Context, tenant domain.TenantID
 		tenantArg, projectArg, publicID).Scan(
 		&id, &tenantID, &projectID, &userID, &digest, &pepperID, &scopes, &models, &status, &expiresAt, &revokedAt, &authVersion)
 	if errors.Is(err, pgx.ErrNoRows) {
-		return auth.KeyRecord{}, errors.New("api key not found")
+		return auth.KeyRecord{}, ErrNotFound
 	}
 	if err != nil {
 		return auth.KeyRecord{}, classifyError(err)
@@ -140,6 +187,80 @@ func (s *IdentityStore) LookupAPIKey(ctx context.Context, tenant domain.TenantID
 		Scopes: append([]string(nil), scopes...), Models: append([]string(nil), models...), Status: status, ExpiresAt: expiresAt, RevokedAt: revokedAt, AuthVersion: authVersion,
 	}, nil
 }
+func (s *IdentityStore) ListAPIKeys(ctx context.Context, tenant domain.TenantID, project domain.ProjectID, status string, limit int) ([]auth.KeyRecord, error) {
+	if tenant.IsZero() || project.IsZero() {
+		return nil, errors.New("invalid scoped api key list")
+	}
+	if limit <= 0 || limit > 1000 {
+		limit = 1000
+	}
+	rows, err := s.db.Pool().Query(ctx, `
+		SELECT id, tenant_id, project_id, user_id, public_id, secret_digest, digest_key_id,
+		       scopes, allowed_models, status, expires_at, revoked_at, auth_version
+		FROM api_keys
+		WHERE tenant_id = $1 AND project_id = $2
+		  AND ($3 = '' OR status = $3)
+		ORDER BY created_at, public_id
+		LIMIT $4`, uuidArg(tenant), uuidArg(project), status, limit)
+	if err != nil {
+		return nil, classifyError(err)
+	}
+	defer rows.Close()
+	result := make([]auth.KeyRecord, 0)
+	for rows.Next() {
+		record, err := scanKeyRecord(rows)
+		if err != nil {
+			return nil, classifyError(err)
+		}
+		result = append(result, record)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, classifyError(err)
+	}
+	return result, nil
+}
+
+func (s *IdentityStore) CountAPIKeys(ctx context.Context, tenant domain.TenantID, project domain.ProjectID) (total, active, revoked int, err error) {
+	if tenant.IsZero() || project.IsZero() {
+		return 0, 0, 0, errors.New("invalid scoped api key statistics")
+	}
+	err = s.db.Pool().QueryRow(ctx, `
+		SELECT count(*)::int,
+		       count(*) FILTER (WHERE status = 'active')::int,
+		       count(*) FILTER (WHERE status = 'revoked')::int
+		FROM api_keys WHERE tenant_id = $1 AND project_id = $2`, uuidArg(tenant), uuidArg(project)).Scan(
+		&total, &active, &revoked)
+	if err != nil {
+		return 0, 0, 0, classifyError(err)
+	}
+	return total, active, revoked, nil
+}
+
+type keyRecordScanner interface {
+	Scan(...any) error
+}
+
+func scanKeyRecord(row keyRecordScanner) (auth.KeyRecord, error) {
+	var (
+		id, tenantID, projectID, userID pgtype.UUID
+		digest                          []byte
+		publicID, pepperID, status      string
+		scopes, models                  []string
+		expiresAt                       time.Time
+		revokedAt                       *time.Time
+		authVersion                     uint64
+	)
+	if err := row.Scan(&id, &tenantID, &projectID, &userID, &publicID, &digest, &pepperID, &scopes, &models, &status, &expiresAt, &revokedAt, &authVersion); err != nil {
+		return auth.KeyRecord{}, err
+	}
+	return auth.KeyRecord{
+		ID: domain.UUID(id.Bytes), PublicID: publicID,
+		Tenant: domain.TenantID(domain.UUID(tenantID.Bytes)), Project: domain.ProjectID(domain.UUID(projectID.Bytes)),
+		User: domain.PrincipalID(domain.UUID(userID.Bytes)), Digest: append([]byte(nil), digest...), PepperID: pepperID,
+		Scopes: append([]string(nil), scopes...), Models: append([]string(nil), models...), Status: status,
+		ExpiresAt: expiresAt, RevokedAt: revokedAt, AuthVersion: authVersion,
+	}, nil
+}
 
 func (s *IdentityStore) RevokeAPIKey(ctx context.Context, tenant domain.TenantID, project domain.ProjectID, publicID string, now time.Time) error {
 	if tenant.IsZero() || project.IsZero() || publicID == "" {
@@ -152,7 +273,7 @@ func (s *IdentityStore) RevokeAPIKey(ctx context.Context, tenant domain.TenantID
 		return classifyError(err)
 	}
 	if result.RowsAffected() != 1 {
-		return errors.New("api key not found")
+		return ErrNotFound
 	}
 	return nil
 }

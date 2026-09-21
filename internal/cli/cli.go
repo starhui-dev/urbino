@@ -55,8 +55,10 @@ Flags:
 Environment:
   URBINO_CONFIG              configuration file used when --config is absent
   URBINO_HEALTH_ADDR         internal health listener address, e.g. 127.0.0.1:9091
-  URBINO_DATABASE_DSN_FILE   restricted file containing the PostgreSQL DSN for migrate/bootstrap
-
+  URBINO_PUBLIC_ADDR         public authenticated listener address
+  URBINO_ADMIN_ADDR          admin authenticated listener address
+  URBINO_AUTH_PEPPER_FILE    restricted HMAC pepper file for runtime authentication
+  URBINO_DATABASE_DSN_FILE   restricted file containing the PostgreSQL DSN
 Unimplemented later commands fail with a usage error; no command silently succeeds.
 `
 
@@ -93,7 +95,7 @@ func (o *Options) environmentValues() map[string]string {
 	if o.LookupEnv == nil {
 		return values
 	}
-	for _, name := range []string{config.EnvConfigPath, config.EnvHealthAddr, config.EnvLogLevel, config.EnvEnvironment, config.EnvDatabaseDSNFile} {
+	for _, name := range []string{config.EnvConfigPath, config.EnvHealthAddr, config.EnvPublicAddr, config.EnvAdminAddr, config.EnvAuthPepperFile, config.EnvLogLevel, config.EnvEnvironment, config.EnvDatabaseDSNFile} {
 		if value, ok := o.LookupEnv(name); ok {
 			values[name] = value
 		}
@@ -327,53 +329,106 @@ func (o *Options) serve(ctx context.Context, configFile string) int {
 		o.fail("%v", err)
 		return ExitError
 	}
+	var db *postgres.DB
 	if cfg.Database.DSNFile != "" {
 		dsn, err := config.ReadDatabaseDSN(cfg)
 		if err != nil {
 			o.fail("%v", err)
 			return ExitError
 		}
-		db, err := postgres.Open(ctx, postgres.Config{DSN: dsn})
+		db, err = postgres.Open(ctx, postgres.Config{DSN: dsn})
 		if err != nil {
 			o.fail("%s", postgres.SafeErrorMessage(err))
 			return ExitError
 		}
+		defer db.Close()
 		migrations, err := migrate.LoadEmbedded()
 		if err != nil {
-			db.Close()
 			o.fail("%v", err)
 			return ExitError
 		}
-		err = migrate.CheckCompatibility(ctx, db.Pool(), migrations)
-		db.Close()
-		if err != nil {
+		if err := migrate.CheckCompatibility(ctx, db.Pool(), migrations); err != nil {
 			o.fail("%v", err)
 			return ExitError
 		}
 	}
 
-	addr := config.ResolveHealthAddr(cfg, o.env(config.EnvHealthAddr))
-	srv, err := httpapi.NewHealthServer(addr)
+	healthAddr := config.ResolveHealthAddr(cfg, o.env(config.EnvHealthAddr))
+	health, err := httpapi.NewHealthServer(healthAddr)
 	if err != nil {
 		o.fail("%v", err)
 		return ExitError
 	}
-	if err := srv.Listen(); err != nil {
+	if err := health.Listen(); err != nil {
 		o.fail("%v", err)
 		return ExitError
 	}
-	defer func() { _ = srv.Close() }()
+	defer func() { _ = health.Close() }()
+
+	publicAddr := config.ResolvePublicAddr(cfg, o.env(config.EnvPublicAddr))
+	adminAddr := config.ResolveAdminAddr(cfg, o.env(config.EnvAdminAddr))
+	pepperFile := config.ResolveAuthPepperFile(cfg, o.env(config.EnvAuthPepperFile))
+	var authenticated *httpapi.AuthenticatedServers
+	if publicAddr != "" || adminAddr != "" || pepperFile != "" {
+		if db == nil || publicAddr == "" || adminAddr == "" || pepperFile == "" {
+			o.fail("public/admin listeners require database, public_addr, admin_addr and auth_pepper_file")
+			return ExitError
+		}
+		pepper, err := auth.ReadPepperFile(pepperFile, "admin-v1")
+		if err != nil {
+			o.fail("runtime authentication secret configuration is invalid")
+			return ExitError
+		}
+		authenticator, err := postgres.NewAuthenticator(db, pepper, nil)
+		if err != nil {
+			o.fail("runtime authentication configuration is invalid")
+			return ExitError
+		}
+		authenticated, err = httpapi.NewAuthenticatedServers(publicAddr, adminAddr, authenticator.AuthenticatePublic, authenticator.AuthenticateAdmin)
+		if err != nil {
+			o.fail("%v", err)
+			return ExitError
+		}
+		if err := authenticated.Listen(); err != nil {
+			o.fail("%v", err)
+			return ExitError
+		}
+		defer func() { _ = authenticated.Close() }()
+	}
 
 	fmt.Fprintf(o.Stderr, "urbino: config %s (source %s)\n", path.File, path.Source)
-	fmt.Fprintf(o.Stderr, "urbino: internal health listener on %s, GET %s only\n", srv.Addr(), httpapi.HealthPath)
+	fmt.Fprintf(o.Stderr, "urbino: internal health listener on %s, GET %s only\n", health.Addr(), httpapi.HealthPath)
+	if authenticated != nil {
+		fmt.Fprintf(o.Stderr, "urbino: public listener on %s, GET %s\n", authenticated.PublicAddr(), httpapi.PublicIdentityPath)
+		fmt.Fprintf(o.Stderr, "urbino: admin listener on %s, GET %s\n", authenticated.AdminAddr(), httpapi.AdminIdentityPath)
+	}
 
-	if err := srv.Serve(ctx); err != nil {
-		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
-			return ExitOK
+	serveCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	servers := 1
+	errCh := make(chan error, 2)
+	go func() { errCh <- health.Serve(serveCtx) }()
+	if authenticated != nil {
+		servers++
+		go func() { errCh <- authenticated.Serve(serveCtx) }()
+	}
+	var serveErr error
+	for i := 0; i < servers; i++ {
+		err := <-errCh
+		if err != nil && !errors.Is(err, context.Canceled) && !errors.Is(err, context.DeadlineExceeded) && serveErr == nil {
+			serveErr = err
 		}
-		o.fail("%v", err)
+		if err != nil {
+			cancel()
+		}
+	}
+	if serveErr != nil {
+		o.fail("%v", serveErr)
 		return ExitError
 	}
-	fmt.Fprintf(o.Stderr, "urbino: health listener stopped\n")
+	if ctx.Err() != nil {
+		return ExitOK
+	}
+	fmt.Fprintln(o.Stderr, "urbino: listeners stopped")
 	return ExitOK
 }

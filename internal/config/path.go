@@ -20,6 +20,12 @@ const (
 
 	// EnvHealthAddr overrides the health listener address.
 	EnvHealthAddr = "URBINO_HEALTH_ADDR"
+	// EnvPublicAddr overrides the public authenticated listener address.
+	EnvPublicAddr = "URBINO_PUBLIC_ADDR"
+	// EnvAdminAddr overrides the private authenticated listener address.
+	EnvAdminAddr = "URBINO_ADMIN_ADDR"
+	// EnvAuthPepperFile points to a restricted HMAC pepper file.
+	EnvAuthPepperFile = "URBINO_AUTH_PEPPER_FILE"
 
 	// EnvLogLevel selects the explicitly supported log level.
 	EnvLogLevel = "URBINO_LOG_LEVEL"
@@ -38,6 +44,27 @@ const (
 	// an operator overrides it explicitly.
 	DefaultHealthAddr = "127.0.0.1:9091"
 )
+
+func ResolvePublicAddr(cfg Config, envValue string) string {
+	if strings.TrimSpace(envValue) != "" {
+		return envValue
+	}
+	return cfg.PublicAddr
+}
+
+func ResolveAdminAddr(cfg Config, envValue string) string {
+	if strings.TrimSpace(envValue) != "" {
+		return envValue
+	}
+	return cfg.AdminAddr
+}
+
+func ResolveAuthPepperFile(cfg Config, envValue string) string {
+	if strings.TrimSpace(envValue) != "" {
+		return envValue
+	}
+	return cfg.AuthPepperFile
+}
 
 // Source identifies the rule that selected a configuration file.
 type Source string

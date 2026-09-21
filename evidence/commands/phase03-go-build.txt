@@ -1,2 +1,3 @@
-command=go build ./cmd/urbino
-exit_code=0
+command: go build ./cmd/urbino
+exit_code: 0
+result: pass

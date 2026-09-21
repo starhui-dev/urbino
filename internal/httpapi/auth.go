@@ -17,6 +17,18 @@ type CredentialMiddleware struct {
 	AuthenticatePublic func(context.Context, auth.Request) (auth.Principal, error)
 	AuthenticateAdmin  func(context.Context, auth.Request) (auth.AdminPrincipal, error)
 }
+type publicPrincipalContextKey struct{}
+type adminPrincipalContextKey struct{}
+
+func PublicPrincipal(ctx context.Context) (auth.Principal, bool) {
+	principal, ok := ctx.Value(publicPrincipalContextKey{}).(auth.Principal)
+	return principal, ok
+}
+
+func AdminPrincipal(ctx context.Context) (auth.AdminPrincipal, bool) {
+	principal, ok := ctx.Value(adminPrincipalContextKey{}).(auth.AdminPrincipal)
+	return principal, ok
+}
 
 func (m CredentialMiddleware) Wrap(next http.Handler) http.Handler {
 	return m.WrapWithClock(next, time.Now)
@@ -51,7 +63,7 @@ func (m CredentialMiddleware) WrapWithClock(next http.Handler, now func() time.T
 				fail()
 				return
 			}
-			_ = principal
+			r = r.WithContext(context.WithValue(r.Context(), adminPrincipalContextKey{}, principal))
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -64,7 +76,7 @@ func (m CredentialMiddleware) WrapWithClock(next http.Handler, now func() time.T
 			fail()
 			return
 		}
-		_ = principal
+		r = r.WithContext(context.WithValue(r.Context(), publicPrincipalContextKey{}, principal))
 		next.ServeHTTP(w, r)
 	})
 }

@@ -199,7 +199,7 @@ func openScopedStore(t *testing.T) identity.ScopedStore {
 	t.Helper()
 	dsn := os.Getenv("URBINO_TEST_POSTGRES_DSN")
 	if dsn == "" {
-		dsn = "postgres://urbino_test:urbino_test@127.0.0.1:54329/urbino_test?sslmode=disable"
+		t.Skip("PostgreSQL scoped store requires explicit URBINO_TEST_POSTGRES_DSN (SKIP is not a pass)")
 	}
 	store, err := identity.NewScopedStore(context.Background(), dsn)
 	switch {
@@ -209,6 +209,9 @@ func openScopedStore(t *testing.T) identity.ScopedStore {
 		t.Skip("ScopedStore requires the main agent's PostgreSQL adapter; internal/auth is linked but storage binding is pending (SKIP is not a pass)")
 	case err != nil:
 		t.Skipf("PostgreSQL scoped store unavailable: %v (SKIP is not a pass; main agent integration required)", err)
+	}
+	if closer, ok := store.(interface{ Close() }); ok {
+		t.Cleanup(closer.Close)
 	}
 	return store
 }

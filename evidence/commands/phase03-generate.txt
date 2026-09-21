@@ -1,2 +1,3 @@
-command=go generate ./api ./internal/storage/postgres && make generate-check
-exit_code=0
+command: jq empty api/config.schema.json && make generate-check
+exit_code: 0
+result: pass; generated API/storage/migration consistency check completed without diff.
