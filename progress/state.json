@@ -28,10 +28,14 @@
     },
     "03": {
       "title": "租户、用户、API Key 与管理鉴权",
-      "status": "implemented",
+      "status": "blocked",
       "evidence_path": "evidence/stages/03.json",
       "review_path": "progress/reports/03-review.md",
-      "blockers": []
+      "blockers": [
+        "独立代码复核与安全复核均 BLOCKED：最终身份测试证据不可审计且不能绑定 reviewed revision。",
+        "PostgreSQL authenticator 未硬拒绝非 active api key，失败限流可被并发与 RemoteAddr 源端口轮换绕过。",
+        "真实 PostgreSQL bootstrap、持久化 verifier、runtime public path 和失败限流关键路径缺少最终实测。"
+      ]
     },
     "04": {
       "title": "上游凭据加密与轮换",

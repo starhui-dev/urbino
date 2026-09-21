@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "stage": "03",
-  "status": "implemented",
+  "status": "blocked",
   "code_revision": "working-tree:source-tree-sha256:29630cda7c87790e41877eade7d0711699934c70b350d924698be0fff682223d",
   "environment": {
     "os": "linux/amd64",
@@ -30,20 +30,24 @@
     {"test_id":"P03-T08","test_name":"秘密摘要、错误与日志脱敏","source_path":"tests/identity/p03_t08_secret_redaction_test.go;internal/storage/postgres/authenticator.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"},
     {"test_id":"P03-T09","test_name":"多模型策略与策略隔离","source_path":"tests/identity/p03_t09_multi_model_test.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"}
   ],
-  "blockers": [],
+  "blockers": [
+    "独立代码复核与安全复核均 BLOCKED：最终身份测试证据不可审计且不能绑定 reviewed revision。",
+    "PostgreSQL authenticator 未硬拒绝非 active api key，失败限流可被并发与 RemoteAddr 源端口轮换绕过。",
+    "真实 PostgreSQL bootstrap、持久化 verifier、runtime public path 和失败限流关键路径缺少最终实测。"
+  ],
   "risks": [
     "本阶段未运行生产 PostgreSQL、Valkey、River、真实 provider、部署、备份恢复或升级回滚。",
     "完整管理资源 API、Valkey 多实例缓存与后续请求链仍属于后续阶段；本次 public/admin surface 仅提供经过认证的身份检查端点。",
     "当前工作树未提交；必须由新上下文 reviewer 复核后才能标记 verified。"
   ],
   "review": {
-    "status":"pending",
-    "reviewer_session":null,
-    "reviewed_revision":null,
+    "status":"blocked",
+    "reviewer_session":"Stage03CodeReview-2; Stage03SecurityReview-2",
+    "reviewed_revision":"working-tree:source-tree-sha256:29630cda7c87790e41877eade7d0711699934c70b350d924698be0fff682223d",
     "report_path":"progress/reports/03-review.md",
-    "reviewed_at":null,
-    "reviewer_model":null,
-    "independent_context":null,
+    "reviewed_at":"2026-09-21",
+    "reviewer_model":"Hui AI (OpenAI)/gpt-5.6-sol:xhigh",
+    "independent_context":true,
     "security_review_path":"progress/reports/03-review.md"
   },
   "development": {
