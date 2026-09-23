@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"example.com/urbino/internal/auth"
+	"example.com/urbino/internal/domain"
 )
 
 // CredentialMiddleware enforces listener-specific authentication. It never
@@ -38,15 +39,29 @@ func (m CredentialMiddleware) Wrap(next http.Handler) http.Handler {
 // not rely on wall-clock sleeps.
 func (m CredentialMiddleware) WrapWithClock(next http.Handler, now func() time.Time) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestID := domain.UUID{}
+		if m.Mode == auth.AdminListener {
+			requestID = newRequestID()
+			r = r.WithContext(context.WithValue(r.Context(), adminRequestIDKey{}, requestID))
+		}
+		reserved := false
+		if m.Limiter != nil {
+			if !m.Limiter.Begin(r.RemoteAddr, now()) {
+				m.reject(w, requestID)
+				return
+			}
+			reserved = true
+		}
 		fail := func() {
-			if m.Limiter != nil {
+			if reserved {
 				m.Limiter.RecordFailure(r.RemoteAddr, now())
 			}
-			m.reject(w)
+			m.reject(w, requestID)
 		}
-		if m.Limiter != nil && !m.Limiter.Check(r.RemoteAddr, now()) {
-			m.reject(w)
-			return
+		succeed := func() {
+			if reserved {
+				m.Limiter.RecordSuccess(r.RemoteAddr, now())
+			}
 		}
 		if _, err := auth.ParseHeaders(r.Header, r.URL.Query(), m.Mode); err != nil {
 			fail()
@@ -63,6 +78,7 @@ func (m CredentialMiddleware) WrapWithClock(next http.Handler, now func() time.T
 				fail()
 				return
 			}
+			succeed()
 			r = r.WithContext(context.WithValue(r.Context(), adminPrincipalContextKey{}, principal))
 			next.ServeHTTP(w, r)
 			return
@@ -76,12 +92,17 @@ func (m CredentialMiddleware) WrapWithClock(next http.Handler, now func() time.T
 			fail()
 			return
 		}
+		succeed()
 		r = r.WithContext(context.WithValue(r.Context(), publicPrincipalContextKey{}, principal))
 		next.ServeHTTP(w, r)
 	})
 }
 
-func (m CredentialMiddleware) reject(w http.ResponseWriter) {
+func (m CredentialMiddleware) reject(w http.ResponseWriter, requestID domain.UUID) {
+	if m.Mode == auth.AdminListener {
+		writeAdminError(w, requestID, http.StatusUnauthorized, domain.CodeUnauthorized, "authentication failed")
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusUnauthorized)
 	_, _ = w.Write([]byte(`{"code":"unauthorized","message":"authentication failed"}` + "\n"))

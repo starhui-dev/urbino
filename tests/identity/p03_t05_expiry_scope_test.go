@@ -87,9 +87,9 @@ func TestP03T05MissingScopeRejected(t *testing.T) {
 	}
 }
 
-// TestP03T05AdminScopeEscalationRejected: an admin token scoped for reads
-// must not exercise write scopes — no self-promotion.
-func TestP03T05AdminScopeEscalationRejected(t *testing.T) {
+// TestP03T05BootstrapCarriesFixedManagementScopes proves request scopes do
+// not alter the fixed fresh-install management authority.
+func TestP03T05BootstrapCarriesFixedManagementScopes(t *testing.T) {
 	h := newHarness(t)
 	cred, err := h.sys.BootstrapAdmin(context.Background(), identity.BootstrapRequest{
 		AdminID: newID(t),
@@ -105,8 +105,11 @@ func TestP03T05AdminScopeEscalationRejected(t *testing.T) {
 	if err := h.sys.CheckAdminScope(p, "admin:keys:read"); err != nil {
 		t.Fatalf("granted admin scope refused: %v", err)
 	}
-	if err := h.sys.CheckAdminScope(p, "admin:keys:write"); err == nil {
-		t.Fatal("admin scope escalation accepted")
+	if err := h.sys.CheckAdminScope(p, "admin:keys:write"); err != nil {
+		t.Fatalf("fixed bootstrap write scope refused: %v", err)
+	}
+	if err := h.sys.CheckAdminScope(p, "models:invoke"); err == nil {
+		t.Fatal("bootstrap accepted an out-of-contract scope")
 	} else if !errors.Is(err, identity.ErrScopeDenied) {
 		t.Fatalf("expected ErrScopeDenied, got: %v", err)
 	}

@@ -31,6 +31,29 @@ func NewAuthenticatedServers(publicAddr, adminAddr string,
 	publicAuth func(context.Context, auth.Request) (auth.Principal, error),
 	adminAuth func(context.Context, auth.Request) (auth.AdminPrincipal, error),
 ) (*AuthenticatedServers, error) {
+	return newAuthenticatedServers(publicAddr, adminAddr, publicAuth, adminAuth, nil)
+}
+
+// NewAuthenticatedServersWithAdminAPI mounts the authenticated management
+// resource API on the loopback-only administrator listener. The public and
+// administrator listeners use independent failure budgets so public traffic
+// cannot deny management access.
+func NewAuthenticatedServersWithAdminAPI(publicAddr, adminAddr string,
+	publicAuth func(context.Context, auth.Request) (auth.Principal, error),
+	adminAuth func(context.Context, auth.Request) (auth.AdminPrincipal, error),
+	adminAPI *AdminAPI,
+) (*AuthenticatedServers, error) {
+	if adminAPI == nil {
+		return nil, errors.New("httpapi: management API is required")
+	}
+	return newAuthenticatedServers(publicAddr, adminAddr, publicAuth, adminAuth, adminAPI)
+}
+
+func newAuthenticatedServers(publicAddr, adminAddr string,
+	publicAuth func(context.Context, auth.Request) (auth.Principal, error),
+	adminAuth func(context.Context, auth.Request) (auth.AdminPrincipal, error),
+	adminAPI *AdminAPI,
+) (*AuthenticatedServers, error) {
 	publicAddr = strings.TrimSpace(publicAddr)
 	adminAddr = strings.TrimSpace(adminAddr)
 	if _, _, err := net.SplitHostPort(publicAddr); err != nil {
@@ -43,35 +66,47 @@ func NewAuthenticatedServers(publicAddr, adminAddr string,
 	if !isLoopbackHost(adminHost) {
 		return nil, errors.New("httpapi: admin listener must bind a loopback address")
 	}
-	limiter, err := auth.NewFailureLimiter(10, time.Minute)
+	publicLimiter, err := auth.NewFailureLimiter(10, time.Minute)
+	if err != nil {
+		return nil, err
+	}
+	adminLimiter, err := auth.NewFailureLimiter(10, time.Minute)
 	if err != nil {
 		return nil, err
 	}
 	publicMux := http.NewServeMux()
 	publicMux.Handle(PublicIdentityPath, CredentialMiddleware{
 		Mode:               auth.PublicListener,
-		Limiter:            limiter,
+		Limiter:            publicLimiter,
 		AuthenticatePublic: publicAuth,
 	}.Wrap(http.HandlerFunc(publicIdentityHandler)))
 	adminMux := http.NewServeMux()
 	adminMux.Handle(AdminIdentityPath, CredentialMiddleware{
 		Mode:              auth.AdminListener,
-		Limiter:           limiter,
+		Limiter:           adminLimiter,
 		AuthenticateAdmin: adminAuth,
 	}.Wrap(http.HandlerFunc(adminIdentityHandler)))
+	if adminAPI != nil {
+		adminAPI.Mount(adminMux)
+	}
 	return &AuthenticatedServers{
 		publicAddr: publicAddr,
 		adminAddr:  adminAddr,
-		public:     &http.Server{Handler: publicMux, ReadHeaderTimeout: 5 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second},
-		admin:      &http.Server{Handler: adminMux, ReadHeaderTimeout: 5 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second},
+		public:     &http.Server{Handler: publicMux, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 30 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second},
+		admin:      &http.Server{Handler: adminMux, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 30 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second},
 	}, nil
 }
 func isLoopbackHost(host string) bool {
-	if host == "localhost" {
-		return true
-	}
-	ip := net.ParseIP(host)
+	ip := net.ParseIP(strings.TrimSpace(host))
 	return ip != nil && ip.IsLoopback()
+}
+
+func listenerIsLoopback(listener net.Listener) bool {
+	if listener == nil {
+		return false
+	}
+	addr, ok := listener.Addr().(*net.TCPAddr)
+	return ok && addr.IP != nil && addr.IP.IsLoopback()
 }
 
 func publicIdentityHandler(w http.ResponseWriter, r *http.Request) {
@@ -143,6 +178,11 @@ func (s *AuthenticatedServers) Listen() error {
 	if err != nil {
 		_ = publicLn.Close()
 		return fmt.Errorf("httpapi: listen on admin address: %w", err)
+	}
+	if !listenerIsLoopback(adminLn) {
+		_ = adminLn.Close()
+		_ = publicLn.Close()
+		return errors.New("httpapi: admin listener resolved to a non-loopback address")
 	}
 	s.publicLn, s.adminLn = publicLn, adminLn
 	return nil

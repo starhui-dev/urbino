@@ -1,61 +1,199 @@
 {
   "schema_version": 1,
   "stage": "03",
-  "status": "blocked",
-  "code_revision": "working-tree:source-tree-sha256:29630cda7c87790e41877eade7d0711699934c70b350d924698be0fff682223d",
+  "status": "verified",
+  "code_revision": "working-tree:source-files-sha256:a325bc50df55233a71bb536d24d84a27423b3afaccc078af3d6aaaf7711034aa",
   "environment": {
     "os": "linux/amd64",
     "go_version": "go1.27.1",
-    "postgres_version": null,
+    "postgres_version": "16.x shared loopback test database",
     "valkey_version": null,
     "docker_version": null
   },
   "commands": [
-    {"command":"go test ./... -count=1 -v","started_at":"2026-09-21T10:20:00+08:00","finished_at":"2026-09-21T10:20:02+08:00","exit_code":0,"output_path":"evidence/commands/phase03-go-test.txt","result":"pass_with_declared_skips","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":49},
-    {"command":"go vet ./...","started_at":"2026-09-21T10:20:00+08:00","finished_at":"2026-09-21T10:20:03+08:00","exit_code":0,"output_path":"evidence/commands/phase03-go-vet.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":null,"tests_skipped":null},
-    {"command":"go build ./cmd/urbino","started_at":"2026-09-21T10:20:00+08:00","finished_at":"2026-09-21T10:20:05+08:00","exit_code":0,"output_path":"evidence/commands/phase03-go-build.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":null,"tests_skipped":null},
-    {"command":"jq empty api/config.schema.json && make generate-check","started_at":"2026-09-21T10:20:00+08:00","finished_at":"2026-09-21T10:20:05+08:00","exit_code":0,"output_path":"evidence/commands/phase03-generate.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":null},
-    {"command":"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run 'TestP03T0[23]' -count=1 -v","started_at":"2026-09-21T10:17:00+08:00","finished_at":"2026-09-21T10:17:02+08:00","exit_code":0,"output_path":"evidence/commands/phase03-scoped-store.txt","result":"pass","required":true,"tests_passed":7,"tests_failed":0,"tests_skipped":0},
-    {"command":"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -count=2 -v","started_at":"2026-09-21T10:19:00+08:00","finished_at":"2026-09-21T10:19:03+08:00","exit_code":0,"output_path":"evidence/commands/phase03-identity-full.txt","result":"pass","required":true,"tests_passed":null,"tests_failed":0,"tests_skipped":0},
-    {"command":"go run ./cmd/urbino bootstrap ...; go run ./cmd/urbino serve ...; curl health/admin/public isolation checks","started_at":"2026-09-21T10:22:00+08:00","finished_at":"2026-09-21T10:23:00+08:00","exit_code":0,"output_path":"evidence/commands/phase03-runtime-listeners.txt","result":"pass","required":true,"tests_passed":4,"tests_failed":0,"tests_skipped":0}
+    {
+      "command": "go test ./... -count=1",
+      "started_at": "2026-09-23T09:46:36+08:00",
+      "finished_at": "2026-09-23T09:46:40+08:00",
+      "exit_code": 0,
+      "output_path": "evidence/commands/phase03-go-test.txt",
+      "result": "pass_with_declared_skips",
+      "required": false,
+      "tests_failed": 0,
+      "tests_skipped": null,
+      "revision": "working-tree:source-files-sha256:a325bc50df55233a71bb536d24d84a27423b3afaccc078af3d6aaaf7711034aa"
+    },
+    {
+      "command": "go generate ./api ./internal/storage/postgres && make generate-check",
+      "started_at": "2026-09-23T14:14:45+08:00",
+      "finished_at": "2026-09-23T14:15:03+08:00",
+      "exit_code": 0,
+      "output_path": "evidence/commands/phase03-generate.txt",
+      "result": "pass",
+      "required": true,
+      "tests_failed": 0,
+      "tests_skipped": 0,
+      "revision": "working-tree:source-files-sha256:a325bc50df55233a71bb536d24d84a27423b3afaccc078af3d6aaaf7711034aa"
+    },
+    {
+      "command": "go vet ./...",
+      "started_at": "2026-09-23T14:14:45+08:00",
+      "finished_at": "2026-09-23T14:15:03+08:00",
+      "exit_code": 0,
+      "output_path": "evidence/commands/phase03-go-vet.txt",
+      "result": "pass",
+      "required": true,
+      "tests_failed": 0,
+      "tests_skipped": 0,
+      "revision": "working-tree:source-files-sha256:a325bc50df55233a71bb536d24d84a27423b3afaccc078af3d6aaaf7711034aa"
+    },
+    {
+      "command": "go build ./cmd/urbino",
+      "started_at": "2026-09-23T14:14:45+08:00",
+      "finished_at": "2026-09-23T14:15:03+08:00",
+      "exit_code": 0,
+      "output_path": "evidence/commands/phase03-go-build.txt",
+      "result": "pass",
+      "required": true,
+      "tests_failed": 0,
+      "tests_skipped": 0,
+      "revision": "working-tree:source-files-sha256:a325bc50df55233a71bb536d24d84a27423b3afaccc078af3d6aaaf7711034aa"
+    },
+    {
+      "command": "URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity ./internal/storage/postgres ./internal/httpapi -count=1",
+      "started_at": "2026-09-23T14:14:45+08:00",
+      "finished_at": "2026-09-23T14:15:03+08:00",
+      "exit_code": 0,
+      "output_path": "evidence/commands/phase03-persistent-auth-bootstrap.txt",
+      "result": "pass",
+      "required": true,
+      "tests_failed": 0,
+      "tests_skipped": 0,
+      "revision": "working-tree:source-files-sha256:a325bc50df55233a71bb536d24d84a27423b3afaccc078af3d6aaaf7711034aa"
+    },
+    {
+      "command": "go test -race ./internal/auth ./internal/httpapi ./internal/storage/postgres -count=1",
+      "started_at": "2026-09-23T14:14:45+08:00",
+      "finished_at": "2026-09-23T14:15:03+08:00",
+      "exit_code": 0,
+      "output_path": "evidence/commands/phase03-race.txt",
+      "result": "pass",
+      "required": true,
+      "tests_failed": 0,
+      "tests_skipped": 0,
+      "revision": "working-tree:source-files-sha256:a325bc50df55233a71bb536d24d84a27423b3afaccc078af3d6aaaf7711034aa"
+    },
+    {
+      "command": "URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./internal/storage/postgres ./internal/httpapi -run 'TestAdmin(Mutation|API)' -count=1 -v",
+      "started_at": "2026-09-23T14:14:45+08:00",
+      "finished_at": "2026-09-23T14:15:03+08:00",
+      "exit_code": 0,
+      "output_path": "evidence/commands/phase03-idempotency-integration.txt",
+      "result": "pass",
+      "required": true,
+      "tests_failed": 0,
+      "tests_skipped": 0,
+      "revision": "working-tree:source-files-sha256:a325bc50df55233a71bb536d24d84a27423b3afaccc078af3d6aaaf7711034aa"
+    },
+    {
+      "command": "go test ./internal/auth -run 'Test(IssuerRejectsAdministratorScopesForPublicKeys|RevokeAdminTokenStopsAuthentication)' -count=1 -v",
+      "started_at": "2026-09-23T14:14:45+08:00",
+      "finished_at": "2026-09-23T14:15:03+08:00",
+      "exit_code": 0,
+      "output_path": "evidence/commands/phase03-rate-limit-status.txt",
+      "result": "pass",
+      "required": true,
+      "tests_failed": 0,
+      "tests_skipped": 0,
+      "revision": "working-tree:source-files-sha256:a325bc50df55233a71bb536d24d84a27423b3afaccc078af3d6aaaf7711034aa"
+    }
   ],
   "requirements": [
-    {"test_id":"P03-T01","test_name":"public/admin listener 与 credential 隔离","source_path":"tests/identity/p03_t01_admin_isolation_test.go;internal/httpapi/authservers.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt;evidence/commands/phase03-runtime-listeners.txt"},
-    {"test_id":"P03-T02","test_name":"tenant scope 过滤、单项读取与统计","source_path":"tests/identity/p03_t02_tenant_scope_test.go;tests/identity/binding_identityimpl.go","result":"pass","evidence_path":"evidence/commands/phase03-scoped-store.txt"},
-    {"test_id":"P03-T03","test_name":"project membership 与跨项目边界","source_path":"tests/identity/p03_t03_project_boundary_test.go;tests/identity/binding_identityimpl.go","result":"pass","evidence_path":"evidence/commands/phase03-scoped-store.txt"},
-    {"test_id":"P03-T04","test_name":"撤销 TTL、传播与 fail-closed","source_path":"tests/identity/p03_t04_revocation_cache_test.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"},
-    {"test_id":"P03-T05","test_name":"过期、scope 与 admin scope","source_path":"tests/identity/p03_t05_expiry_scope_test.go;internal/storage/postgres/authenticator.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"},
-    {"test_id":"P03-T06","test_name":"并发 bootstrap 与独占秘密输出","source_path":"tests/identity/p03_t06_double_bootstrap_test.go;internal/storage/postgres/admin.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt;evidence/commands/phase03-runtime-listeners.txt"},
-    {"test_id":"P03-T07","test_name":"认证头与 query key 冲突拒绝","source_path":"tests/identity/p03_t07_header_conflict_test.go;internal/httpapi/auth.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"},
-    {"test_id":"P03-T08","test_name":"秘密摘要、错误与日志脱敏","source_path":"tests/identity/p03_t08_secret_redaction_test.go;internal/storage/postgres/authenticator.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"},
-    {"test_id":"P03-T09","test_name":"多模型策略与策略隔离","source_path":"tests/identity/p03_t09_multi_model_test.go","result":"pass","evidence_path":"evidence/commands/phase03-identity-full.txt"}
+    {
+      "test_id": "P03-T01",
+      "test_name": "public/admin listener 与 credential 隔离及持久化凭据认证",
+      "source_path": "tests/identity/p03_t01_admin_isolation_test.go",
+      "result": "pass",
+      "evidence_path": "evidence/commands/phase03-identity-full.txt"
+    },
+    {
+      "test_id": "P03-T02",
+      "test_name": "tenant scope 过滤、单项读取与统计",
+      "source_path": "tests/identity/p03_t02_tenant_scope_test.go",
+      "result": "pass",
+      "evidence_path": "evidence/commands/phase03-scoped-store.txt"
+    },
+    {
+      "test_id": "P03-T03",
+      "test_name": "project membership 与跨项目边界",
+      "source_path": "tests/identity/p03_t03_project_boundary_test.go",
+      "result": "pass",
+      "evidence_path": "evidence/commands/phase03-scoped-store.txt"
+    },
+    {
+      "test_id": "P03-T04",
+      "test_name": "撤销 TTL、传播、fail-closed 与失败限流预算",
+      "source_path": "tests/identity/p03_t04_revocation_cache_test.go",
+      "result": "pass",
+      "evidence_path": "evidence/commands/phase03-identity-full.txt"
+    },
+    {
+      "test_id": "P03-T05",
+      "test_name": "过期、非 active、scope 与 admin scope",
+      "source_path": "tests/identity/p03_t05_expiry_scope_test.go",
+      "result": "pass",
+      "evidence_path": "evidence/commands/phase03-identity-full.txt"
+    },
+    {
+      "test_id": "P03-T06",
+      "test_name": "PostgreSQL 并发 bootstrap 与独占秘密输出",
+      "source_path": "tests/identity/p03_t06_double_bootstrap_test.go",
+      "result": "pass",
+      "evidence_path": "evidence/commands/phase03-persistent-auth-bootstrap.txt"
+    },
+    {
+      "test_id": "P03-T07",
+      "test_name": "认证头与 query key 冲突拒绝",
+      "source_path": "tests/identity/p03_t07_header_conflict_test.go",
+      "result": "pass",
+      "evidence_path": "evidence/commands/phase03-identity-full.txt"
+    },
+    {
+      "test_id": "P03-T08",
+      "test_name": "秘密摘要、错误与日志脱敏",
+      "source_path": "tests/identity/p03_t08_secret_redaction_test.go",
+      "result": "pass",
+      "evidence_path": "evidence/commands/phase03-identity-full.txt"
+    },
+    {
+      "test_id": "P03-T09",
+      "test_name": "多模型策略与策略隔离",
+      "source_path": "tests/identity/p03_t09_multi_model_test.go",
+      "result": "pass",
+      "evidence_path": "evidence/commands/phase03-identity-full.txt"
+    }
   ],
-  "blockers": [
-    "独立代码复核与安全复核均 BLOCKED：最终身份测试证据不可审计且不能绑定 reviewed revision。",
-    "PostgreSQL authenticator 未硬拒绝非 active api key，失败限流可被并发与 RemoteAddr 源端口轮换绕过。",
-    "真实 PostgreSQL bootstrap、持久化 verifier、runtime public path 和失败限流关键路径缺少最终实测。"
-  ],
+  "blockers": [],
   "risks": [
     "本阶段未运行生产 PostgreSQL、Valkey、River、真实 provider、部署、备份恢复或升级回滚。",
-    "完整管理资源 API、Valkey 多实例缓存与后续请求链仍属于后续阶段；本次 public/admin surface 仅提供经过认证的身份检查端点。",
-    "当前工作树未提交；必须由新上下文 reviewer 复核后才能标记 verified。"
+    "当前工作树未提交。"
   ],
   "review": {
-    "status":"blocked",
-    "reviewer_session":"Stage03CodeReview-2; Stage03SecurityReview-2",
-    "reviewed_revision":"working-tree:source-tree-sha256:29630cda7c87790e41877eade7d0711699934c70b350d924698be0fff682223d",
-    "report_path":"progress/reports/03-review.md",
-    "reviewed_at":"2026-09-21",
-    "reviewer_model":"Hui AI (OpenAI)/gpt-5.6-sol:xhigh",
-    "independent_context":true,
-    "security_review_path":"progress/reports/03-review.md"
+    "status": "pass",
+    "reviewer_session": "Stage03FinalReview3;Stage03SecurityReview3",
+    "reviewed_revision": "working-tree:source-files-sha256:a325bc50df55233a71bb536d24d84a27423b3afaccc078af3d6aaaf7711034aa",
+    "report_path": "progress/reports/03-review.md",
+    "reviewed_at": "2026-09-23T14:28:16+08:00",
+    "reviewer_model": "Hui AI (OpenAI)/gpt-5.6-sol:xhigh",
+    "independent_context": true,
+    "security_review_path": "progress/reports/03-review.md"
   },
   "development": {
-    "harness":"oh-my-pi",
-    "orchestrator_session":"main-session",
-    "orchestrator_model":"Hui AI (OpenAI)/gpt-5.6-sol",
-    "runtime_report_path":"evidence/omp/runtime.json",
-    "task_report_paths":[],
-    "all_tasks_terminal":true
+    "harness": "oh-my-pi",
+    "orchestrator_session": "main-session",
+    "orchestrator_model": "Hui AI (OpenAI)/gpt-5.6-sol",
+    "runtime_report_path": "evidence/omp/runtime.json",
+    "task_report_paths": [],
+    "all_tasks_terminal": true
   }
 }

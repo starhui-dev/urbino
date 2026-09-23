@@ -14,6 +14,18 @@ import (
 	"example.com/urbino/internal/domain"
 )
 
+// Administrator credential bounds. Bootstrap uses the same bounded lifetime
+// and fixed management authority as the PostgreSQL installation path.
+const (
+	bootstrapAdminTokenTTL = 24 * time.Hour
+	maxAdminTokenTTL       = 24 * time.Hour
+)
+
+var bootstrapAdminScopes = []domain.PermissionScope{
+	domain.ScopeTenantsRead, domain.ScopeTenantsWrite,
+	domain.ScopeKeysRead, domain.ScopeKeysWrite,
+}
+
 type Scope struct {
 	TenantID  domain.TenantID
 	ProjectID domain.ProjectID
@@ -47,11 +59,16 @@ type AdminCredential struct {
 	Principal AdminPrincipal
 }
 
+// BootstrapRequest creates the first administrator of an installation. Scopes
+// is advisory only: the bootstrap credential always carries the fixed minimal
+// bootstrap scope set, so request content can never grant write authority.
 type BootstrapRequest struct {
 	AdminID domain.PrincipalID
 	Scopes  []string
 }
 
+// IssueAdminTokenRequest issues an additional administrator token. Scopes must
+// already be held by the principal and TTL must not exceed maxAdminTokenTTL.
 type IssueAdminTokenRequest struct {
 	AdminID domain.PrincipalID
 	Scopes  []string
@@ -171,7 +188,7 @@ func (s *Service) RevokeKey(ctx context.Context, scope Scope, publicID string, a
 	if !ok || record.Tenant != scope.TenantID || record.Project != scope.ProjectID {
 		return ErrNotFound
 	}
-	record.Status = "revoked"
+	record.Status = recordStatusRevoked
 	record.RevokedAt = &at
 	record.AuthVersion++
 	s.mu.Lock()
@@ -206,12 +223,12 @@ func (s *Service) AuthenticatePublic(ctx context.Context, req Request) (Principa
 		return Principal{}, ErrCacheUnavailable
 	}
 	if !found {
-		if authoritative.RevokedAt != nil || authoritative.Status == "revoked" {
+		if authoritative.RevokedAt != nil || authoritative.Status == recordStatusRevoked {
 			return Principal{}, ErrRevoked
 		}
 		return Principal{}, ErrCacheUnavailable
 	}
-	if state.Record.Status == "revoked" {
+	if state.Record.Status == recordStatusRevoked {
 		return Principal{}, ErrRevoked
 	}
 	if state.AuthVersion != int64(authoritative.AuthVersion) {
@@ -227,7 +244,7 @@ func (s *Service) AuthenticatePublic(ctx context.Context, req Request) (Principa
 	if err := Verify(authoritative, secret, pepper, s.clock.Now()); err != nil {
 		return Principal{}, err
 	}
-	if authoritative.RevokedAt != nil || authoritative.Status == "revoked" {
+	if authoritative.RevokedAt != nil || authoritative.Status == recordStatusRevoked {
 		return Principal{}, ErrRevoked
 	}
 	if s.logger != nil {
@@ -237,23 +254,23 @@ func (s *Service) AuthenticatePublic(ctx context.Context, req Request) (Principa
 }
 
 func (s *Service) CheckPublicScope(principal Principal, scope string) error {
-	for _, candidate := range principal.Scopes {
-		if candidate == scope {
-			return nil
-		}
+	if !containsScope(principal.Scopes, scope) {
+		return ErrScopeDenied
 	}
-	return ErrScopeDenied
+	return nil
 }
 
 func (s *Service) AuthorizeModel(principal Principal, model string) error {
-	for _, candidate := range principal.Models {
-		if candidate == model {
-			return nil
-		}
+	if !containsScope(principal.Models, model) {
+		return ErrModelDenied
 	}
-	return ErrModelDenied
+	return nil
 }
 
+// BootstrapAdmin creates the one and only bootstrap administrator. The issued
+// credential always carries the fixed minimal bootstrap scope set and the
+// bounded bootstrap lifetime; BootstrapRequest.Scopes is advisory only, so no
+// request content can raise the authority of the first administrator.
 func (s *Service) BootstrapAdmin(_ context.Context, req BootstrapRequest) (AdminCredential, error) {
 	if s == nil {
 		return AdminCredential{}, ErrInvalidCredential
@@ -263,14 +280,14 @@ func (s *Service) BootstrapAdmin(_ context.Context, req BootstrapRequest) (Admin
 	if s.bootstrapped {
 		return AdminCredential{}, ErrAlreadyBootstrapped
 	}
-	if req.AdminID.IsZero() || len(req.Scopes) == 0 {
+	if req.AdminID.IsZero() {
 		return AdminCredential{}, ErrInvalidCredential
 	}
-	issued, err := (Issuer{Current: s.peppers[s.activeID]}).IssueAdmin(toDomainScopes(req.Scopes), s.clock.Now(), 24*time.Hour)
+	issued, err := (Issuer{Current: s.peppers[s.activeID]}).IssueAdmin(bootstrapAdminScopes, s.clock.Now(), bootstrapAdminTokenTTL)
 	if err != nil {
 		return AdminCredential{}, err
 	}
-	principal := AdminPrincipal{AdminID: req.AdminID, Scopes: append([]string(nil), req.Scopes...)}
+	principal := AdminPrincipal{AdminID: req.AdminID, Scopes: toScopeStrings(bootstrapAdminScopes)}
 	issued.Record.PrincipalID = req.AdminID
 	s.bootstrapped = true
 	s.principals[req.AdminID] = principal
@@ -278,9 +295,26 @@ func (s *Service) BootstrapAdmin(_ context.Context, req BootstrapRequest) (Admin
 	return AdminCredential{Token: issued.Value, Principal: principal}, nil
 }
 
+// IssueAdminToken issues an additional token for an existing administrator.
+// The requested scopes must be valid, non-empty and already held by the
+// principal — a token can narrow authority but never widen it — and the
+// requested lifetime must fall inside (0, maxAdminTokenTTL].
 func (s *Service) IssueAdminToken(_ context.Context, req IssueAdminTokenRequest) (AdminCredential, error) {
-	if req.TTL <= 0 {
+	if s == nil || req.TTL <= 0 || req.TTL > maxAdminTokenTTL || len(req.Scopes) == 0 {
 		return AdminCredential{}, ErrInvalidCredential
+	}
+	requested := make([]domain.PermissionScope, 0, len(req.Scopes))
+	seen := make(map[domain.PermissionScope]struct{}, len(req.Scopes))
+	for _, scope := range req.Scopes {
+		candidate := domain.PermissionScope(scope)
+		if !candidate.Valid() {
+			return AdminCredential{}, ErrScopeDenied
+		}
+		if _, duplicate := seen[candidate]; duplicate {
+			continue
+		}
+		seen[candidate] = struct{}{}
+		requested = append(requested, candidate)
 	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -288,22 +322,51 @@ func (s *Service) IssueAdminToken(_ context.Context, req IssueAdminTokenRequest)
 	if !ok {
 		return AdminCredential{}, ErrNotFound
 	}
-	allowed := make(map[string]struct{}, len(principal.Scopes))
-	for _, scope := range principal.Scopes {
-		allowed[scope] = struct{}{}
-	}
-	for _, scope := range req.Scopes {
-		if _, ok := allowed[scope]; !ok {
+	for _, scope := range requested {
+		if !containsScope(principal.Scopes, string(scope)) {
 			return AdminCredential{}, ErrScopeDenied
 		}
 	}
-	issued, err := (Issuer{Current: s.peppers[s.activeID]}).IssueAdmin(toDomainScopes(req.Scopes), s.clock.Now(), req.TTL)
+	issued, err := (Issuer{Current: s.peppers[s.activeID]}).IssueAdmin(requested, s.clock.Now(), req.TTL)
 	if err != nil {
 		return AdminCredential{}, err
 	}
 	issued.Record.PrincipalID = req.AdminID
 	s.admins[issued.Record.PublicID] = issued.Record
-	return AdminCredential{Token: issued.Value, Principal: AdminPrincipal{AdminID: req.AdminID, Scopes: append([]string(nil), req.Scopes...)}}, nil
+	return AdminCredential{Token: issued.Value, Principal: AdminPrincipal{AdminID: req.AdminID, Scopes: toScopeStrings(requested)}}, nil
+}
+
+// RevokeAdminToken revokes one administrator credential in place. The owning
+// principal must be named, so one administrator cannot revoke another's token;
+// the revocation timestamp is set whatever value is supplied, because
+// verification fails closed on the marker itself. Repeated revocation is
+// refused with ErrRevoked and the revoked record is kept as evidence.
+func (s *Service) RevokeAdminToken(_ context.Context, adminID domain.PrincipalID, publicID string, at time.Time) error {
+	if s == nil || adminID.IsZero() || publicID == "" {
+		return ErrInvalidCredential
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	record, ok := s.admins[publicID]
+	if !ok || record.PrincipalID != adminID {
+		return ErrNotFound
+	}
+	if record.RevokedAt != nil {
+		return ErrRevoked
+	}
+	available := 0
+	for _, candidate := range s.admins {
+		if candidate.RevokedAt == nil && candidate.ExpiresAt.After(s.clock.Now()) {
+			available++
+		}
+	}
+	if available <= 1 {
+		return ErrLastAdminToken
+	}
+	record.RevokedAt = &at
+	record.AuthVersion++
+	s.admins[publicID] = record
+	return nil
 }
 
 func (s *Service) AuthenticateAdmin(_ context.Context, req Request) (AdminPrincipal, error) {
@@ -328,20 +391,14 @@ func (s *Service) AuthenticateAdmin(_ context.Context, req Request) (AdminPrinci
 	if err := VerifyAdmin(record, secret, pepper, s.clock.Now()); err != nil {
 		return AdminPrincipal{}, err
 	}
-	scopes := make([]string, 0, len(record.Scopes))
-	for _, scope := range record.Scopes {
-		scopes = append(scopes, string(scope))
-	}
-	return AdminPrincipal{AdminID: record.PrincipalID, Scopes: scopes}, nil
+	return AdminPrincipal{AdminID: record.PrincipalID, Scopes: toScopeStrings(record.Scopes)}, nil
 }
 
 func (s *Service) CheckAdminScope(principal AdminPrincipal, scope string) error {
-	for _, candidate := range principal.Scopes {
-		if candidate == scope {
-			return nil
-		}
+	if !containsScope(principal.Scopes, scope) {
+		return ErrScopeDenied
 	}
-	return ErrScopeDenied
+	return nil
 }
 
 func (s *Service) RevocationTTL() time.Duration {
@@ -362,12 +419,21 @@ func splitCredential(value, prefix string) (string, string, error) {
 	return parts[0], parts[1], nil
 }
 
-func toDomainScopes(scopes []string) []domain.PermissionScope {
-	result := make([]domain.PermissionScope, 0, len(scopes))
+func toScopeStrings(scopes []domain.PermissionScope) []string {
+	result := make([]string, 0, len(scopes))
 	for _, scope := range scopes {
-		result = append(result, domain.PermissionScope(scope))
+		result = append(result, string(scope))
 	}
 	return result
+}
+
+func containsScope(scopes []string, scope string) bool {
+	for _, candidate := range scopes {
+		if candidate == scope {
+			return true
+		}
+	}
+	return false
 }
 
 func IsExpired(err error) bool              { return errors.Is(err, ErrExpired) }

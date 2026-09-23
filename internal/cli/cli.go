@@ -384,7 +384,21 @@ func (o *Options) serve(ctx context.Context, configFile string) int {
 			o.fail("runtime authentication configuration is invalid")
 			return ExitError
 		}
-		authenticated, err = httpapi.NewAuthenticatedServers(publicAddr, adminAddr, authenticator.AuthenticatePublic, authenticator.AuthenticateAdmin)
+		identityStore, err := postgres.NewIdentityStore(db)
+		if err != nil {
+			o.fail("runtime identity storage configuration is invalid")
+			return ExitError
+		}
+		adminAPI, err := httpapi.NewAdminAPI(httpapi.AdminDeps{
+			Store:             identityStore,
+			Issuer:            auth.Issuer{Current: pepper},
+			AuthenticateAdmin: authenticator.AuthenticateAdmin,
+		})
+		if err != nil {
+			o.fail("runtime management API configuration is invalid")
+			return ExitError
+		}
+		authenticated, err = httpapi.NewAuthenticatedServersWithAdminAPI(publicAddr, adminAddr, authenticator.AuthenticatePublic, authenticator.AuthenticateAdmin, adminAPI)
 		if err != nil {
 			o.fail("%v", err)
 			return ExitError

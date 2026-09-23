@@ -1,0 +1,8 @@
+command: go test -race ./internal/auth ./internal/httpapi ./internal/storage/postgres -count=1
+started_at: 2026-09-23T09:46:42+08:00
+ok  	example.com/urbino/internal/auth	1.031s
+ok  	example.com/urbino/internal/httpapi	1.045s
+ok  	example.com/urbino/internal/storage/postgres	1.033s
+finished_at: 2026-09-23T09:46:45+08:00
+exit_code: 0
+result: pass

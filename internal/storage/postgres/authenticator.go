@@ -107,7 +107,7 @@ func (a *Authenticator) lookupPublic(ctx context.Context, publicID string) (auth
 		JOIN users u ON u.tenant_id = k.tenant_id AND u.id = k.user_id AND u.status = 'active'
 		JOIN project_members m ON m.tenant_id = k.tenant_id AND m.project_id = k.project_id
 		  AND m.user_id = k.user_id AND m.status = 'active'
-		WHERE k.public_id = $1`, publicID).Scan(
+		WHERE k.public_id = $1 AND k.status = 'active'`, publicID).Scan(
 		&id, &tenantID, &projectID, &userID, &digest, &pepperID, &scopes, &models,
 		&status, &expiresAt, &revokedAt, &authVersion)
 	if err != nil {
@@ -144,7 +144,7 @@ func (a *Authenticator) lookupAdmin(ctx context.Context, publicID string) (auth.
 		       p.status, p.scopes
 		FROM admin_tokens t
 		JOIN admin_principals p ON p.id = t.principal_id
-		WHERE t.public_id = $1 AND p.status = 'active'`, publicID).Scan(
+		WHERE t.public_id = $1 AND t.revoked_at IS NULL AND p.status = 'active'`, publicID).Scan(
 		&tokenID, &principalID, &digest, &pepperID, &expiresAt, &revokedAt,
 		&authVersion, &status, &scopes)
 	if err != nil {

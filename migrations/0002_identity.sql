@@ -38,9 +38,11 @@ CREATE TABLE api_keys (
 CREATE OR REPLACE FUNCTION urbino_require_active_project_member() RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM project_members
-        WHERE tenant_id = NEW.tenant_id AND project_id = NEW.project_id
-          AND user_id = NEW.user_id AND status = 'active'
+        SELECT 1
+        FROM project_members pm
+        JOIN users u ON u.tenant_id = pm.tenant_id AND u.id = pm.user_id
+        WHERE pm.tenant_id = NEW.tenant_id AND pm.project_id = NEW.project_id
+          AND pm.user_id = NEW.user_id AND pm.status = 'active' AND u.status = 'active'
     ) THEN
         RAISE EXCEPTION 'project membership required';
     END IF;
@@ -96,3 +98,22 @@ CREATE TABLE audit_events (
 );
 
 CREATE INDEX audit_events_scope_idx ON audit_events (tenant_id, created_at DESC);
+
+CREATE OR REPLACE FUNCTION urbino_reject_audit_mutation() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+    RAISE EXCEPTION 'audit events are append-only';
+END;
+$$;
+
+CREATE TRIGGER audit_events_append_only
+BEFORE UPDATE OR DELETE ON audit_events
+FOR EACH ROW EXECUTE FUNCTION urbino_reject_audit_mutation();
+
+CREATE TABLE admin_idempotency (
+    principal_id UUID NOT NULL REFERENCES admin_principals(id),
+    operation TEXT NOT NULL CHECK (length(operation) BETWEEN 1 AND 120),
+    key_digest BYTEA NOT NULL CHECK (octet_length(key_digest) = 32),
+    request_digest BYTEA NOT NULL CHECK (octet_length(request_digest) = 32),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (principal_id, operation, key_digest)
+);

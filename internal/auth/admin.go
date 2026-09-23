@@ -67,7 +67,7 @@ func VerifyAdmin(record AdminTokenRecord, secret string, pepper Pepper, now time
 	if !now.Before(record.ExpiresAt) {
 		return ErrExpired
 	}
-	if record.RevokedAt != nil && !record.RevokedAt.After(now) {
+	if record.RevokedAt != nil {
 		return ErrRevoked
 	}
 	got := Digest(secret, pepper.Key)

@@ -1,4 +1,9 @@
-command: go run ./cmd/urbino bootstrap --config <temporary-config> --output <temporary-token-file> --pepper-file <temporary-pepper-file>; start `go run ./cmd/urbino serve --config <temporary-config>`; curl health/public/admin endpoints
+command: URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test ./internal/httpapi -run TestAuthenticatedServersUsePersistentPublicAndAdminCredentials -count=1 -v
+started_at: 2026-09-22T19:32:17+08:00
+=== RUN   TestAuthenticatedServersUsePersistentPublicAndAdminCredentials
+--- PASS: TestAuthenticatedServersUsePersistentPublicAndAdminCredentials (0.14s)
+PASS
+ok  	example.com/urbino/internal/httpapi	0.153s
+finished_at: 2026-09-22T19:32:18+08:00
 exit_code: 0
-result: bootstrap wrote the one-time token to an exclusive 0600 file; serve reported distinct loopback health/public/admin listeners; health=200; admin_valid=200; public_admin_token=401; admin_missing=401.
-configuration: temporary loopback PostgreSQL test database and synthetic pepper only; token value and DSN omitted.
+result: pass

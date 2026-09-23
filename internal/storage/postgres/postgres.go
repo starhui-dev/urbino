@@ -24,6 +24,8 @@ const (
 	ErrorQuery         ErrorKind = "query"
 )
 
+var ErrCommitOutcomeUnknown = errors.New("database commit outcome is unknown")
+
 // Error never includes a DSN or driver error text in its public message.
 type Error struct {
 	Kind ErrorKind
@@ -145,10 +147,15 @@ func (db *DB) Exec(ctx context.Context, sql string, args ...any) error {
 	return nil
 }
 
-// WithTx executes a short transaction. The callback must not perform network
-// I/O. Rollback is attempted on every non-commit path and its error is never
-// allowed to replace the original safe error.
+// WithTx executes a short transaction without a post-commit probe.
 func (db *DB) WithTx(ctx context.Context, fn func(context.Context, pgx.Tx) error) error {
+	return db.WithTxProbe(ctx, fn, nil)
+}
+
+// WithTxProbe resolves a lost COMMIT response when the caller can identify the
+// expected durable result. A probe returning true proves commit; a false probe
+// preserves the classified commit error; a probe error is explicitly unknown.
+func (db *DB) WithTxProbe(ctx context.Context, fn func(context.Context, pgx.Tx) error, probe func(context.Context) (bool, error)) error {
 	if db == nil || db.pool == nil {
 		return &Error{Kind: ErrorUnavailable, err: errors.New("database is not open")}
 	}
@@ -169,6 +176,20 @@ func (db *DB) WithTx(ctx context.Context, fn func(context.Context, pgx.Tx) error
 		return classifyError(err)
 	}
 	if err := tx.Commit(ctx); err != nil {
+		var pgErr *pgconn.PgError
+		if errors.Is(err, pgx.ErrTxCommitRollback) || errors.As(err, &pgErr) || probe == nil {
+			return classifyError(err)
+		}
+		probeCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
+		defer cancel()
+		committedState, probeErr := probe(probeCtx)
+		if probeErr != nil {
+			return &Error{Kind: ErrorUnavailable, err: errors.Join(ErrCommitOutcomeUnknown, probeErr)}
+		}
+		if committedState {
+			committed = true
+			return nil
+		}
 		return classifyError(err)
 	}
 	committed = true

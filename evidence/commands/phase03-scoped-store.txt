@@ -1,5 +1,21 @@
-command: URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run 'TestP03T0[23]' -count=1 -v
+command: URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run TestP03T0[23] -count=1 -v
+started_at: 2026-09-23T09:48:28+08:00
+=== RUN   TestP03T02CrossTenantSingleReadNotFound
+--- PASS: TestP03T02CrossTenantSingleReadNotFound (0.10s)
+=== RUN   TestP03T02ListFilteredByTenant
+--- PASS: TestP03T02ListFilteredByTenant (0.11s)
+=== RUN   TestP03T02StatsScopedByTenant
+--- PASS: TestP03T02StatsScopedByTenant (0.10s)
+=== RUN   TestP03T02MissingAndForeignLookupsIndistinguishable
+--- PASS: TestP03T02MissingAndForeignLookupsIndistinguishable (0.09s)
+=== RUN   TestP03T03MembershipRequiredForProjectResources
+--- PASS: TestP03T03MembershipRequiredForProjectResources (0.07s)
+=== RUN   TestP03T03CrossProjectReferenceRejected
+--- PASS: TestP03T03CrossProjectReferenceRejected (0.09s)
+=== RUN   TestP03T03TenantBoundaryHoldsUnderProjectChecks
+--- PASS: TestP03T03TenantBoundaryHoldsUnderProjectChecks (0.10s)
+PASS
+ok  	example.com/urbino/tests/identity	0.654s
+finished_at: 2026-09-23T09:48:30+08:00
 exit_code: 0
 result: pass
-output: TestP03T02CrossTenantSingleReadNotFound PASS; TestP03T02ListFilteredByTenant PASS; TestP03T02StatsScopedByTenant PASS; TestP03T02MissingAndForeignLookupsIndistinguishable PASS; TestP03T03MembershipRequiredForProjectResources PASS; TestP03T03CrossProjectReferenceRejected PASS; TestP03T03TenantBoundaryHoldsUnderProjectChecks PASS.
-postgres: disposable loopback PostgreSQL 16.x test database; no secrets recorded.

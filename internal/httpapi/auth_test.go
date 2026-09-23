@@ -73,3 +73,68 @@ func TestMiddlewareRejectsAuthenticationServiceFailure(t *testing.T) {
 		t.Fatalf("admin auth failure reached handler: code=%d called=%v", response.Code, called)
 	}
 }
+
+func TestMiddlewareSharesFailureBudgetAcrossSourcePorts(t *testing.T) {
+	limiter, err := auth.NewFailureLimiter(1, time.Minute)
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := func() time.Time { return time.Unix(100, 0) }
+	calls := 0
+	handler := CredentialMiddleware{
+		Mode:    auth.PublicListener,
+		Limiter: limiter,
+		AuthenticatePublic: func(context.Context, auth.Request) (auth.Principal, error) {
+			calls++
+			return auth.Principal{}, errors.New("invalid secret")
+		},
+	}.WrapWithClock(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		t.Fatal("failed authentication reached handler")
+	}), now)
+
+	for _, remote := range []string{"203.0.113.10:4000", "203.0.113.10:5000"} {
+		req := httptest.NewRequest(http.MethodGet, "http://public.invalid/", nil)
+		req.RemoteAddr = remote
+		req.Header.Set("Authorization", "Bearer gw_live_public.secret")
+		response := httptest.NewRecorder()
+		handler.ServeHTTP(response, req)
+		if response.Code != http.StatusUnauthorized {
+			t.Fatalf("remote %s status=%d", remote, response.Code)
+		}
+	}
+	if calls != 1 {
+		t.Fatalf("authentication calls = %d, want one shared-IP attempt", calls)
+	}
+}
+
+func TestMiddlewareSuccessDoesNotConsumeFailureBudget(t *testing.T) {
+	limiter, err := auth.NewFailureLimiter(1, time.Minute)
+	if err != nil {
+		t.Fatal(err)
+	}
+	calls := 0
+	handler := CredentialMiddleware{
+		Mode:    auth.PublicListener,
+		Limiter: limiter,
+		AuthenticatePublic: func(context.Context, auth.Request) (auth.Principal, error) {
+			calls++
+			return auth.Principal{}, nil
+		},
+	}.WrapWithClock(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+	}), func() time.Time { return time.Unix(100, 0) })
+
+	for i := 0; i < 2; i++ {
+		req := httptest.NewRequest(http.MethodGet, "http://public.invalid/", nil)
+		req.RemoteAddr = "203.0.113.20:4000"
+		req.Header.Set("Authorization", "Bearer gw_live_public.secret")
+		response := httptest.NewRecorder()
+		handler.ServeHTTP(response, req)
+		if response.Code != http.StatusNoContent {
+			t.Fatalf("success %d status=%d", i, response.Code)
+		}
+	}
+	if calls != 2 {
+		t.Fatalf("authentication calls = %d, want 2", calls)
+	}
+}

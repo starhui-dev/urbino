@@ -1,0 +1,15 @@
+command: go test ./internal/auth -run 'Test(FailureLimiter|RevocationCache)' -count=1 -v
+started_at: 2026-09-23T09:47:05+08:00
+=== RUN   TestRevocationCacheIsBoundedAndFailsClosed
+--- PASS: TestRevocationCacheIsBoundedAndFailsClosed (0.00s)
+=== RUN   TestFailureLimiterAndExclusiveSecretOutput
+--- PASS: TestFailureLimiterAndExclusiveSecretOutput (0.00s)
+=== RUN   TestFailureLimiterReservesConcurrentAttemptsByHost
+--- PASS: TestFailureLimiterReservesConcurrentAttemptsByHost (0.00s)
+=== RUN   TestFailureLimiterEvictsExpiredAndOldestBuckets
+--- PASS: TestFailureLimiterEvictsExpiredAndOldestBuckets (0.00s)
+PASS
+ok  	example.com/urbino/internal/auth	0.011s
+finished_at: 2026-09-23T09:47:06+08:00
+exit_code: 0
+result: pass

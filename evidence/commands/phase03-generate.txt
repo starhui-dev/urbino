@@ -1,3 +1,5 @@
-command: jq empty api/config.schema.json && make generate-check
+command: go generate ./api ./internal/storage/postgres && make generate-check
+started_at: 2026-09-23T09:46:32+08:00
+finished_at: 2026-09-23T09:46:36+08:00
 exit_code: 0
-result: pass; generated API/storage/migration consistency check completed without diff.
+result: pass

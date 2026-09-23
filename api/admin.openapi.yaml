@@ -135,6 +135,109 @@ paths:
           $ref: '#/components/responses/PreconditionFailed'
         '501':
           $ref: '#/components/responses/Unsupported'
+  /api-keys:
+    get:
+      operationId: listApiKeys
+      summary: List API keys in a tenant and project scope
+      security:
+        - bearerAuth: [admin:keys:read]
+      parameters:
+        - name: tenant_id
+          in: query
+          required: true
+          schema: {type: string, format: uuid}
+        - name: project_id
+          in: query
+          required: true
+          schema: {type: string, format: uuid}
+        - name: status
+          in: query
+          schema: {type: string, enum: [active, revoked, expired]}
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: API key page
+          content:
+            application/json:
+              schema: {type: object}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '501': {$ref: '#/components/responses/Unsupported'}
+    post:
+      operationId: createApiKey
+      summary: Create one API key or replay safe metadata for an existing idempotency key
+      security:
+        - bearerAuth: [admin:keys:write]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, additionalProperties: false}
+      responses:
+        '201':
+          description: API key created, or safe metadata replayed without the one-time secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAPIKeyResponse'
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '409': {$ref: '#/components/responses/Conflict'}
+        '501': {$ref: '#/components/responses/Unsupported'}
+  /api-keys/{publicId}/revoke:
+    post:
+      operationId: revokeApiKey
+      summary: Revoke an API key
+      security:
+        - bearerAuth: [admin:keys:write]
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema: {type: string}
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevokeAPIKeyRequest'
+      responses:
+        '200':
+          description: API key revoked
+          content:
+            application/json:
+              schema: {type: object}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '501': {$ref: '#/components/responses/Unsupported'}
+  /admin-tokens/{publicId}/revoke:
+    post:
+      operationId: revokeAdminToken
+      summary: Revoke a token belonging to the calling administrator
+      security:
+        - bearerAuth: [admin:keys:write]
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema: {type: string}
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Administrator token revoked
+          content:
+            application/json:
+              schema: {type: object}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
+        '501': {$ref: '#/components/responses/Unsupported'}
 components:
   securitySchemes:
     bearerAuth:
@@ -226,6 +329,40 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
+    RevokeAPIKeyRequest:
+      type: object
+      additionalProperties: false
+      required: [tenant_id, project_id]
+      properties:
+        tenant_id:
+          type: string
+          format: uuid
+        project_id:
+          type: string
+
+    CreateAPIKeyResponse:
+      type: object
+      additionalProperties: false
+      required: [public_id, tenant_id, project_id, user_id, scopes, models, status, expires_at, auth_version]
+      properties:
+        key:
+          type: string
+          description: Present only in the first successful response; never persisted for replay.
+        public_id: {type: string}
+        tenant_id: {type: string, format: uuid}
+        project_id: {type: string, format: uuid}
+        user_id: {type: string, format: uuid}
+        scopes: {type: array, items: {type: string}}
+        models: {type: array, items: {type: string}}
+        status: {type: string}
+        expires_at: {type: string, format: date-time}
+        revoked_at: {type: string, format: date-time, nullable: true}
+        auth_version: {type: integer, format: int64}
+        message:
+          type: string
+          description: Replay guidance when the one-time secret is unavailable.
+        secret_available: {type: boolean}
+
     Error:
       type: object
       additionalProperties: false
@@ -264,7 +401,7 @@ components:
           type: array
           items:
             type: string
-            enum: [tenants:read, tenants:write, models:read, usage:read]
+            enum: [tenants:read, tenants:write, admin:keys:read, admin:keys:write, models:read, models:invoke, usage:read]
     CreateTenantRequest:
       type: object
       additionalProperties: false

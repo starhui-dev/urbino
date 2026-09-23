@@ -13,6 +13,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -30,6 +31,13 @@ const (
 	maxCacheTTL  = 5 * time.Second
 )
 
+// Key record lifecycle markers. Only a record with exactly recordStatusActive
+// and no revocation timestamp may authorize anything.
+const (
+	recordStatusActive  = "active"
+	recordStatusRevoked = "revoked"
+)
+
 var (
 	ErrInvalidCredential = errors.New("invalid credential")
 	ErrExpired           = errors.New("credential expired")
@@ -39,6 +47,7 @@ var (
 	ErrHeaderConflict    = errors.New("conflicting authentication headers")
 	ErrQueryCredential   = errors.New("query credentials are not accepted")
 	ErrCacheUnavailable  = errors.New("authentication cache unavailable")
+	ErrLastAdminToken    = errors.New("cannot revoke the last available administrator token")
 	ErrRateLimited       = errors.New("authentication rate limited")
 )
 
@@ -104,14 +113,15 @@ type IssuedKey struct {
 }
 
 func (i Issuer) Issue(tenant domain.TenantID, project domain.ProjectID, user domain.PrincipalID, scopes []domain.PermissionScope, models []string, now time.Time, ttl time.Duration) (IssuedKey, error) {
-	if tenant.IsZero() || project.IsZero() || user.IsZero() || i.Current.ID == "" || len(i.Current.Key) < 32 || ttl <= 0 {
+	if tenant.IsZero() || project.IsZero() || user.IsZero() || i.Current.ID == "" || len(i.Current.Key) < 32 || ttl <= 0 || len(scopes) == 0 || len(models) == 0 {
 		return IssuedKey{}, ErrInvalidCredential
 	}
 	for _, scope := range scopes {
-		if !scope.Valid() {
-			return IssuedKey{}, fmt.Errorf("%w: invalid scope", ErrScopeDenied)
+		if !isPublicScope(scope) {
+			return IssuedKey{}, fmt.Errorf("%w: invalid public scope", ErrScopeDenied)
 		}
 	}
+
 	id, err := domain.NewUUID()
 	if err != nil {
 		return IssuedKey{}, fmt.Errorf("generate key id: %w", err)
@@ -135,11 +145,20 @@ func (i Issuer) Issue(tenant domain.TenantID, project domain.ProjectID, user dom
 		Record: KeyRecord{
 			ID: id, PublicID: publicID, Tenant: tenant, Project: project, User: user,
 			Digest: digest, PepperID: i.Current.ID, Scopes: stringScopes,
-			Models: append([]string(nil), models...), Status: "active", ExpiresAt: now.Add(ttl), AuthVersion: 1,
+			Models: append([]string(nil), models...), Status: recordStatusActive, ExpiresAt: now.Add(ttl), AuthVersion: 1,
 		},
 		Secret: secret,
 		Value:  publicPrefix + publicID + "." + secret,
 	}, nil
+}
+
+func isPublicScope(scope domain.PermissionScope) bool {
+	switch scope {
+	case domain.ScopeModelsRead, domain.ScopeModelsInvoke, domain.ScopeUsageRead:
+		return true
+	default:
+		return false
+	}
 }
 
 func Digest(secret string, pepper []byte) []byte {
@@ -149,13 +168,13 @@ func Digest(secret string, pepper []byte) []byte {
 }
 
 func Verify(record KeyRecord, presented string, pepper Pepper, now time.Time) error {
-	if record.PublicID == "" || record.PepperID == "" || record.AuthVersion == 0 || len(record.Digest) != sha256.Size || pepper.ID != record.PepperID || len(pepper.Key) < 32 {
+	if record.PublicID == "" || record.PepperID == "" || record.AuthVersion == 0 || record.Status != recordStatusActive || len(record.Digest) != sha256.Size || pepper.ID != record.PepperID || len(pepper.Key) < 32 {
 		return ErrInvalidCredential
 	}
 	if !now.Before(record.ExpiresAt) {
 		return ErrExpired
 	}
-	if record.RevokedAt != nil && !record.RevokedAt.After(now) {
+	if record.RevokedAt != nil {
 		return ErrRevoked
 	}
 	got := Digest(presented, pepper.Key)
@@ -194,14 +213,19 @@ func (r KeyRecord) Authorize(model string, scope domain.PermissionScope, now tim
 	return nil
 }
 
+// VerifyRecord re-validates a stored key record without a presented secret. It
+// backs Authorize, so it is a security boundary: any record that is not
+// exactly active is rejected outright, and any revocation timestamp — past or
+// future — revokes the record, because the marker alone means the key is no
+// longer trusted.
 func VerifyRecord(r KeyRecord, now time.Time) error {
-	if r.Tenant.IsZero() || r.Project.IsZero() || r.User.IsZero() || r.PublicID == "" || r.AuthVersion == 0 {
+	if r.Tenant.IsZero() || r.Project.IsZero() || r.User.IsZero() || r.PublicID == "" || r.AuthVersion == 0 || r.Status != recordStatusActive {
 		return ErrInvalidCredential
 	}
 	if !now.Before(r.ExpiresAt) {
 		return ErrExpired
 	}
-	if r.RevokedAt != nil && !r.RevokedAt.After(now) {
+	if r.RevokedAt != nil {
 		return ErrRevoked
 	}
 	return nil
@@ -266,8 +290,10 @@ func headerValues(headers http.Header, name string) []string {
 }
 
 func hasQueryCredential(query url.Values) bool {
-	for _, key := range []string{"key", "api_key", "apikey", "api-key", "token", "access_token", "x-api-key", "x-goog-api-key"} {
-		if _, ok := query[key]; ok {
+	for key := range query {
+		normalized := strings.ToLower(strings.TrimSpace(key))
+		switch normalized {
+		case "key", "api_key", "apikey", "api-key", "token", "access_token", "x-api-key", "x-goog-api-key":
 			return true
 		}
 	}
@@ -311,6 +337,9 @@ func (c *RevocationCache) Check(ctx context.Context, publicID string, authVersio
 	entry, ok := c.values[publicID]
 	c.mu.Unlock()
 	if ok && now.Before(entry.expiresAt) {
+		if !entry.state.CheckedAt.IsZero() && (entry.state.CheckedAt.After(now.Add(time.Second)) || now.Sub(entry.state.CheckedAt) > c.ttl) {
+			return ErrCacheUnavailable
+		}
 		return checkRevocation(entry.state, authVersion)
 	}
 	state, err := c.store.Lookup(ctx, publicID)
@@ -319,6 +348,8 @@ func (c *RevocationCache) Check(ctx context.Context, publicID string, authVersio
 	}
 	if state.CheckedAt.IsZero() {
 		state.CheckedAt = now
+	} else if state.CheckedAt.After(now.Add(time.Second)) || now.Sub(state.CheckedAt) > c.ttl {
+		return ErrCacheUnavailable
 	}
 	c.mu.Lock()
 	c.values[publicID] = revocationEntry{state: state, expiresAt: now.Add(c.ttl)}
@@ -342,72 +373,193 @@ func checkRevocation(state RevocationState, authVersion uint64) error {
 	return nil
 }
 
+// maxFailureBuckets bounds how many identities the limiter tracks at once. A
+// flood of distinct source addresses must never grow the map without limit.
+const maxFailureBuckets = 4096
+
 type FailureLimiter struct {
 	mu      sync.Mutex
 	limit   int
 	window  time.Duration
+	max     int
 	buckets map[string]failureBucket
 }
 
 type failureBucket struct {
-	started time.Time
-	count   int
+	started  time.Time
+	count    int
+	inFlight int
 }
+
+// empty reports whether the bucket carries no state worth remembering.
+func (b failureBucket) empty() bool { return b.count == 0 && b.inFlight == 0 }
 
 func NewFailureLimiter(limit int, window time.Duration) (*FailureLimiter, error) {
 	if limit <= 0 || window <= 0 {
 		return nil, ErrRateLimited
 	}
-	return &FailureLimiter{limit: limit, window: window, buckets: make(map[string]failureBucket)}, nil
+	return &FailureLimiter{limit: limit, window: window, max: maxFailureBuckets, buckets: make(map[string]failureBucket)}, nil
 }
 
+// Allow records one failed attempt immediately. It is retained for callers
+// that already have a completed failure; request middleware should use Begin
+// followed by RecordFailure or RecordSuccess so concurrent attempts reserve
+// capacity atomically without charging successful requests.
 func (l *FailureLimiter) Allow(identity string, now time.Time) bool {
 	if l == nil || identity == "" {
 		return false
 	}
+	identity = normalizeLimiterIdentity(identity)
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	bucket := l.buckets[identity]
-	if bucket.started.IsZero() || !now.Before(bucket.started.Add(l.window)) {
-		l.buckets[identity] = failureBucket{started: now, count: 1}
-		return true
-	}
+	bucket := l.currentLocked(identity, now)
 	if bucket.count >= l.limit {
 		return false
 	}
 	bucket.count++
-	l.buckets[identity] = bucket
+	l.storeLocked(identity, bucket, now)
 	return true
 }
 
-// Check reports whether another authentication attempt may be evaluated.
-// It does not consume quota; callers must record only failed attempts.
+// Begin atomically reserves one authentication attempt. The reservation is
+// converted into a failure or released on success by the matching method.
+func (l *FailureLimiter) Begin(identity string, now time.Time) bool {
+	if l == nil || identity == "" {
+		return false
+	}
+	identity = normalizeLimiterIdentity(identity)
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	bucket := l.currentLocked(identity, now)
+	if bucket.count+bucket.inFlight >= l.limit {
+		return false
+	}
+	bucket.inFlight++
+	l.storeLocked(identity, bucket, now)
+	return true
+}
+
+// Check is kept as a compatibility read-only check. New request paths must
+// use Begin because Check cannot reserve capacity against concurrent callers.
 func (l *FailureLimiter) Check(identity string, now time.Time) bool {
 	if l == nil || identity == "" {
 		return false
 	}
+	identity = normalizeLimiterIdentity(identity)
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	bucket := l.buckets[identity]
-	return bucket.started.IsZero() || !now.Before(bucket.started.Add(l.window)) || bucket.count < l.limit
+	bucket := l.currentLocked(identity, now)
+	return bucket.count+bucket.inFlight < l.limit
 }
 
-// RecordFailure consumes one failure slot for the identity.
+// RecordFailure converts one in-flight reservation into a counted failure.
 func (l *FailureLimiter) RecordFailure(identity string, now time.Time) {
 	if l == nil || identity == "" {
 		return
 	}
+	identity = normalizeLimiterIdentity(identity)
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	bucket := l.buckets[identity]
-	if bucket.started.IsZero() || !now.Before(bucket.started.Add(l.window)) {
-		l.buckets[identity] = failureBucket{started: now, count: 1}
-		return
+	bucket := l.currentLocked(identity, now)
+	if bucket.inFlight > 0 {
+		bucket.inFlight--
 	}
 	if bucket.count < l.limit {
 		bucket.count++
 	}
+	l.storeLocked(identity, bucket, now)
+}
+
+// RecordSuccess releases one in-flight reservation without consuming failure
+// budget. It is safe when the request was rejected before Begin.
+func (l *FailureLimiter) RecordSuccess(identity string, now time.Time) {
+	if l == nil || identity == "" {
+		return
+	}
+	identity = normalizeLimiterIdentity(identity)
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	bucket := l.currentLocked(identity, now)
+	if bucket.inFlight > 0 {
+		bucket.inFlight--
+	}
+	l.storeLocked(identity, bucket, now)
+}
+
+func (l *FailureLimiter) currentLocked(identity string, now time.Time) failureBucket {
+	bucket := l.buckets[identity]
+	if bucket.started.IsZero() || !now.Before(bucket.started.Add(l.window)) {
+		return failureBucket{started: now}
+	}
+	return bucket
+}
+
+// storeLocked writes a bucket under the caller's lock and keeps the map
+// bounded. Empty buckets are dropped rather than kept, windows that already
+// expired are swept, and once the map is full the oldest surviving window is
+// evicted. The identity being written is never the victim, and eviction stays
+// inside the same critical section as Begin/RecordFailure/RecordSuccess so the
+// reservation arithmetic remains atomic.
+func (l *FailureLimiter) storeLocked(identity string, bucket failureBucket, now time.Time) {
+	if bucket.empty() {
+		delete(l.buckets, identity)
+		return
+	}
+	if _, tracked := l.buckets[identity]; !tracked && len(l.buckets) >= l.capacityLocked() {
+		l.evictLocked(now, identity)
+	}
 	l.buckets[identity] = bucket
+}
+
+func (l *FailureLimiter) capacityLocked() int {
+	if l.max > 0 {
+		return l.max
+	}
+	return maxFailureBuckets
+}
+
+// evictLocked makes room for one new identity: first every window that has
+// already expired, then — only if the map is still at capacity — the oldest
+// remaining window. Buckets holding in-flight reservations are evicted only
+// when nothing else is available, so a saturated map still cannot grow without
+// bound while normal traffic keeps its exact reservation accounting.
+func (l *FailureLimiter) evictLocked(now time.Time, keep string) {
+	oldest, oldestReserved := "", ""
+	var oldestStarted, reservedStarted time.Time
+	for key, bucket := range l.buckets {
+		if key == keep {
+			continue
+		}
+		if !now.Before(bucket.started.Add(l.window)) {
+			delete(l.buckets, key)
+			continue
+		}
+		if bucket.inFlight == 0 {
+			if oldest == "" || bucket.started.Before(oldestStarted) {
+				oldest, oldestStarted = key, bucket.started
+			}
+			continue
+		}
+		if oldestReserved == "" || bucket.started.Before(reservedStarted) {
+			oldestReserved, reservedStarted = key, bucket.started
+		}
+	}
+	if len(l.buckets) < l.capacityLocked() {
+		return
+	}
+	if oldest == "" {
+		oldest = oldestReserved
+	}
+	if oldest != "" {
+		delete(l.buckets, oldest)
+	}
+}
+
+func normalizeLimiterIdentity(identity string) string {
+	if host, _, err := net.SplitHostPort(identity); err == nil && host != "" {
+		return strings.Trim(host, "[]")
+	}
+	return identity
 }
 
 func WriteSecretExclusive(path, secret string) error {

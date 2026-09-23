@@ -8,6 +8,19 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type AdminIdempotency struct {
+	PrincipalID         pgtype.UUID        `json:"principal_id"`
+	Operation           string             `json:"operation"`
+	KeyDigest           []byte             `json:"key_digest"`
+	RequestDigest       []byte             `json:"request_digest"`
+	CreatedAt           pgtype.Timestamptz `json:"created_at"`
+	State               string             `json:"state"`
+	ResponseStatus      pgtype.Int4        `json:"response_status"`
+	ResponseContentType pgtype.Text        `json:"response_content_type"`
+	ResponseBody        []byte             `json:"response_body"`
+	CompletedAt         pgtype.Timestamptz `json:"completed_at"`
+}
+
 type AdminPrincipal struct {
 	ID          pgtype.UUID        `json:"id"`
 	DisplayName string             `json:"display_name"`

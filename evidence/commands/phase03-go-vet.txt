@@ -1,3 +1,5 @@
 command: go vet ./...
+started_at: 2026-09-23T09:46:45+08:00
+finished_at: 2026-09-23T09:46:46+08:00
 exit_code: 0
 result: pass

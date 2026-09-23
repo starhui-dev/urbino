@@ -16,15 +16,15 @@ P02-T04,02,P0,运行角色权限,应用无DDL/任意账本修改权限,integrati
 P02-T05,02,P1,事务取消,timeout/cancel完整回滚且连接归池,integration,true,"go test ./tests/integration -count=1 -v (real PostgreSQL)",evidence/commands/phase02-integration.txt,pass
 P02-T06,02,P1,schema兼容,不兼容版本启动拒绝且不自动有损迁移,integration,true,"go test ./tests/integration -count=1 -v (real PostgreSQL)",evidence/commands/phase02-integration.txt,pass
 P02-T07,02,P0,错误脱敏,DSN/driver错误不泄漏秘密,unit,true,"go test ./tests/integration -count=1 -v; go test ./internal/storage/postgres -count=2 -v",evidence/commands/phase02-integration.txt;evidence/commands/phase02-unit.txt,pass
-P03-T01,03,P0,public访问admin,public key对admin在任何listener均失败,e2e,true,,,not_started
-P03-T02,03,P0,跨租户读取,列表/单项/统计均不过界,integration,true,,,not_started
-P03-T03,03,P0,跨项目引用,无成员权限不能使用他项目资源,integration,true,,,not_started
-P03-T04,03,P0,撤销上界,多实例撤销在声明窗口内生效,e2e,true,,,not_started
-P03-T05,03,P0,过期与scope,失效或权限不足出站前拒绝,unit,true,,,not_started
-P03-T06,03,P0,双bootstrap,只有一个管理员初始化成功且不覆盖旧秘密,integration,true,,,not_started
-P03-T07,03,P0,认证头歧义,冲突Authorization/x-api-key/query-key拒绝,contract,true,,,not_started
-P03-T08,03,P0,一次性秘密,列表/错误/日志无法取回完整key,e2e,true,,,not_started
-P03-T09,03,P1,多模型一Key,同一key允许模型成功、未允许模型拒绝,e2e,true,,,not_started
+P03-T01,03,P0,public访问admin,public key对admin在任何listener均失败,e2e,true,"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run TestP03T01 -count=2 -v",evidence/commands/phase03-identity-full.txt,pass
+P03-T02,03,P0,跨租户读取,列表/单项/统计均不过界,integration,true,"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run TestP03T02 -count=1 -v",evidence/commands/phase03-scoped-store.txt,pass
+P03-T03,03,P0,跨项目引用,无成员权限不能使用他项目资源,integration,true,"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run TestP03T03 -count=1 -v",evidence/commands/phase03-scoped-store.txt,pass
+P03-T04,03,P0,撤销上界,多实例撤销在声明窗口内生效,e2e,true,"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run TestP03T04 -count=2 -v",evidence/commands/phase03-identity-full.txt,pass
+P03-T05,03,P0,过期与scope,失效或权限不足出站前拒绝,unit,true,"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run TestP03T05 -count=2 -v",evidence/commands/phase03-identity-full.txt,pass
+P03-T06,03,P0,双bootstrap,只有一个管理员初始化成功且不覆盖旧秘密,integration,true,"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run TestP03T06 -count=2 -v",evidence/commands/phase03-persistent-auth-bootstrap.txt,pass
+P03-T07,03,P0,认证头歧义,冲突Authorization/x-api-key/query-key拒绝,contract,true,"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run TestP03T07 -count=2 -v",evidence/commands/phase03-identity-full.txt,pass
+P03-T08,03,P0,一次性秘密,列表/错误/日志无法取回完整key,e2e,true,"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run TestP03T08 -count=2 -v",evidence/commands/phase03-identity-full.txt,pass
+P03-T09,03,P1,多模型一Key,同一key允许模型成功、未允许模型拒绝,e2e,true,"URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity -run TestP03T09 -count=2 -v",evidence/commands/phase03-identity-full.txt,pass
 P04-T01,04,P0,AEAD篡改,密文/nonce/AAD篡改解密失败,unit,true,,,not_started
 P04-T02,04,P0,跨账户密文,替换tenant/account密文不可解密,integration,true,,,not_started
 P04-T03,04,P0,nonce随机,重复加密不会重复nonce且有规范容量边界,unit,true,,,not_started

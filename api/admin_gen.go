@@ -4,6 +4,8 @@
 package api
 
 import (
+	"time"
+
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -33,15 +35,24 @@ func (e CapabilityDescriptorName) Valid() bool {
 
 // Defines values for CapabilityDescriptorScopes.
 const (
-	ModelsRead   CapabilityDescriptorScopes = "models:read"
-	TenantsRead  CapabilityDescriptorScopes = "tenants:read"
-	TenantsWrite CapabilityDescriptorScopes = "tenants:write"
-	UsageRead    CapabilityDescriptorScopes = "usage:read"
+	AdminKeysRead  CapabilityDescriptorScopes = "admin:keys:read"
+	AdminKeysWrite CapabilityDescriptorScopes = "admin:keys:write"
+	ModelsInvoke   CapabilityDescriptorScopes = "models:invoke"
+	ModelsRead     CapabilityDescriptorScopes = "models:read"
+	TenantsRead    CapabilityDescriptorScopes = "tenants:read"
+	TenantsWrite   CapabilityDescriptorScopes = "tenants:write"
+	UsageRead      CapabilityDescriptorScopes = "usage:read"
 )
 
 // Valid indicates whether the value is a known member of the CapabilityDescriptorScopes enum.
 func (e CapabilityDescriptorScopes) Valid() bool {
 	switch e {
+	case AdminKeysRead:
+		return true
+	case AdminKeysWrite:
+		return true
+	case ModelsInvoke:
+		return true
 	case ModelsRead:
 		return true
 	case TenantsRead:
@@ -178,6 +189,27 @@ func (e UpdateTenantRequestStatus) Valid() bool {
 	}
 }
 
+// Defines values for ListApiKeysParamsStatus.
+const (
+	ListApiKeysParamsStatusActive  ListApiKeysParamsStatus = "active"
+	ListApiKeysParamsStatusExpired ListApiKeysParamsStatus = "expired"
+	ListApiKeysParamsStatusRevoked ListApiKeysParamsStatus = "revoked"
+)
+
+// Valid indicates whether the value is a known member of the ListApiKeysParamsStatus enum.
+func (e ListApiKeysParamsStatus) Valid() bool {
+	switch e {
+	case ListApiKeysParamsStatusActive:
+		return true
+	case ListApiKeysParamsStatusExpired:
+		return true
+	case ListApiKeysParamsStatusRevoked:
+		return true
+	default:
+		return false
+	}
+}
+
 // CapabilityDescriptor defines model for CapabilityDescriptor.
 type CapabilityDescriptor struct {
 	Enabled bool                         `json:"enabled"`
@@ -191,6 +223,27 @@ type CapabilityDescriptorName string
 
 // CapabilityDescriptorScopes defines model for CapabilityDescriptor.Scopes.
 type CapabilityDescriptorScopes string
+
+// CreateAPIKeyResponse defines model for CreateAPIKeyResponse.
+type CreateAPIKeyResponse struct {
+	AuthVersion int64     `json:"auth_version"`
+	ExpiresAt   time.Time `json:"expires_at"`
+
+	// Key Present only in the first successful response; never persisted for replay.
+	Key *string `json:"key,omitempty"`
+
+	// Message Replay guidance when the one-time secret is unavailable.
+	Message         *string            `json:"message,omitempty"`
+	Models          []string           `json:"models"`
+	ProjectId       openapi_types.UUID `json:"project_id"`
+	PublicId        string             `json:"public_id"`
+	RevokedAt       *time.Time         `json:"revoked_at,omitempty"`
+	Scopes          []string           `json:"scopes"`
+	SecretAvailable *bool              `json:"secret_available,omitempty"`
+	Status          string             `json:"status"`
+	TenantId        openapi_types.UUID `json:"tenant_id"`
+	UserId          openapi_types.UUID `json:"user_id"`
+}
 
 // CreateTenantRequest defines model for CreateTenantRequest.
 type CreateTenantRequest struct {
@@ -212,6 +265,12 @@ type Error struct {
 
 // ErrorCode defines model for Error.Code.
 type ErrorCode string
+
+// RevokeAPIKeyRequest defines model for RevokeAPIKeyRequest.
+type RevokeAPIKeyRequest struct {
+	ProjectId string             `json:"project_id"`
+	TenantId  openapi_types.UUID `json:"tenant_id"`
+}
 
 // Tenant defines model for Tenant.
 type Tenant struct {
@@ -279,6 +338,35 @@ type Unauthorized = Error
 // Unsupported defines model for Unsupported.
 type Unsupported = Error
 
+// RevokeAdminTokenParams defines parameters for RevokeAdminToken.
+type RevokeAdminTokenParams struct {
+	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
+}
+
+// ListApiKeysParams defines parameters for ListApiKeys.
+type ListApiKeysParams struct {
+	TenantId  openapi_types.UUID       `form:"tenant_id" json:"tenant_id"`
+	ProjectId openapi_types.UUID       `form:"project_id" json:"project_id"`
+	Status    *ListApiKeysParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Limit     *Limit                   `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ListApiKeysParamsStatus defines parameters for ListApiKeys.
+type ListApiKeysParamsStatus string
+
+// CreateApiKeyJSONBody defines parameters for CreateApiKey.
+type CreateApiKeyJSONBody = map[string]interface{}
+
+// CreateApiKeyParams defines parameters for CreateApiKey.
+type CreateApiKeyParams struct {
+	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
+}
+
+// RevokeApiKeyParams defines parameters for RevokeApiKey.
+type RevokeApiKeyParams struct {
+	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
+}
+
 // ListTenantsParams defines parameters for ListTenants.
 type ListTenantsParams struct {
 	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
@@ -295,6 +383,12 @@ type UpdateTenantParams struct {
 	IfMatch        IfMatch        `json:"If-Match"`
 	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
 }
+
+// CreateApiKeyJSONRequestBody defines body for CreateApiKey for application/json ContentType.
+type CreateApiKeyJSONRequestBody = CreateApiKeyJSONBody
+
+// RevokeApiKeyJSONRequestBody defines body for RevokeApiKey for application/json ContentType.
+type RevokeApiKeyJSONRequestBody = RevokeAPIKeyRequest
 
 // CreateTenantJSONRequestBody defines body for CreateTenant for application/json ContentType.
 type CreateTenantJSONRequestBody = CreateTenantRequest

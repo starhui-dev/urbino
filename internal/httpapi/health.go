@@ -146,11 +146,8 @@ func (s *HealthServer) Serve(ctx context.Context) error {
 		}
 		return fmt.Errorf("httpapi: health listener: %w", err)
 	case <-ctx.Done():
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
-		defer cancel()
-		if err := s.server.Shutdown(shutdownCtx); err != nil {
-			_ = s.server.Close()
-			return fmt.Errorf("httpapi: shutdown health listener: %w", err)
+		if err := s.server.Close(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			return fmt.Errorf("httpapi: close health listener: %w", err)
 		}
 		if err := <-errCh; err != nil && !errors.Is(err, http.ErrServerClosed) {
 			return fmt.Errorf("httpapi: health listener: %w", err)

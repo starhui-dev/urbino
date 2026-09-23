@@ -1,3 +1,24 @@
-command: go test ./... -count=1 -v
+command: go test ./... -count=1
+started_at: 2026-09-23T09:46:36+08:00
+?   	example.com/urbino/api	[no test files]
+?   	example.com/urbino/cmd/urbino	[no test files]
+ok  	example.com/urbino/internal/auth	0.010s
+ok  	example.com/urbino/internal/cli	0.032s
+?   	example.com/urbino/internal/clock	[no test files]
+ok  	example.com/urbino/internal/config	0.012s
+ok  	example.com/urbino/internal/domain	0.012s
+ok  	example.com/urbino/internal/httpapi	0.017s
+?   	example.com/urbino/internal/observability	[no test files]
+ok  	example.com/urbino/internal/ports	0.015s
+ok  	example.com/urbino/internal/storage/migrate	0.011s
+ok  	example.com/urbino/internal/storage/postgres	0.014s
+?   	example.com/urbino/internal/storage/postgres/generated	[no test files]
+?   	example.com/urbino/internal/testutil	[no test files]
+ok  	example.com/urbino/internal/version	0.014s
+ok  	example.com/urbino/tests/contracts	0.033s
+ok  	example.com/urbino/tests/foundation	2.714s
+ok  	example.com/urbino/tests/identity	0.009s
+ok  	example.com/urbino/tests/integration	0.011s
+finished_at: 2026-09-23T09:46:40+08:00
 exit_code: 0
-result: pass; 13 packages passed, 6 packages had no tests; database-gated tests without explicit DSN reported declared skips only.
+result: pass_with_declared_skips

@@ -1,0 +1,8 @@
+command: URBINO_TEST_POSTGRES_DSN=<redacted-loopback-test-dsn> go test -tags identityimpl ./tests/identity ./internal/storage/postgres ./internal/httpapi -count=1
+started_at: 2026-09-23T09:46:40+08:00
+ok  	example.com/urbino/tests/identity	0.785s
+ok  	example.com/urbino/internal/storage/postgres	0.248s
+ok  	example.com/urbino/internal/httpapi	0.207s
+finished_at: 2026-09-23T09:46:42+08:00
+exit_code: 0
+result: pass
