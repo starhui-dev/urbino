@@ -1,8 +1,8 @@
 # 来源与核对范围
 
-本版保留旧包技术参考记录（旧包记录日期 2026-09-12），**不声称在 2026-09-18 重新核验所有版本、协议或条款**。R19 改为本次实际读取的 OMP 官方原生发现实现；其他 29 项沿用历史来源。新的 OMP 详细依据见 [OMP-SOURCES.md](OMP-SOURCES.md)。
+本版保留产品技术参考记录；已移除特定 Agent 运行时来源，通用提示词设计依据见 [AGENT-SOURCES.md](AGENT-SOURCES.md)。
 
-未完成参考仓库全量安全审计、运行 CPA/S2A、账号风控实测或真实 OMP 调用。读过源码不等于已验证其运行属性。仓库 `main` 是动态分支，本次未取得固定 commit SHA；实施时记录实际版本/revision、日期、读取文件与 ADR，不能虚构。
+未完成参考仓库全量安全审计、运行 CPA/S2A、账号风控实测或真实 Agent 调用。读过源码不等于已验证其运行属性。仓库 `main` 是动态分支，本次未取得固定 commit SHA；实施时记录实际版本/revision、日期、读取文件与 ADR，不能虚构。
 
 本包架构、默认阈值、测试门禁和错误语义是独立设计选择，不是参考源码复制品。提供商条款、授权、配额和接口必须在启用前再核实。
 
@@ -26,7 +26,6 @@
 | R16 | [OpenAI Streaming Responses](https://developers.openai.com/api/docs/guides/streaming-responses) | SSE 和响应事件协议 | 2026-09-12 |
 | R17 | [Anthropic Streaming](https://platform.claude.com/docs/en/build-with-claude/streaming) | 原生事件、终止与用量语义 | 2026-09-12 |
 | R18 | [Gemini Tokens](https://ai.google.dev/gemini-api/docs/tokens) | countTokens 与 usageMetadata | 2026-09-12 |
-| R19 | [OMP 原生资源发现](https://github.com/can1357/oh-my-pi/blob/main/packages/coding-agent/src/discovery/builtin.ts) | 原生项目 context/agents/skills 发现；对应 raw 源码已读，不等于本机已加载 | 2026-09-18 |
 | R20 | [Go Releases](https://go.dev/dl/) | Go 版本官方入口；本次未重核具体补丁，实施前核对锁定 | 2026-09-12 |
 | R21 | [Go net/http](https://pkg.go.dev/net/http) | Transport、context、连接与响应控制 | 2026-09-12 |
 | R22 | [Go crypto/cipher](https://pkg.go.dev/crypto/cipher) | 标准 AEAD 接口 | 2026-09-12 |

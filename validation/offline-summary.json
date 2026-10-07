@@ -2,7 +2,7 @@
   "structure": {
     "returncode": 0
   },
-  "omp-structure": {
+  "agent-structure": {
     "returncode": 0
   },
   "unittests": {
@@ -75,9 +75,9 @@
   "phase_dependency_and_title_unchanged": true,
   "offline_yaml_frontmatters": 16,
   "python_syntax": "pass",
-  "omp_installed": false,
+  "agent_installed": false,
   "bun_installed": false,
-  "live_omp_smoke": "NOT_RUN",
+  "live_agent_smoke": "NOT_RUN",
   "runtime-template": {
     "expected_rejection": true,
     "returncode": 1
@@ -88,5 +88,5 @@
   },
   "native_config_payloads": "none",
   "test_count": 46,
-  "check_scope": "prompt-pack-only; not OMP runtime and not product tests"
+  "check_scope": "prompt-pack-only; not Agent runtime and not product tests"
 }

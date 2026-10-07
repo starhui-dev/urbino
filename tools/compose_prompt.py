@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""离线组装一个阶段的提示词；不调用 OMP、不执行开发命令。"""
+"""离线组装一个阶段的提示词；不调用 Agent、不执行开发命令。"""
 from __future__ import annotations
 import argparse
 import json
@@ -33,13 +33,13 @@ def main() -> int:
         if phase is None:
             parser.error(f"未知阶段：{phase_id}")
         files = list(dict.fromkeys([
-            "AGENTS.md", "MASTER_PROMPT.md", "project.json", "omp/role-policy.json", "progress/state.json",
+            "AGENTS.md", "MASTER_PROMPT.md", "project.json", ".agents/agent-policy.json", "progress/state.json",
             phase["prompt"], *phase["required_docs"],
         ]))
         parts = [
-            f'# Urbino · OMP 阶段 {phase_id} 组合提示词\n\n'
+            f'# Urbino · Agent 阶段 {phase_id} 组合提示词\n\n'
             '在本仓库中仅执行指定阶段。以下为仓库规格的离线副本；执行前仍需检查实际源码、进度和前置门禁。\n'
-            '本文件不会启动 OMP，也不是已完成的开发结果。'
+            '本文件不会启动 Agent，也不是已完成的开发结果。'
         ]
         for relative in files:
             parts.append(f"\n---\n\n# 仓库文件：{relative}\n\n{read_repo_file(relative).strip()}")

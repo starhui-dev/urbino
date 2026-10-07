@@ -1,4 +1,4 @@
-# OMP 阻塞与失败修复
+# Agent 阻塞与失败修复
 
 读 AGENTS.md、MASTER_PROMPT.md、当前阶段提示词、原始失败输出、实际 diff 和阶段状态。区分环境缺失、模型路由、schema/工具错误、产品实现缺陷、外部授权不足。
 

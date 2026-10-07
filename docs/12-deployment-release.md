@@ -3,7 +3,7 @@
 ## 两种交付方式
 
 A. 单机 Compose：urbino + urbino-worker（可合并）+ PostgreSQL + Valkey，反向代理可由 1Panel/既有 Nginx 提供。不要求安装 Kubernetes。
-B. 外部依赖：urbino/urbino-worker 连接已提供的 PG/Valkey，文档明确 TLS/CA、账号、迁移权限、备份责任与网络策略。
+B. 外部依赖：urbinourbino-worker 连接已提供的 PG/Valkey，文档明确 TLS/CA、账号、迁移权限、备份责任与网络策略。
 
 单机 Compose 不是 HA。若要称多实例生产支持，必须完成两进程共享状态故障测试；若要称存储高可用，必须另外验证实际 PG/Valkey HA 拓扑，不能由程序多副本推导。
 

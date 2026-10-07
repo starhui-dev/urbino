@@ -1,6 +1,6 @@
 {
-  "verified_on": "2026-09-12 (原技术记录) / 2026-09-18 (OMP R19)",
-  "verification_scope": "原技术来源继承旧包记录，本次未逐项重核；R19 改为本次实际读取的 OMP 发现实现；均不等于实机测试",
+  "verified_on": "2026-09-12 (原技术记录) / 2026-09-18 (Agent R19)",
+  "verification_scope": "原技术来源继承旧包记录，本次未逐项重核；R19 改为本次实际读取的 Agent 发现实现；均不等于实机测试",
   "repository_revision_status": "main 页面已读；未获得可固定的 commit SHA，第00阶段须核对并锁定，不能虚构",
   "sources": [
     {
@@ -146,14 +146,6 @@
       "scope": "countTokens 与 usageMetadata",
       "checked_on": "2026-09-12",
       "verification_status": "inherited-not-reverified-in-2.0.0"
-    },
-    {
-      "id": "R19",
-      "title": "OMP 原生资源发现",
-      "url": "https://github.com/can1357/oh-my-pi/blob/main/packages/coding-agent/src/discovery/builtin.ts",
-      "scope": "原生项目 context/agents/skills 发现；对应 raw 源码已读，不等于本机已加载",
-      "checked_on": "2026-09-18",
-      "verification_status": "source-read-not-runtime-tested"
     },
     {
       "id": "R20",

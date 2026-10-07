@@ -8,7 +8,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from validate_omp import validate as validate_omp_files
+from validate_agent import validate as validate_agent_files
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -85,7 +85,7 @@ def validate_project_identity(root: Path) -> list[str]:
         documents = [root / name for name in ("README.md", "AGENTS.md", "MASTER_PROMPT.md")]
         documents += sorted((root / "docs").glob("*.md"))
         documents += sorted((root / "prompts").glob("*.md"))
-        documents += sorted((root / ".omp").rglob("*.md"))
+        documents += sorted((root / ".agents").rglob("*.md"))
         for document in documents:
             for number, line in enumerate(document.read_text(encoding="utf-8").splitlines(), 1):
                 if forbidden.search(line):
@@ -106,15 +106,15 @@ def main() -> int:
                     "checklists/test-matrix.csv", "checklists/RELEASE_GATES.md",
                     "templates/stage-evidence.json", "prompts/REVIEW.md", "prompts/RESUME.md",
                     "prompts/REPAIR.md", "tools/compose_prompt.py", "tools/check_evidence.py",
-                    "START_HERE.md", "omp/role-policy.json", "docs/15-omp-workflow.md",
-                    "docs/16-omp-model-routing.md", "docs/17-omp-migration-recovery.md",
-                    "tools/check_omp_runtime.py", "tools/migration_plan.py"]
+                    "START_HERE.md", ".agents/agent-policy.json", "docs/15-agent-workflow.md",
+                    "docs/16-agent-model-routing.md", "docs/17-agent-migration-recovery.md",
+                    "tools/check_agent_runtime.py", "tools/migration_plan.py"]
         for relative in required:
             path = safe_path(relative)
             if not path.is_file() or path.stat().st_size == 0:
                 errors.append(f"缺失或空文件：{relative}")
         errors.extend(validate_project_identity(ROOT))
-        errors.extend(validate_omp_files(ROOT))
+        errors.extend(validate_agent_files(ROOT))
         phases = load_json("phases.json")["phases"]
         ids = [p["id"] for p in phases]
         if ids != [f"{i:02d}" for i in range(20)]:

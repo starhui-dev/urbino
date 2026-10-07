@@ -6,7 +6,7 @@
 
 ## 必读文件
 
-- `docs/15-omp-workflow.md`
+- `docs/15-agent-workflow.md`
 
 - `project.json`
 - `docs/14-project-identity.md`
@@ -38,9 +38,9 @@ E2E 从 CLI/API 创建租户/key/账户 -> 三类协议 mock 调用 -> 用量/�
 
 然后停止，由 prompts/REVIEW.md 独立复核。不要自动 Git push、调用未经批准的付费上游或部署生产。
 
-## OMP 本阶段编排
+## Agent 本阶段编排
 
-主 Agent先固定契约和任务范围；仅在当前 OMP路由预检通过后委派。
+主 Agent先固定契约和任务范围；仅在当前 Agent路由预检通过后委派。
 
 | 工作 | 分配 |
 |---|---|
@@ -48,5 +48,5 @@ E2E 从 CLI/API 创建租户/key/账户 -> 三类协议 mock 调用 -> 用量/�
 | 测试切片 | urbino-tester：认证→配额→上游→计量的端到端测试 |
 | 必须串行整合 | 主 Agent：路由装配/事务边界/副作用顺序 |
 
-先确认可独立文件边界，默认2个任务且总上限4；存在共同写文件/公共契约则串行。任务单使用 templates/OMP_TASK.md，结果按 templates/OMP_WORKER_REPORT.md 收集，主 Agent在最终合并后的工作区重跑检查。
+先确认可独立文件边界，默认2个任务且总上限4；存在共同写文件/公共契约则串行。任务单使用 templates/AGENT_TASK.md，结果按 templates/AGENT_WORKER_REPORT.md 收集，主 Agent在最终合并后的工作区重跑检查。
 本阶段独立审查角色：urbino-reviewer、urbino-security。必须是新上下文，不让实现者自行验收；高风险发现修复后重跑并重审。只有主 Agent写阶段总状态。

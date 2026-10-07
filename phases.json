@@ -12,7 +12,7 @@
         "docs/00-scope.md",
         "docs/01-architecture.md",
         "docs/11-testing.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -39,7 +39,7 @@
         "docs/02-data-model.md",
         "docs/06-auth-admin.md",
         "docs/08-protocols.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -64,7 +64,7 @@
         "docs/02-data-model.md",
         "docs/09-metering-ledger.md",
         "docs/11-testing.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -90,7 +90,7 @@
         "docs/03-security.md",
         "docs/04-credentials-oauth.md",
         "docs/06-auth-admin.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -116,7 +116,7 @@
         "docs/02-data-model.md",
         "docs/03-security.md",
         "docs/04-credentials-oauth.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -142,7 +142,7 @@
         "docs/03-security.md",
         "docs/05-transport-egress.md",
         "docs/13-threat-scenarios.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -168,7 +168,7 @@
         "docs/05-transport-egress.md",
         "docs/08-protocols.md",
         "docs/11-testing.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -194,7 +194,7 @@
         "docs/05-transport-egress.md",
         "docs/08-protocols.md",
         "docs/09-metering-ledger.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -219,7 +219,7 @@
         "docs/05-transport-egress.md",
         "docs/08-protocols.md",
         "docs/09-metering-ledger.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -245,7 +245,7 @@
         "docs/04-credentials-oauth.md",
         "docs/07-routing-quotas.md",
         "docs/13-threat-scenarios.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -271,7 +271,7 @@
         "docs/01-architecture.md",
         "docs/07-routing-quotas.md",
         "docs/13-threat-scenarios.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -297,7 +297,7 @@
         "docs/02-data-model.md",
         "docs/09-metering-ledger.md",
         "docs/13-threat-scenarios.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -325,7 +325,7 @@
         "docs/07-routing-quotas.md",
         "docs/08-protocols.md",
         "docs/09-metering-ledger.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -351,7 +351,7 @@
         "docs/06-auth-admin.md",
         "docs/09-metering-ledger.md",
         "docs/10-config-operations.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -376,7 +376,7 @@
         "docs/02-data-model.md",
         "docs/10-config-operations.md",
         "docs/11-testing.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -401,7 +401,7 @@
         "docs/03-security.md",
         "docs/11-testing.md",
         "docs/13-threat-scenarios.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -428,7 +428,7 @@
         "docs/09-metering-ledger.md",
         "docs/12-deployment-release.md",
         "docs/13-threat-scenarios.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -452,7 +452,7 @@
         "docs/14-project-identity.md",
         "docs/10-config-operations.md",
         "docs/12-deployment-release.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -479,7 +479,7 @@
         "docs/08-protocols.md",
         "docs/09-metering-ledger.md",
         "docs/12-deployment-release.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",
@@ -505,7 +505,7 @@
         "docs/03-security.md",
         "docs/11-testing.md",
         "docs/12-deployment-release.md",
-        "docs/15-omp-workflow.md"
+        "docs/15-agent-workflow.md"
       ],
       "review_required": true,
       "orchestrator": "main-session",

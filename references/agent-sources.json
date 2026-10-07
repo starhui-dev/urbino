@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "runtime_dependency": null,
+  "checked_on": "2026-10-07",
+  "verification": "仅验证仓库内提示词和离线校验结构；未运行特定 Agent CLI 或模型",
+  "principles": [
+    "提示词与运行时解耦",
+    "显式角色工具边界",
+    "任务合同与单写状态",
+    "证据优先于模型自报",
+    "未知运行时能力按阻塞处理"
+  ],
+  "sources": []
+}

@@ -28,6 +28,6 @@
   "registry_namespace": null,
   "repository_url": null,
   "public_domain": null,
-  "development_harness": "oh-my-pi",
-  "development_command": "omp"
+  "development_harness": "generic-agent",
+  "development_command": null
 }

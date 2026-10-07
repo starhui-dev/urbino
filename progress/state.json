@@ -146,5 +146,5 @@
       "blockers": []
     }
   },
-  "development_harness": "oh-my-pi"
+  "development_harness": "generic-agent"
 }

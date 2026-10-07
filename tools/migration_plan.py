@@ -14,7 +14,7 @@ ARCHIVE_ONLY={'MANIFEST.sha256','PACK_VALIDATION.md'}
 
 def protected(rel: str) -> bool:
     path=Path(rel)
-    return (path.parts[0] in {'progress','evidence'} or rel in {'checklists/test-matrix.csv','checklists/omp-readiness.csv'}
+    return (path.parts[0] in {'progress','evidence'} or rel in {'checklists/test-matrix.csv','checklists/agent-readiness.csv'}
             or path.name in {'.env','auth.json','auth.yml','auth.yaml','config.yml','config.yaml','settings.json','models.yml','models.yaml','models.json','config.json','settings.yml','settings.yaml','credentials.json','urbino.yaml'}
             or path.name.startswith('.env.') or path.suffix.lower() in {'.pem','.key','.p12','.pfx'})
 

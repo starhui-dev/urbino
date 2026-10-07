@@ -1,4 +1,4 @@
-# OMP 独立复核一个阶段
+# Agent 独立复核一个阶段
 
 主 Agent先读 AGENTS.md、MASTER_PROMPT.md、project.json、phases.json、实际 state 和当前 implemented 阶段提示词，检查任务已全部终结。指定旧阶段时明确复核对象，不改其他阶段。确认已实现文件、最终代码 revision、真实测试输出。
 

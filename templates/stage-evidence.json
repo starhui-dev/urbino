@@ -46,7 +46,7 @@
     "security_review_path": null
   },
   "development": {
-    "harness": "oh-my-pi",
+    "harness": "generic-agent",
     "orchestrator_session": null,
     "orchestrator_model": null,
     "runtime_report_path": null,
